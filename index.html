@@ -59,7 +59,7 @@
 <div class="loading-cover" id="loadingCover"><div class="loading-card"><div class="ring"></div><div id="loadingText">受付画面を準備しています</div></div></div>
 <div class="app" id="app">
   <header class="topbar"><div class="topbar-inner"><div class="logo">D</div><div class="brand"><div class="brand-name" id="brandName">DPROリフォーム</div><div class="brand-sub" id="brandSub">リフォーム相談・現地調査受付</div></div><div class="top-actions"><button type="button" class="history-link" id="historyLink">過去の相談・進捗</button><div class="identity-pill" id="identityPill">受付準備中</div></div></div></header>
-  <section class="hero"><div class="hero-inner"><div class="hero-badge">STEP REFORM-5</div><h1>住まいのお困りごとを<br>写真と一緒に相談できます</h1><p>見積相談、現地調査、修理・補修まで。内容を確認後、担当者からLINEまたはご希望の方法でご連絡します。</p></div></section>
+  <section class="hero"><div class="hero-inner"><div class="hero-badge">STEP REFORM-5-R1</div><h1>住まいのお困りごとを<br>写真と一緒に相談できます</h1><p>見積相談、現地調査、修理・補修まで。内容を確認後、担当者からLINEまたはご希望の方法でご連絡します。</p></div></section>
   <div class="steps-wrap"><div class="steps" id="steps"></div></div>
   <main>
     <div class="notice" id="notice" role="alert"></div>
@@ -290,7 +290,13 @@
     if(state.submitting)return; state.submitting=true; clearNotice(); const btn=$('nextBtn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>送信しています';
     try{
       const data=await api('/api/public/inquiries',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload())});
-      state.result=data; rememberToken(data.project?.public_token); qa('.panel').forEach(p=>p.classList.remove('active'));$('bottomNav').classList.add('hidden');$('successScreen').classList.add('show');$('projectNo').textContent=data.project?.project_no||'受付完了';
+      state.result=data; rememberToken(data.project?.public_token);
+      if(state.browserIdentity&&data.project?.public_token){
+        try{
+          await api('/api/member/link-current',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({line_user_id:state.lineUserId,public_token:data.project.public_token})});
+        }catch(e){console.warn('member link repair',e);}
+      }
+      qa('.panel').forEach(p=>p.classList.remove('active'));$('bottomNav').classList.add('hidden');$('successScreen').classList.add('show');$('projectNo').textContent=data.project?.project_no||'受付完了';
       $('successSurvey').textContent=data.survey?`現地調査希望：${fmtDate(data.survey.requested_date)} ${data.survey.requested_time_text||''}`:'現地調査の日程は担当者からご連絡します。';
       window.scrollTo({top:0,behavior:'smooth'});
     }catch(e){showNotice(e.message);}finally{state.submitting=false;btn.disabled=false;btn.textContent='この内容で相談を送る';}

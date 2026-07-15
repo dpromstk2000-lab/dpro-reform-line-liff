@@ -52,7 +52,7 @@
       <div class="top-actions"><button type="button" class="top-button primary" id="newConsultationTop">新しい相談</button><div class="identity-pill" id="identityPill">確認準備中</div></div>
     </div>
   </header>
-  <section class="hero"><div class="hero-inner"><div class="hero-badge">STEP REFORM-5</div><h1>相談内容と工事の進捗を<br>まとめて確認できます</h1><p>受付済みの相談、現地調査、見積、工事予定、進捗写真を案件ごとに確認できます。</p></div></section>
+  <section class="hero"><div class="hero-inner"><div class="hero-badge">STEP REFORM-5-R1</div><h1>相談内容と工事の進捗を<br>まとめて確認できます</h1><p>受付済みの相談、現地調査、見積、工事予定、進捗写真を案件ごとに確認できます。</p></div></section>
   <main>
     <div class="notice" id="notice" role="alert"></div>
     <section class="account-card" id="accountCard">
@@ -123,10 +123,18 @@
   }
   async function load(){clearNotice();loading(true,'相談履歴を確認しています');try{
       await identity();const token=param('token')||param('public_token');if(token)rememberToken(token);
+      const tokenList=[token,...tokens()].filter(Boolean).filter((x,i,a)=>a.indexOf(x)===i).slice(0,20);
+      if(state.browserIdentity&&state.lineUserId&&tokenList.length){
+        for(const t of tokenList){
+          try{
+            const linked=await api('/api/member/link-current',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({line_user_id:state.lineUserId,public_token:t})});
+            if(linked.linked)break;
+          }catch(e){console.warn('member auto link',e);}
+        }
+      }
       state.publicConfig=await api('/api/public/config');$('brandName').textContent=state.publicConfig.company?.company_name||'DPROリフォーム';$('brandSub').textContent=state.publicConfig.company?.subtitle||'相談・工事進捗マイページ';
       let profile=null,lineProjects=[];try{const [p,ps]=await Promise.all([api('/api/member/profile'),api('/api/member/projects')]);profile=p;lineProjects=ps.projects||[];state.profile=p.profile||ps.customer||null;}catch(e){console.warn('member list',e);}
       const map=new Map();lineProjects.forEach(x=>map.set(x.project_no,{...x,source:'line'}));
-      const tokenList=[token,...tokens()].filter(Boolean).filter((x,i,a)=>a.indexOf(x)===i).slice(0,20);
       for(const t of tokenList){try{const d=await api(`/api/member/project-detail?public_token=${encodeURIComponent(t)}`,{skipIdentity:true});const ov=d.project?.overview||{};const pr=d.project?.project||{};const no=pr.project_no||ov.project_no;if(no&&!map.has(no))map.set(no,{...overviewFromDetail(d.project),source:'token',public_token:t});}catch(e){console.warn('token detail',e);}}
       state.projects=[...map.values()].sort((a,b)=>String(b.updated_at||b.created_at||'').localeCompare(String(a.updated_at||a.created_at||'')));
       renderAccount(profile);renderList();

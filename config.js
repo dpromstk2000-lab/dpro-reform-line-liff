@@ -1,6 +1,6 @@
 /**
  * DPRO リフォーム・工務店 LINE
- * STEP REFORM-5 お客様マイページ連携版 設定
+ * STEP REFORM-5-R1 お客様マイページ端末連携修正版 設定
  */
 window.DPRO_REFORM_CONFIG = Object.freeze({
   VERSION: "REFORM-5-MEMBER-PAGE-LINK-20260715",
