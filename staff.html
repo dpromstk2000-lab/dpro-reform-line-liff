@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#08796f">
+  <meta name="description" content="DPROリフォーム 担当者用 現地調査・工事進捗・写真報告画面">
+  <title>DPROリフォーム｜担当者用</title>
+  <script src="config.js"></script>
+  <style>
+    :root{
+      --green-950:#023f3a;--green-900:#04574f;--green-800:#066c63;--green-700:#087f74;
+      --green-600:#0a9385;--green-100:#dff4f1;--green-50:#eef9f7;
+      --ink:#142522;--muted:#5e6f6c;--line:#d7e2df;--bg:#f1f6f4;--card:#fff;
+      --amber:#a45b00;--amber-bg:#fff4df;--red:#b93232;--red-bg:#fff0f0;
+      --blue:#1d6290;--blue-bg:#eaf5fc;--shadow:0 12px 30px rgba(2,63,58,.10);
+      --radius:18px;--safe-bottom:max(18px,env(safe-area-inset-bottom));
+    }
+    *{box-sizing:border-box}
+    html{font-size:16px;scroll-behavior:smooth}
+    body{margin:0;color:var(--ink);background:var(--bg);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;line-height:1.65;-webkit-text-size-adjust:100%}
+    button,input,select,textarea{font:inherit;color:inherit}
+    button{cursor:pointer}
+    a{color:inherit}
+    .hidden{display:none!important}
+    .app{min-height:100vh;padding-bottom:calc(86px + var(--safe-bottom))}
+    .topbar{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}
+    .topbar-inner{max-width:1400px;margin:auto;min-height:72px;padding:10px 18px;display:flex;align-items:center;gap:14px}
+    .brand{display:flex;align-items:center;gap:11px;min-width:0}
+    .brand-mark{width:44px;height:44px;display:grid;place-items:center;border-radius:13px;color:#fff;background:linear-gradient(145deg,var(--green-600),var(--green-800));font-weight:900;font-size:21px;box-shadow:0 7px 18px rgba(8,127,116,.25)}
+    .brand-text{min-width:0}.brand-text strong{display:block;font-size:18px;line-height:1.25}.brand-text small{display:block;color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .top-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+    .staff-chip{padding:8px 12px;border-radius:999px;background:var(--green-50);color:var(--green-900);font-weight:800;font-size:14px;white-space:nowrap}
+    .icon-btn,.btn{border:1px solid var(--line);background:#fff;border-radius:11px;min-height:46px;padding:9px 15px;font-weight:800;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:.15s ease}
+    .icon-btn:hover,.btn:hover{transform:translateY(-1px);box-shadow:0 5px 14px rgba(2,63,58,.10)}
+    .btn-primary{color:#fff;background:var(--green-700);border-color:var(--green-700)}
+    .btn-soft{color:var(--green-900);background:var(--green-50);border-color:#b7dfd9}
+    .btn-warn{color:#7b4300;background:var(--amber-bg);border-color:#efc982}
+    .btn-danger{color:var(--red);background:#fff;border-color:#efbcbc}
+    .btn-sm{min-height:40px;padding:7px 12px;font-size:14px;border-radius:10px}
+    .hero{background:linear-gradient(115deg,var(--green-900),var(--green-700));color:#fff}
+    .hero-inner{max-width:1400px;margin:auto;padding:24px 18px 28px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end}
+    .step-pill{display:inline-flex;padding:5px 10px;border:1px solid rgba(255,255,255,.38);border-radius:999px;font-size:12px;font-weight:900;letter-spacing:.02em}
+    .hero h1{margin:10px 0 4px;font-size:clamp(27px,4vw,37px);line-height:1.3;letter-spacing:.01em}
+    .hero p{margin:0;max-width:780px;font-weight:700;font-size:15px;color:rgba(255,255,255,.92)}
+    .hero-date{min-width:230px;padding:14px 16px;border:1px solid rgba(255,255,255,.24);border-radius:15px;background:rgba(255,255,255,.10)}
+    .hero-date small{display:block;font-size:12px;color:rgba(255,255,255,.78)}.hero-date strong{display:block;font-size:20px;margin-top:3px}
+    .wrap{max-width:1400px;margin:auto;padding:16px 18px 0}
+    .controlbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:15px;padding:12px;box-shadow:0 5px 18px rgba(2,63,58,.05)}
+    .controlbar label{font-size:13px;font-weight:800;color:var(--muted)}
+    .date-input{height:46px;padding:7px 11px;border:1px solid #bdcfcb;border-radius:10px;background:#fff;min-width:170px;font-size:16px}
+    .control-spacer{flex:1}
+    .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0}
+    .kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 15px;min-height:91px;display:flex;flex-direction:column;justify-content:center}
+    .kpi.warn{background:#fffaf0;border-color:#efcf91}.kpi.danger{background:#fff6f6;border-color:#efbcbc}
+    .kpi span{font-size:14px;color:var(--muted);font-weight:800}.kpi strong{font-size:29px;line-height:1.15;margin-top:2px}
+    .main-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(330px,.8fr);gap:12px;align-items:start}
+    .panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 6px 20px rgba(2,63,58,.05);overflow:hidden}
+    .panel-head{padding:16px 17px 13px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:10px}
+    .panel-head h2{font-size:21px;line-height:1.35;margin:0}.panel-head p{margin:2px 0 0;color:var(--muted);font-size:14px}.panel-count{margin-left:auto;min-width:31px;height:31px;padding:0 9px;border-radius:999px;background:var(--green-100);color:var(--green-900);font-weight:900;display:grid;place-items:center}
+    .panel-body{padding:10px}
+    .schedule-list,.task-list{display:grid;gap:9px}
+    .schedule-card,.task-card{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff;display:grid;gap:10px}
+    .schedule-card.current{border-color:#79c8bd;background:#f8fffd;box-shadow:inset 4px 0 0 var(--green-600)}
+    .schedule-top{display:flex;align-items:flex-start;gap:10px}.schedule-time{min-width:92px;font-size:18px;font-weight:900;color:var(--green-900);line-height:1.35}.schedule-main{min-width:0;flex:1}.schedule-main strong{display:block;font-size:17px;line-height:1.4}.schedule-main small{display:block;color:var(--muted);font-size:14px;margin-top:3px;overflow-wrap:anywhere}
+    .schedule-actions{display:flex;justify-content:flex-end;gap:7px;flex-wrap:wrap}
+    .kind{display:inline-flex;align-items:center;min-height:27px;padding:3px 9px;border-radius:999px;font-size:13px;font-weight:900;background:var(--green-100);color:var(--green-900)}
+    .kind.work{background:var(--blue-bg);color:var(--blue)}
+    .status{display:inline-flex;align-items:center;min-height:25px;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:900;background:#edf2f1;color:#53625f}.status.green{background:var(--green-100);color:var(--green-900)}.status.amber{background:var(--amber-bg);color:var(--amber)}.status.red{background:var(--red-bg);color:var(--red)}
+    .task-card.overdue{border-color:#efbcbc;background:#fffafa}.task-row{display:flex;align-items:flex-start;gap:9px}.task-main{flex:1;min-width:0}.task-main strong{font-size:16px;line-height:1.45;display:block}.task-main small{display:block;color:var(--muted);font-size:14px;margin-top:3px;overflow-wrap:anywhere}.task-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+    .empty{min-height:170px;display:grid;place-items:center;text-align:center;padding:24px;color:var(--muted)}.empty strong{display:block;color:var(--ink);font-size:18px;margin-bottom:3px}
+    .bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:35;background:rgba(255,255,255,.97);border-top:1px solid var(--line);padding:8px 12px var(--safe-bottom);display:none;grid-template-columns:repeat(3,1fr);gap:6px;backdrop-filter:blur(10px)}
+    .nav-btn{min-height:54px;border:0;background:transparent;border-radius:12px;font-size:13px;font-weight:900;color:var(--muted)}.nav-btn.active{background:var(--green-50);color:var(--green-900)}
+    .login-cover{position:fixed;inset:0;z-index:100;background:linear-gradient(145deg,#eff8f6,#f9fbfa);display:grid;place-items:center;padding:18px}
+    .login-card{width:min(520px,100%);background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);overflow:hidden}
+    .login-hero{padding:26px;background:linear-gradient(135deg,var(--green-900),var(--green-700));color:#fff}.login-hero h1{font-size:28px;margin:8px 0 3px}.login-hero p{margin:0;color:rgba(255,255,255,.88);font-size:15px}
+    .login-body{padding:22px}.field{display:grid;gap:6px;margin-bottom:14px}.field label{font-size:14px;font-weight:900}.field input,.field select,.field textarea{width:100%;border:1px solid #b9cbc7;border-radius:11px;background:#fff;padding:11px 12px;min-height:48px;font-size:16px}.field textarea{min-height:112px;resize:vertical;line-height:1.65}.field input:focus,.field select:focus,.field textarea:focus{outline:3px solid rgba(10,147,133,.15);border-color:var(--green-600)}
+    .code-row{display:grid;grid-template-columns:1fr auto;gap:8px}.login-error{display:none;margin:10px 0;padding:10px 12px;border-radius:10px;background:var(--red-bg);color:var(--red);font-weight:800}.login-error.show{display:block}
+    .demo-help{margin-top:14px;padding:12px;border-radius:12px;background:var(--green-50);font-size:14px;color:var(--green-950)}
+    .modal{position:fixed;inset:0;z-index:70;background:rgba(2,35,31,.66);display:none;align-items:stretch;justify-content:flex-end;padding:0}.modal.open{display:flex}
+    .detail{width:min(980px,100%);height:100%;background:var(--bg);box-shadow:-15px 0 40px rgba(0,0,0,.18);display:flex;flex-direction:column;animation:slideIn .18s ease}
+    @keyframes slideIn{from{transform:translateX(35px);opacity:.65}to{transform:none;opacity:1}}
+    .detail-head{padding:14px 16px;background:linear-gradient(115deg,var(--green-900),var(--green-700));color:#fff;display:flex;align-items:flex-start;gap:12px}.detail-head-main{min-width:0;flex:1}.detail-head h2{font-size:22px;line-height:1.35;margin:0}.detail-head p{margin:3px 0 0;font-size:14px;color:rgba(255,255,255,.86)}.detail-close{border:1px solid rgba(255,255,255,.4);color:#fff;background:rgba(255,255,255,.10);width:46px;height:46px;border-radius:12px;font-size:24px}
+    .detail-tabs{display:flex;gap:6px;padding:8px 10px;background:#fff;border-bottom:1px solid var(--line);overflow:auto;scrollbar-width:none}.detail-tabs::-webkit-scrollbar{display:none}.tab-btn{white-space:nowrap;border:1px solid var(--line);background:#fff;min-height:44px;padding:8px 14px;border-radius:10px;font-weight:900;font-size:14px}.tab-btn.active{background:var(--green-700);border-color:var(--green-700);color:#fff}
+    .detail-body{flex:1;overflow:auto;padding:12px 12px calc(100px + var(--safe-bottom))}.tab-panel{display:none}.tab-panel.active{display:block}
+    .detail-footer{position:absolute;right:0;bottom:0;width:min(980px,100%);z-index:3;padding:10px 12px var(--safe-bottom);background:rgba(255,255,255,.97);border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end;backdrop-filter:blur(8px)}
+    .section{background:#fff;border:1px solid var(--line);border-radius:15px;margin-bottom:10px;overflow:hidden}.section-title{padding:13px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:9px}.section-title h3{margin:0;font-size:18px}.section-title small{margin-left:auto;color:var(--muted);font-size:13px}.section-body{padding:13px 14px}
+    .info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.info{padding:11px;border-radius:11px;background:#f2f7f5;min-width:0}.info small{display:block;color:var(--muted);font-size:12px;font-weight:800}.info strong{display:block;font-size:15px;margin-top:2px;overflow-wrap:anywhere}.info.wide{grid-column:span 2}
+    .action-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .phase-line{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:13px}.phase-step{position:relative;text-align:center;font-size:11px;color:#7a8986;padding-top:31px}.phase-step:before{content:"";position:absolute;top:9px;left:0;right:0;height:3px;background:#dce7e4}.phase-step:first-child:before{left:50%}.phase-step:last-child:before{right:50%}.phase-step i{position:absolute;z-index:1;top:0;left:50%;transform:translateX(-50%);width:22px;height:22px;border-radius:50%;background:#dce7e4;display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:900}.phase-step.done i,.phase-step.current i{background:var(--green-700);color:#fff}.phase-step.done:before,.phase-step.current:before{background:var(--green-500,#0b9d8f)}.phase-step.current{font-weight:900;color:var(--green-900)}
+    .quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.quick-btn{min-height:54px;border:1px solid #b8d2cd;border-radius:11px;background:#f7fbfa;font-weight:900;font-size:15px;padding:8px}.quick-btn.active{background:var(--green-700);border-color:var(--green-700);color:#fff}.quick-btn.warn{background:var(--amber-bg);border-color:#efc982;color:#744100}
+    .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.form-grid .full{grid-column:1/-1}.help{font-size:13px;color:var(--muted);margin-top:4px}.note{padding:10px 12px;border-radius:11px;background:var(--amber-bg);color:#714100;border:1px solid #efcf91;font-size:13px}
+    .report-list,.photo-grid,.detail-task-list{display:grid;gap:8px}.report{padding:11px;border:1px solid var(--line);border-radius:11px;background:#fff}.report strong{font-size:15px}.report p{font-size:14px;margin:5px 0 0;white-space:pre-wrap}.report small{color:var(--muted);font-size:12px}
+    .photo-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.photo{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}.photo img,.photo-placeholder{width:100%;aspect-ratio:4/3;object-fit:cover;background:#e9f1ef;display:grid;place-items:center;color:var(--muted);font-weight:800}.photo-meta{padding:8px}.photo-meta strong{font-size:13px;display:block}.photo-meta small{font-size:12px;color:var(--muted)}
+    .upload-preview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:8px}.upload-preview img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:9px;border:1px solid var(--line)}
+    .toast-area{position:fixed;z-index:200;right:16px;top:82px;display:grid;gap:8px;width:min(390px,calc(100vw - 32px))}.toast{padding:12px 14px;border-radius:12px;background:#163a35;color:#fff;box-shadow:var(--shadow);font-weight:800;animation:toastIn .2s ease}.toast.error{background:#8f2626}.toast.ok{background:#076b61}@keyframes toastIn{from{transform:translateY(-8px);opacity:0}to{transform:none;opacity:1}}
+    .loading{position:fixed;inset:0;z-index:180;background:rgba(255,255,255,.58);display:none;place-items:center}.loading.show{display:grid}.spinner{width:50px;height:50px;border-radius:50%;border:5px solid #cce6e1;border-top-color:var(--green-700);animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+    @media(max-width:900px){
+      .hero-inner{grid-template-columns:1fr}.hero-date{display:none}.kpis{grid-template-columns:repeat(2,1fr)}.main-grid{grid-template-columns:1fr}.info-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.photo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media(max-width:640px){
+      .app{padding-bottom:calc(82px + var(--safe-bottom))}.topbar-inner{min-height:62px;padding:8px 12px}.brand-mark{width:39px;height:39px}.brand-text strong{font-size:16px}.brand-text small{font-size:11px}.top-actions .icon-btn{display:none}.staff-chip{font-size:12px;padding:7px 9px}.hero-inner{padding:19px 14px 22px}.hero h1{font-size:27px}.hero p{font-size:14px}.wrap{padding:10px 10px 0}.controlbar{padding:9px}.date-input{flex:1;min-width:140px}.control-spacer{display:none}.kpis{gap:7px;margin:9px 0}.kpi{min-height:78px;padding:10px}.kpi span{font-size:12px}.kpi strong{font-size:25px}.panel-head{padding:13px}.panel-head h2{font-size:19px}.panel-body{padding:8px}.schedule-card,.task-card{padding:12px}.schedule-top{display:grid;grid-template-columns:78px 1fr}.schedule-time{min-width:0;font-size:16px}.schedule-actions,.task-actions{justify-content:stretch}.schedule-actions .btn,.task-actions .btn{flex:1}.bottom-nav{display:grid}.modal{align-items:flex-end}.detail{height:100%;width:100%}.detail-head{padding:12px}.detail-head h2{font-size:20px}.detail-body{padding:9px 9px calc(96px + var(--safe-bottom))}.detail-footer{width:100%;padding:8px 9px var(--safe-bottom)}.detail-footer .btn{flex:1}.section-title{padding:12px}.section-body{padding:11px}.info-grid{grid-template-columns:1fr 1fr}.info.wide{grid-column:1/-1}.quick-grid{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:1fr}.form-grid .full{grid-column:1}.phase-line{grid-template-columns:repeat(6,65px);overflow:auto;padding-bottom:6px}.photo-grid{grid-template-columns:repeat(2,1fr)}.upload-preview{grid-template-columns:repeat(3,1fr)}
+    }
+  </style>
+</head>
+<body>
+  <div id="loginCover" class="login-cover">
+    <form id="loginForm" class="login-card" autocomplete="off">
+      <div class="login-hero">
+        <span class="step-pill">STEP REFORM-7・STAFF</span>
+        <h1>担当者用 現場画面</h1>
+        <p>自分の訪問予定、現地調査、工事進捗、写真、タスクを確認します。</p>
+      </div>
+      <div class="login-body">
+        <div class="field">
+          <label for="staffCode">スタッフコード</label>
+          <div class="code-row">
+            <input id="staffCode" name="staffCode" type="password" autocomplete="current-password" placeholder="スタッフコードを入力" required>
+            <button type="button" id="clearCodeInput" class="btn">削除</button>
+          </div>
+        </div>
+        <div id="demoStaffField" class="field hidden">
+          <label for="demoStaffSelect">営業デモの担当者</label>
+          <select id="demoStaffSelect">
+            <option value="tanaka">田中 担当者（営業・現地調査）</option>
+            <option value="yamamoto">山本 現場担当（工事・写真報告）</option>
+            <option value="sasaki">佐々木 事務スタッフ</option>
+          </select>
+        </div>
+        <div id="loginError" class="login-error"></div>
+        <button class="btn btn-primary" style="width:100%;min-height:52px" type="submit">担当者として開く</button>
+        <div class="demo-help">営業デモURLでは担当者を自動設定します。本番利用では各担当者のスタッフコードを使用します。</div>
+      </div>
+    </form>
+  </div>
+
+  <div id="app" class="app hidden">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand"><div class="brand-mark">D</div><div class="brand-text"><strong>DPROリフォーム</strong><small>担当者用 現地調査・工事進捗</small></div></div>
+        <div class="top-actions">
+          <span id="staffChip" class="staff-chip">担当者</span>
+          <button id="refreshTop" class="icon-btn" type="button">更新</button>
+          <button id="logoutBtn" class="icon-btn" type="button">コード消去</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-inner">
+        <div>
+          <span class="step-pill">STEP REFORM-7・STAFF</span>
+          <h1>今日の訪問と作業を<br>順番に確認</h1>
+          <p>現地調査、工事、写真報告、未完了タスクを担当者ごとに表示します。</p>
+        </div>
+        <div class="hero-date"><small>表示中</small><strong id="heroDate">―</strong><small id="heroUpdated">最終更新 ―</small></div>
+      </div>
+    </section>
+
+    <main class="wrap">
+      <div class="controlbar">
+        <label for="targetDate">対象日</label>
+        <input id="targetDate" class="date-input" type="date">
+        <button id="showDateBtn" class="btn btn-primary" type="button">この日を表示</button>
+        <button id="todayBtn" class="btn" type="button">今日へ戻る</button>
+        <div class="control-spacer"></div>
+        <button id="refreshBtn" class="btn btn-soft" type="button">最新情報へ更新</button>
+      </div>
+
+      <section class="kpis" aria-label="今日の件数">
+        <div class="kpi"><span>本日の予定</span><strong id="kpiSchedule">0</strong></div>
+        <div class="kpi"><span>現地調査</span><strong id="kpiSurvey">0</strong></div>
+        <div class="kpi"><span>工事・点検</span><strong id="kpiWork">0</strong></div>
+        <div id="kpiTaskCard" class="kpi"><span>要対応タスク</span><strong id="kpiTask">0</strong></div>
+      </section>
+
+      <div class="main-grid">
+        <section id="schedulePanel" class="panel">
+          <div class="panel-head"><div><h2>本日の訪問・工事</h2><p>時間順に確認し、案件を開いて進捗を更新します。</p></div><span id="scheduleCount" class="panel-count">0</span></div>
+          <div id="scheduleList" class="panel-body schedule-list"></div>
+        </section>
+        <section id="taskPanel" class="panel">
+          <div class="panel-head"><div><h2>自分の未完了タスク</h2><p>期限の近いものから表示します。</p></div><span id="taskCount" class="panel-count">0</span></div>
+          <div id="taskList" class="panel-body task-list"></div>
+        </section>
+      </div>
+    </main>
+
+    <nav class="bottom-nav" aria-label="画面切替">
+      <button class="nav-btn active" data-mobile-view="schedule" type="button">今日の予定</button>
+      <button class="nav-btn" data-mobile-view="task" type="button">タスク</button>
+      <button class="nav-btn" data-mobile-action="refresh" type="button">更新</button>
+    </nav>
+  </div>
+
+  <div id="detailModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <article class="detail">
+      <header class="detail-head">
+        <div class="detail-head-main"><h2 id="detailTitle">案件詳細</h2><p id="detailSub">読み込み中</p></div>
+        <button id="detailCloseTop" class="detail-close" type="button" aria-label="閉じる">×</button>
+      </header>
+      <nav class="detail-tabs">
+        <button class="tab-btn active" data-tab="summary" type="button">基本情報</button>
+        <button class="tab-btn" data-tab="survey" type="button">現地調査</button>
+        <button class="tab-btn" data-tab="work" type="button">工事・報告</button>
+        <button class="tab-btn" data-tab="photo" type="button">写真</button>
+        <button class="tab-btn" data-tab="task" type="button">タスク</button>
+      </nav>
+      <div class="detail-body">
+        <section id="tab-summary" class="tab-panel active"></section>
+        <section id="tab-survey" class="tab-panel"></section>
+        <section id="tab-work" class="tab-panel"></section>
+        <section id="tab-photo" class="tab-panel"></section>
+        <section id="tab-task" class="tab-panel"></section>
+      </div>
+      <footer class="detail-footer"><button id="reloadDetail" class="btn btn-soft" type="button">案件を再読込</button><button id="detailCloseBottom" class="btn" type="button">閉じる</button></footer>
+    </article>
+  </div>
+
+  <div id="toastArea" class="toast-area" aria-live="polite"></div>
+  <div id="loading" class="loading"><div class="spinner" aria-label="読み込み中"></div></div>
+
+  <script>
+  'use strict';
+  const CFG=window.DPRO_REFORM_CONFIG||{};
+  const API_BASE=String(CFG.API_BASE||'https://dpro-reform-line-api.dpromstk2000.workers.dev').replace(/\/$/,'');
+  const COMPANY_CODE=CFG.COMPANY_CODE||'dpro_reform_demo';
+  const state={staffCode:'',actor:null,date:'',schedules:[],tasks:[],current:null,currentProjectId:'',tab:'summary',loading:0,demo:false,selectedFiles:[]};
+  const $=id=>document.getElementById(id), qa=(s,r=document)=>[...r.querySelectorAll(s)];
+  const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  const param=k=>new URLSearchParams(location.search).get(k)||'';
+  const storageKey=()=>CFG.STAFF_CODE_STORAGE_KEY||'dpro_reform_staff_code_v1';
+  const todayJst=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+  const fmtDate=(v,opt={})=>{if(!v)return '―';const d=new Date(v);if(Number.isNaN(d.getTime()))return esc(v);return new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',year:opt.year===false?undefined:'numeric',month:'2-digit',day:'2-digit',weekday:opt.weekday===false?undefined:'short'}).format(d)};
+  const fmtTime=v=>{if(!v)return '未定';const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v);return new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',hour12:false}).format(d)};
+  const fmtDateTime=v=>v?`${fmtDate(v)} ${fmtTime(v)}`:'―';
+  const toLocalInput=v=>{if(!v)return '';const d=new Date(v);if(Number.isNaN(d.getTime()))return '';const parts=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d).reduce((a,x)=>(a[x.type]=x.value,a),{});return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`};
+  const isoFromLocal=v=>v?new Date(`${v}:00+09:00`).toISOString():null;
+  const statusLabels={requested:'希望受付',coordinating:'日程調整中',scheduled:'予定済み',reminded:'案内済み',in_progress:'進行中',done:'完了',reschedule_requested:'日程変更希望',cancelled:'取消',not_started:'未着手',material_waiting:'材料待ち',temporary_stop:'一時中断',inspection:'検査中',completion_pending:'完了確認待ち',completed:'完了',aftercare:'アフター対応',open:'未対応'};
+  const phaseLabels={inquiry_received:'相談受付',need_reply:'初回対応',survey_coordination:'現地調整',survey_scheduled:'現地調査',estimate_preparing:'見積作成',estimate_sent:'見積送付',estimate_decision_waiting:'見積回答待ち',work_coordination:'工事調整',work_scheduled:'工事予定',work_in_progress:'工事中',completion_check:'完了確認',completed:'完了',after_follow:'アフター',closed:'終了',cancelled:'取消'};
+  const workLabels={not_started:'未着手',scheduled:'工事予定',in_progress:'工事中',material_waiting:'材料待ち',temporary_stop:'一時中断',inspection:'検査中',completion_pending:'完了確認待ち',completed:'完了',aftercare:'アフター対応'};
+  const photoTypeLabels={customer_consultation:'相談写真',site_survey:'現地調査',before_work:'工事前',during_work:'工事中',completed:'完成',aftercare_issue:'完了後相談',other:'その他'};
+  const visibilityLabels={customer_public:'お客様公開',internal_only:'社内のみ',hidden:'非表示'};
+  const taskTypeLabels={inquiry_reply:'初回返信',survey_coordination:'現地調整',survey_reminder:'現地前案内',survey_result:'調査結果',estimate_prepare:'見積作成',estimate_send:'見積送付',estimate_follow:'見積フォロー',work_schedule_notice:'工事予定案内',work_start_notice:'工事開始案内',progress_photo:'進捗写真',material_update:'材料状況',completion_check:'完了確認',after_follow:'アフター',review_request:'口コミ依頼',other:'その他'};
+
+  function withCompany(path){const u=new URL(API_BASE+path);u.searchParams.set('company_code',COMPANY_CODE);return u.toString()}
+  function setLoading(delta){state.loading=Math.max(0,state.loading+delta);$('loading').classList.toggle('show',state.loading>0)}
+  async function api(path,opt={}){
+    setLoading(1);const ctl=new AbortController();const timer=setTimeout(()=>ctl.abort(),CFG.REQUEST_TIMEOUT_MS||30000);
+    try{
+      const headers={...(opt.headers||{}),'x-staff-code':state.staffCode};
+      if(opt.body&&!(opt.body instanceof FormData)&&!headers['content-type'])headers['content-type']='application/json';
+      const res=await fetch(withCompany(path),{...opt,headers,signal:ctl.signal});
+      const data=await res.json().catch(()=>({ok:false,error:{message:`HTTP ${res.status}`}}));
+      if(!res.ok||data.ok===false)throw new Error(data?.error?.message||`通信エラー（${res.status}）`);
+      return data;
+    }catch(e){if(e.name==='AbortError')throw new Error('通信がタイムアウトしました。もう一度お試しください。');throw e}
+    finally{clearTimeout(timer);setLoading(-1)}
+  }
+  function toast(message,type='ok'){const el=document.createElement('div');el.className=`toast ${type}`;el.textContent=message;$('toastArea').append(el);setTimeout(()=>el.remove(),3600)}
+  function saveCode(code){try{localStorage.setItem(storageKey(),code)}catch{}}
+  function getCode(){try{return localStorage.getItem(storageKey())||''}catch{return ''}}
+  function clearCode(){try{localStorage.removeItem(storageKey())}catch{}location.href='staff.html'}
+
+  async function login(code){state.staffCode=code;const data=await api(`/api/staff/day?date=${encodeURIComponent(state.date)}`);state.actor=data.actor;saveCode(code);$('loginCover').classList.add('hidden');$('app').classList.remove('hidden');applyDay(data);renderAll()}
+  async function loadDay(){const data=await api(`/api/staff/day?date=${encodeURIComponent(state.date)}`);state.actor=data.actor;applyDay(data);renderAll();toast('最新情報へ更新しました')}
+  function applyDay(data){state.schedules=Array.isArray(data.schedules)?data.schedules:[];state.tasks=Array.isArray(data.tasks)?data.tasks:[];$('staffChip').textContent=data.actor?.name||'担当者';$('heroDate').textContent=fmtDate(`${state.date}T00:00:00+09:00`);$('heroUpdated').textContent=`最終更新 ${fmtTime(new Date())}`}
+
+  function renderAll(){renderKpis();renderSchedules();renderTasks()}
+  function renderKpis(){const survey=state.schedules.filter(x=>x.schedule_kind==='site_survey').length,work=state.schedules.filter(x=>x.schedule_kind==='work').length,overdue=state.tasks.filter(isOverdue).length;$('kpiSchedule').textContent=state.schedules.length;$('kpiSurvey').textContent=survey;$('kpiWork').textContent=work;$('kpiTask').textContent=state.tasks.length;$('kpiTaskCard').className=`kpi ${overdue?'danger':''}`;$('scheduleCount').textContent=state.schedules.length;$('taskCount').textContent=state.tasks.length}
+  function isOverdue(t){return t.due_at&&new Date(t.due_at)<new Date()&&t.status!=='done'}
+  function statusClass(s){return ['done','completed'].includes(s)?'green':['material_waiting','temporary_stop','reschedule_requested'].includes(s)?'amber':['cancelled'].includes(s)?'red':''}
+  function renderSchedules(){
+    const box=$('scheduleList');if(!state.schedules.length){box.innerHTML='<div class="empty"><div><strong>この日の予定はありません</strong>別の日を選ぶか、タスクを確認してください。</div></div>';return}
+    box.innerHTML=state.schedules.map(s=>`<article class="schedule-card ${isCurrentSchedule(s)?'current':''}">
+      <div class="schedule-top"><div class="schedule-time">${esc(fmtTime(s.start_at))}<br><small style="font-size:12px;color:var(--muted)">${esc(fmtTime(s.end_at))}まで</small></div><div class="schedule-main"><div><span class="kind ${s.schedule_kind==='work'?'work':''}">${s.schedule_kind==='site_survey'?'現地調査':'工事・点検'}</span> <span class="status ${statusClass(s.status)}">${esc(statusLabels[s.status]||s.status||'')}</span></div><strong>${esc(s.project_title||s.category_name||'案件')}</strong><small>${esc(s.customer_name||'')}　${esc(s.city||'')}<br>${esc(s.project_no||'')}</small></div></div>
+      <div class="schedule-actions"><button class="btn btn-primary btn-sm" data-open-project="${esc(s.project_id)}" data-schedule-kind="${esc(s.schedule_kind)}" data-schedule-id="${esc(s.schedule_id)}" type="button">案件を開く</button></div>
+    </article>`).join('')}
+  function isCurrentSchedule(s){if(state.date!==todayJst()||!s.start_at)return false;const now=Date.now(),start=new Date(s.start_at).getTime(),end=s.end_at?new Date(s.end_at).getTime():start+2*3600000;return now>=start-30*60000&&now<=end}
+  function renderTasks(){
+    const box=$('taskList');if(!state.tasks.length){box.innerHTML='<div class="empty"><div><strong>未完了タスクはありません</strong>本日の予定を確認してください。</div></div>';return}
+    box.innerHTML=state.tasks.map(t=>`<article class="task-card ${isOverdue(t)?'overdue':''}"><div class="task-row"><div class="task-main"><div><span class="status ${isOverdue(t)?'red':t.priority==='high'||t.priority==='urgent'?'amber':''}">${isOverdue(t)?'期限超過':t.priority==='urgent'?'至急':t.priority==='high'?'高':'通常'}</span> <span class="status">${esc(taskTypeLabels[t.task_type]||t.task_type||'タスク')}</span></div><strong>${esc(t.title)}</strong><small>期限：${esc(fmtDateTime(t.due_at))}${t.internal_notes?`<br>${esc(t.internal_notes)}`:''}</small></div></div><div class="task-actions">${t.project_id?`<button class="btn btn-sm" data-open-project="${esc(t.project_id)}" type="button">案件</button>`:''}<button class="btn btn-warn btn-sm" data-task-status="in_progress" data-task-id="${esc(t.id)}" type="button">対応開始</button><button class="btn btn-primary btn-sm" data-task-status="done" data-task-id="${esc(t.id)}" type="button">完了</button></div></article>`).join('')}
+
+  async function openProject(projectId,tab='summary',scheduleKind='',scheduleId=''){
+    state.currentProjectId=projectId;state.tab=tab;
+    const data=await api(`/api/staff/project-detail?project_id=${encodeURIComponent(projectId)}`);state.current=data;
+    if(scheduleKind==='site_survey'&&scheduleId)state.current._selectedSurveyId=scheduleId;
+    if(scheduleKind==='work'&&scheduleId)state.current._selectedWorkId=scheduleId;
+    renderDetail();setTab(tab);$('detailModal').classList.add('open');document.body.style.overflow='hidden'
+  }
+  async function reloadProject(){if(!state.currentProjectId)return;const data=await api(`/api/staff/project-detail?project_id=${encodeURIComponent(state.currentProjectId)}`);state.current=data;renderDetail();setTab(state.tab);toast('案件情報を更新しました')}
+  function closeDetail(){$('detailModal').classList.remove('open');document.body.style.overflow='';state.selectedFiles=[]}
+  function setTab(tab){state.tab=tab;qa('.tab-btn').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));qa('.tab-panel').forEach(x=>x.classList.toggle('active',x.id===`tab-${tab}`))}
+  function latestSurvey(){const a=state.current?.project?.site_surveys||[];const selected=state.current?._selectedSurveyId;return (selected&&a.find(x=>x.id===selected))||a[0]||null}
+  function latestWork(){const a=state.current?.project?.work_schedules||[];const selected=state.current?._selectedWorkId;return (selected&&a.find(x=>x.id===selected))||a[0]||null}
+  function renderDetail(){const d=state.current?.project;if(!d)return;const p=d.project,ov=d.overview||{};$('detailTitle').textContent=p.project_title||'案件詳細';$('detailSub').textContent=`${p.project_no||''}　${d.customer?.customer_name||''} 様　担当：${d.assigned_staff?.staff_name||state.actor?.name||'未設定'}`;renderSummary(d);renderSurvey(d);renderWork(d);renderPhotos(d);renderDetailTasks(d)}
+  function addressOf(d){const p=d.property||{};return [p.postal_code?`〒${p.postal_code}`:'',p.prefecture,p.city,p.address_line1,p.address_line2].filter(Boolean).join(' ')}
+  function phaseIndex(phase){if(['inquiry_received','need_reply'].includes(phase))return 0;if(['survey_coordination','survey_scheduled'].includes(phase))return 1;if(['estimate_preparing','estimate_sent','estimate_decision_waiting'].includes(phase))return 2;if(['work_coordination','work_scheduled'].includes(phase))return 3;if(phase==='work_in_progress')return 4;return 5}
+  function renderSummary(d){const p=d.project,c=d.customer||{},prop=d.property||{},idx=phaseIndex(p.phase),addr=addressOf(d),phone=c.phone||'';$('tab-summary').innerHTML=`
+    <section class="section"><div class="section-title"><h3>お客様・施工先</h3></div><div class="section-body"><div class="info-grid"><div class="info"><small>お客様</small><strong>${esc(c.customer_name||'―')} 様</strong></div><div class="info"><small>電話番号</small><strong>${esc(phone||'―')}</strong></div><div class="info"><small>工事種別</small><strong>${esc(d.category?.category_name||'―')}</strong></div><div class="info wide"><small>施工先</small><strong>${esc(addr||prop.customer_visible_label||'―')}</strong></div><div class="info"><small>建物</small><strong>${esc(prop.building_type||'―')}</strong></div></div><div class="action-row">${phone?`<a class="btn btn-primary btn-sm" href="tel:${esc(phone.replace(/[^0-9+]/g,''))}">電話する</a>`:''}${addr?`<a class="btn btn-soft btn-sm" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}">地図を開く</a>`:''}</div></div></section>
+    <section class="section"><div class="section-title"><h3>現在の進行</h3><small>${esc(phaseLabels[p.phase]||p.phase||'―')}</small></div><div class="section-body"><div class="info-grid"><div class="info"><small>案件番号</small><strong>${esc(p.project_no||'―')}</strong></div><div class="info"><small>優先度</small><strong>${esc(p.priority||'normal')}</strong></div><div class="info"><small>次の対応</small><strong>${esc(p.next_action_title||'―')}</strong></div><div class="info wide"><small>相談内容</small><strong>${esc(p.inquiry_summary||p.requested_work||'―')}</strong></div><div class="info"><small>希望予算</small><strong>${esc(p.desired_budget_code||'未定')}</strong></div></div><div class="phase-line">${['相談','現地調査','見積','工事予定','工事中','完了'].map((x,i)=>`<div class="phase-step ${i<idx?'done':i===idx?'current':''}"><i>${i<idx?'✓':i+1}</i>${x}</div>`).join('')}</div></div></section>
+    ${p.customer_public_note?`<section class="section"><div class="section-title"><h3>お客様への案内</h3></div><div class="section-body"><div class="note">${esc(p.customer_public_note)}</div></div></section>`:''}
+    ${state.actor?.can_view_internal_notes&&p.internal_notes?`<section class="section"><div class="section-title"><h3>社内メモ</h3></div><div class="section-body" style="white-space:pre-wrap">${esc(p.internal_notes)}</div></section>`:''}`}
+  function renderSurvey(d){const s=latestSurvey(),p=d.project;const start=s?.scheduled_start_at||'',end=s?.scheduled_end_at||'';$('tab-survey').innerHTML=`
+    <section class="section"><div class="section-title"><h3>現地調査の進行</h3><small>${esc(statusLabels[s?.status]||'未登録')}</small></div><div class="section-body"><div class="quick-grid">${[['scheduled','訪問予定'],['in_progress','現地到着・調査開始'],['done','調査完了']].map(([v,l])=>`<button class="quick-btn ${s?.status===v?'active':''}" data-survey-quick="${v}" type="button">${l}</button>`).join('')}</div></div></section>
+    <section class="section"><div class="section-title"><h3>調査日時・記録</h3></div><div class="section-body"><form id="surveyForm"><div class="form-grid"><div class="field"><label>開始日時</label><input id="surveyStart" type="datetime-local" step="1800" value="${esc(toLocalInput(start))}"></div><div class="field"><label>終了日時</label><input id="surveyEnd" type="datetime-local" step="1800" value="${esc(toLocalInput(end))}"></div><div class="field full"><label>調査結果</label><textarea id="surveySummary" placeholder="劣化状況、工事の方向性、見積に必要な情報">${esc(s?.survey_summary||'')}</textarea></div><div class="field"><label>採寸メモ</label><textarea id="dimensionNote" placeholder="寸法・数量・型番など">${esc(s?.dimension_note||'')}</textarea></div><div class="field"><label>搬入・駐車・周辺メモ</label><textarea id="accessNote" placeholder="駐車場所、搬入経路、近隣配慮など">${esc(s?.access_note||'')}</textarea></div>${state.actor?.can_view_internal_notes?`<div class="field full"><label>社内メモ</label><textarea id="surveyInternal" placeholder="お客様には表示されません">${esc(s?.internal_notes||'')}</textarea></div>`:''}<div class="full"><button class="btn btn-primary" style="width:100%" type="submit">現地調査内容を保存</button></div></div></form></div></section>
+    ${!s?'<div class="note">現地調査情報が未登録です。日時を入力して保存すると新しい現地調査記録を作成します。</div>':''}`;
+    $('surveyForm').addEventListener('submit',saveSurvey)
+  }
+  async function saveSurvey(e){e.preventDefault();const s=latestSurvey();const payload={project_id:state.current.project.project.id,survey_id:s?.id||undefined,status:s?.status||($('surveyStart').value?'scheduled':'requested'),scheduled_start_at:isoFromLocal($('surveyStart').value),scheduled_end_at:isoFromLocal($('surveyEnd').value),survey_summary:$('surveySummary').value,dimension_note:$('dimensionNote').value,access_note:$('accessNote').value,internal_notes:$('surveyInternal')?.value||'',allow_past:!!s};await api('/api/staff/site-surveys/save',{method:'POST',body:JSON.stringify(payload)});toast('現地調査内容を保存しました');await reloadProject();await loadDay()}
+  async function quickSurvey(status){const s=latestSurvey();const payload={project_id:state.current.project.project.id,survey_id:s?.id||undefined,status,scheduled_start_at:s?.scheduled_start_at||null,scheduled_end_at:s?.scheduled_end_at||null,survey_summary:$('surveySummary')?.value||s?.survey_summary||'',dimension_note:$('dimensionNote')?.value||s?.dimension_note||'',access_note:$('accessNote')?.value||s?.access_note||'',internal_notes:$('surveyInternal')?.value||s?.internal_notes||'',allow_past:!!s};await api('/api/staff/site-surveys/save',{method:'POST',body:JSON.stringify(payload)});toast(status==='done'?'現地調査を完了しました':'現地調査の状態を更新しました');await reloadProject();await loadDay()}
+  function renderWork(d){const p=d.project,w=latestWork(),reports=d.progress_reports||[];$('tab-work').innerHTML=`
+    <section class="section"><div class="section-title"><h3>工事の進行状態</h3><small>${esc(workLabels[p.work_status]||p.work_status||'未着手')}</small></div><div class="section-body"><div class="quick-grid">${[['scheduled','工事予定'],['in_progress','工事開始'],['material_waiting','材料待ち'],['temporary_stop','一時中断'],['inspection','検査中'],['completion_pending','本日作業完了'],['completed','工事完了']].map(([v,l])=>`<button class="quick-btn ${p.work_status===v?'active':''} ${['material_waiting','temporary_stop'].includes(v)?'warn':''}" data-work-status="${v}" type="button">${l}</button>`).join('')}</div><p class="help">工事状態はお客様マイページの進行表示にも反映されます。</p></div></section>
+    <section class="section"><div class="section-title"><h3>工事予定</h3><small>${(d.work_schedules||[]).length}件</small></div><div class="section-body">${(d.work_schedules||[]).length?(d.work_schedules||[]).map(x=>`<div class="report"><strong>${esc(x.title||'工事予定')}</strong> <span class="status ${statusClass(x.status)}">${esc(workLabels[x.status]||x.status)}</span><p>${esc(fmtDateTime(x.planned_start_at))} ～ ${esc(fmtTime(x.planned_end_at))}</p>${x.customer_note?`<p>${esc(x.customer_note)}</p>`:''}</div>`).join(''):'<div class="empty" style="min-height:100px">工事予定はまだ登録されていません。</div>'}</div></section>
+    <section class="section"><div class="section-title"><h3>お客様への進捗報告</h3></div><div class="section-body"><form id="progressForm"><div class="form-grid"><div class="field"><label>報告タイトル</label><input id="progressTitle" value="${esc(defaultProgressTitle(p.work_status))}" required></div><div class="field"><label>公開範囲</label><select id="progressVisibility"><option value="customer_public">お客様へ公開</option><option value="internal_only">社内のみ</option></select></div><div class="field full"><label>お客様向けコメント</label><textarea id="customerComment" placeholder="本日の作業内容、次回予定、材料の状況など"></textarea></div>${state.actor?.can_view_internal_notes?`<div class="field full"><label>社内コメント</label><textarea id="internalComment" placeholder="お客様には表示されません"></textarea></div>`:''}<div class="full"><button class="btn btn-primary" style="width:100%" type="submit">進捗報告を保存</button></div></div></form></div></section>
+    <section class="section"><div class="section-title"><h3>これまでの進捗報告</h3><small>${reports.length}件</small></div><div class="section-body report-list">${reports.length?reports.map(r=>`<article class="report"><strong>${esc(r.title)}</strong> <span class="status">${esc(visibilityLabels[r.visibility]||r.visibility)}</span><small>${esc(fmtDateTime(r.report_at))}</small>${r.customer_comment?`<p>${esc(r.customer_comment)}</p>`:''}${state.actor?.can_view_internal_notes&&r.internal_comment?`<p style="color:var(--muted)">社内：${esc(r.internal_comment)}</p>`:''}</article>`).join(''):'<div class="empty" style="min-height:100px">進捗報告はまだありません。</div>'}</div></section>`;
+    $('progressForm').addEventListener('submit',saveProgress)
+  }
+  function defaultProgressTitle(s){return ({in_progress:'本日の工事進捗',material_waiting:'材料手配状況',temporary_stop:'工事一時中断のご案内',inspection:'検査状況',completion_pending:'本日の作業完了',completed:'工事完了のご報告',aftercare:'アフターフォロー'}[s]||'工事進捗のご報告')}
+  async function quickWork(status){await api('/api/staff/work-status',{method:'POST',body:JSON.stringify({project_id:state.current.project.project.id,work_status:status,next_action_title:defaultProgressTitle(status)})});toast('工事状態を更新しました');await reloadProject();await loadDay()}
+  async function saveProgress(e){e.preventDefault();const p=state.current.project.project;const payload={project_id:p.id,work_status:p.work_status||'in_progress',title:$('progressTitle').value,visibility:$('progressVisibility').value,customer_comment:$('customerComment').value,internal_comment:$('internalComment')?.value||''};await api('/api/staff/progress-reports/save',{method:'POST',body:JSON.stringify(payload)});toast('進捗報告を保存しました');await reloadProject()}
+  function renderPhotos(d){const photos=d.photos||[];$('tab-photo').innerHTML=`
+    <section class="section"><div class="section-title"><h3>現場写真を追加</h3></div><div class="section-body"><form id="photoForm"><div class="form-grid"><div class="field full"><label>写真を選択・撮影</label><input id="photoInput" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" multiple required><div class="help">最大5枚。送信前に長辺1600px・約1.25MB以下へ自動調整します。</div><div id="uploadPreview" class="upload-preview"></div></div><div class="field"><label>写真種別</label><select id="photoType"><option value="site_survey">現地調査</option><option value="before_work">工事前</option><option value="during_work" selected>工事中</option><option value="completed">完成</option><option value="aftercare_issue">完了後相談</option><option value="other">その他</option></select></div><div class="field"><label>公開範囲</label><select id="photoVisibility"><option value="internal_only">社内のみ</option><option value="customer_public">お客様へ公開</option></select></div><div class="field full"><label>写真の説明</label><input id="photoCaption" placeholder="例：キッチン解体後、配管状況"></div><div class="full"><button class="btn btn-primary" style="width:100%" type="submit">選択した写真を登録</button></div></div></form></div></section>
+    <section class="section"><div class="section-title"><h3>登録済み写真</h3><small>${photos.length}枚</small></div><div class="section-body"><div class="photo-grid">${photos.length?photos.map(ph=>`<article class="photo">${ph.url?`<a href="${esc(ph.url)}" target="_blank" rel="noopener"><img src="${esc(ph.url)}" alt="${esc(ph.caption||photoTypeLabels[ph.photo_type]||'現場写真')}" loading="lazy"></a>`:`<div class="photo-placeholder">${esc(ph.placeholder_label||'写真')}</div>`}<div class="photo-meta"><strong>${esc(ph.caption||photoTypeLabels[ph.photo_type]||'写真')}</strong><small>${esc(visibilityLabels[ph.visibility]||ph.visibility)}・${esc(fmtDateTime(ph.uploaded_at))}</small></div></article>`).join(''):'<div class="empty" style="grid-column:1/-1;min-height:120px">写真はまだ登録されていません。</div>'}</div></div></section>`;
+    $('photoInput').addEventListener('change',previewFiles);$('photoForm').addEventListener('submit',uploadPhotos)
+  }
+  function previewFiles(e){state.selectedFiles=[...e.target.files].slice(0,5);$('uploadPreview').innerHTML=state.selectedFiles.map(f=>`<img src="${URL.createObjectURL(f)}" alt="選択写真">`).join('')}
+  async function resizeImage(file,maxEdge=1600,target=1250000){if(!file.type.startsWith('image/'))throw new Error('画像ファイルを選択してください。');const bmp=await createImageBitmap(file);let w=bmp.width,h=bmp.height,scale=Math.min(1,maxEdge/Math.max(w,h));w=Math.max(1,Math.round(w*scale));h=Math.max(1,Math.round(h*scale));const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d');ctx.drawImage(bmp,0,0,w,h);bmp.close?.();let q=.88,blob=await new Promise(r=>canvas.toBlob(r,'image/jpeg',q));while(blob&&blob.size>target&&q>.48){q-=.08;blob=await new Promise(r=>canvas.toBlob(r,'image/jpeg',q))}if(!blob)throw new Error('写真を処理できませんでした。');return new File([blob],file.name.replace(/\.[^.]+$/,'.jpg'),{type:'image/jpeg'})}
+  async function uploadPhotos(e){e.preventDefault();if(!state.selectedFiles.length){toast('写真を選択してください','error');return}const p=state.current.project.project;for(let i=0;i<state.selectedFiles.length;i++){const f=await resizeImage(state.selectedFiles[i]);const fd=new FormData();fd.append('photo',f);fd.append('project_id',p.id);fd.append('photo_type',$('photoType').value);fd.append('visibility',$('photoVisibility').value);fd.append('caption',state.selectedFiles.length>1?`${$('photoCaption').value||'現場写真'} ${i+1}`:$('photoCaption').value);await api('/api/staff/project-photos/save',{method:'POST',body:fd})}toast(`${state.selectedFiles.length}枚の写真を登録しました`);state.selectedFiles=[];await reloadProject()}
+  function renderDetailTasks(d){const tasks=d.tasks||[];$('tab-task').innerHTML=`
+    <section class="section"><div class="section-title"><h3>案件タスク</h3><small>${tasks.length}件</small></div><div class="section-body detail-task-list">${tasks.length?tasks.map(t=>`<article class="task-card ${isOverdue(t)?'overdue':''}"><div class="task-main"><strong>${esc(t.title)}</strong><small>${esc(taskTypeLabels[t.task_type]||t.task_type)}　期限：${esc(fmtDateTime(t.due_at))}<br>${esc(t.internal_notes||'')}</small></div><div class="task-actions">${t.status!=='done'?`<button class="btn btn-warn btn-sm" data-task-status="in_progress" data-task-id="${esc(t.id)}" type="button">対応開始</button><button class="btn btn-primary btn-sm" data-task-status="done" data-task-id="${esc(t.id)}" type="button">完了</button>`:`<span class="status green">完了</span>`}</div></article>`).join(''):'<div class="empty" style="min-height:100px">この案件のタスクはありません。</div>'}</div></section>
+    <section class="section"><div class="section-title"><h3>新しいタスクを追加</h3></div><div class="section-body"><form id="newTaskForm"><div class="form-grid"><div class="field full"><label>タスク名</label><input id="newTaskTitle" required placeholder="例：採寸写真を事務所へ共有"></div><div class="field"><label>種類</label><select id="newTaskType">${Object.entries(taskTypeLabels).map(([v,l])=>`<option value="${v}">${l}</option>`).join('')}</select></div><div class="field"><label>期限</label><input id="newTaskDue" type="datetime-local" step="1800"></div><div class="field full"><label>社内メモ</label><textarea id="newTaskNote"></textarea></div><div class="full"><button class="btn btn-primary" style="width:100%" type="submit">自分のタスクとして追加</button></div></div></form></div></section>`;
+    $('newTaskForm').addEventListener('submit',createTask)
+  }
+  async function createTask(e){e.preventDefault();const payload={project_id:state.current.project.project.id,title:$('newTaskTitle').value,task_type:$('newTaskType').value,due_at:isoFromLocal($('newTaskDue').value),internal_notes:$('newTaskNote').value,status:'open',priority:'normal'};await api('/api/staff/tasks/save',{method:'POST',body:JSON.stringify(payload)});toast('タスクを追加しました');await reloadProject();await loadDay()}
+  async function updateTask(id,status){let note='';if(status==='done')note=prompt('完了メモ（空欄でも保存できます）','')??'';await api('/api/staff/tasks/save',{method:'POST',body:JSON.stringify({task_id:id,status,completion_note:note})});toast(status==='done'?'タスクを完了しました':'タスクを対応中にしました');if(state.currentProjectId)await reloadProject();await loadDay()}
+
+  function bind(){
+    $('loginForm').addEventListener('submit',async e=>{e.preventDefault();$('loginError').classList.remove('show');try{await login($('staffCode').value.trim())}catch(err){state.staffCode='';$('loginError').textContent=err.message;$('loginError').classList.add('show')}});
+    $('clearCodeInput').onclick=()=>{$('staffCode').value='';$('staffCode').focus()};$('logoutBtn').onclick=clearCode;$('refreshTop').onclick=loadDay;$('refreshBtn').onclick=loadDay;$('showDateBtn').onclick=()=>{state.date=$('targetDate').value||todayJst();loadDay()};$('todayBtn').onclick=()=>{state.date=todayJst();$('targetDate').value=state.date;loadDay()};
+    $('detailCloseTop').onclick=closeDetail;$('detailCloseBottom').onclick=closeDetail;$('reloadDetail').onclick=reloadProject;$('detailModal').addEventListener('click',e=>{if(e.target===$('detailModal'))closeDetail()});
+    qa('.tab-btn').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+    document.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;try{if(b.dataset.openProject)await openProject(b.dataset.openProject,'summary',b.dataset.scheduleKind||'',b.dataset.scheduleId||'');if(b.dataset.taskStatus)await updateTask(b.dataset.taskId,b.dataset.taskStatus);if(b.dataset.surveyQuick)await quickSurvey(b.dataset.surveyQuick);if(b.dataset.workStatus)await quickWork(b.dataset.workStatus);if(b.dataset.mobileView){qa('.nav-btn').forEach(x=>x.classList.toggle('active',x===b));const target=b.dataset.mobileView==='task'?$('taskPanel'):$('schedulePanel');target.scrollIntoView({behavior:'smooth',block:'start'})}if(b.dataset.mobileAction==='refresh')await loadDay()}catch(err){toast(err.message,'error')}});
+    $('demoStaffSelect').onchange=()=>{$('staffCode').value=$('demoStaffSelect').value};
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('detailModal').classList.contains('open'))closeDetail()})
+  }
+  async function init(){bind();state.date=param('date')||todayJst();$('targetDate').value=state.date;state.demo=param('demo')==='1';let code='';if(state.demo){$('demoStaffField').classList.remove('hidden');const requested=param('staff');code=['tanaka','yamamoto','sasaki'].includes(requested)?requested:'tanaka';$('demoStaffSelect').value=code;$('staffCode').value=code}else{code=getCode();if(code)$('staffCode').value=code}if(code){try{await login(code);return}catch(err){$('loginError').textContent=err.message;$('loginError').classList.add('show')}}$('loginCover').classList.remove('hidden')}
+  init();
+  </script>
+</body>
+</html>
