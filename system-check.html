@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#075c54">
+  <title>DPROリフォーム｜システムチェック</title>
+  <style>
+    :root{
+      --green-950:#043f3a;--green-900:#064f48;--green-800:#07675d;--green-700:#087d70;
+      --green-100:#dff4f0;--green-50:#eff9f7;--ink:#14201f;--muted:#5e6f6d;
+      --line:#d7e2e0;--surface:#fff;--bg:#f1f6f5;--ok:#087d70;--warn:#b36a00;
+      --bad:#c73535;--shadow:0 12px 32px rgba(5,57,52,.10);--radius:16px;
+    }
+    *{box-sizing:border-box}
+    html{font-size:16px}
+    body{
+      margin:0;background:var(--bg);color:var(--ink);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;
+      line-height:1.65;
+    }
+    button,input{font:inherit}
+    button{cursor:pointer}
+    .topbar{
+      min-height:70px;background:#fff;border-bottom:1px solid var(--line);
+      display:flex;align-items:center;justify-content:space-between;padding:10px 24px;gap:16px;
+      position:sticky;top:0;z-index:20;
+    }
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .logo{
+      width:42px;height:42px;border-radius:12px;background:linear-gradient(145deg,#1cae99,#087d70);
+      color:#fff;font-weight:900;display:grid;place-items:center;box-shadow:0 6px 16px rgba(8,125,112,.25)
+    }
+    .brand-title{font-size:18px;font-weight:850;line-height:1.25}
+    .brand-sub{font-size:13px;color:var(--muted)}
+    .top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .pill{
+      padding:7px 12px;border-radius:999px;background:var(--green-50);color:var(--green-800);
+      font-size:13px;font-weight:800;border:1px solid #d6eeea;
+    }
+    .hero{
+      background:linear-gradient(115deg,var(--green-900),#0b8e80);color:#fff;
+      padding:32px 24px;
+    }
+    .hero-inner{max-width:1240px;margin:auto;display:flex;justify-content:space-between;gap:28px;align-items:center}
+    .step{display:inline-flex;border:1px solid rgba(255,255,255,.45);border-radius:999px;padding:5px 10px;font-size:12px;font-weight:850}
+    h1{font-size:32px;line-height:1.35;margin:12px 0 7px}
+    .hero p{margin:0;font-size:16px;font-weight:650}
+    .hero-meta{
+      min-width:240px;padding:16px 18px;border-radius:14px;
+      background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22)
+    }
+    .hero-meta small{display:block;opacity:.82;font-weight:700}
+    .hero-meta strong{display:block;font-size:18px;margin-top:2px}
+    .wrap{max-width:1240px;margin:18px auto 48px;padding:0 18px}
+    .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .login{max-width:720px;margin:26px auto;padding:24px}
+    .login h2,.section-title{font-size:22px;margin:0 0 6px}
+    .note{color:var(--muted);font-size:14px;margin:0}
+    .login-row{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:18px}
+    input[type=password],input[type=text]{
+      width:100%;min-height:52px;border:1px solid #b9cbc8;border-radius:11px;padding:10px 13px;
+      background:#fff;font-size:16px;
+    }
+    input:focus{outline:3px solid rgba(8,125,112,.15);border-color:var(--green-700)}
+    .btn{
+      min-height:46px;border:1px solid #b9cbc8;border-radius:11px;padding:9px 16px;background:#fff;
+      color:var(--ink);font-weight:800;font-size:15px;
+    }
+    .btn:hover{filter:brightness(.98)}
+    .btn.primary{background:var(--green-700);border-color:var(--green-700);color:#fff}
+    .btn.warn{background:#fff7e8;border-color:#edc77d;color:#805000}
+    .btn.danger{background:#fff3f3;border-color:#efb1b1;color:#a62121}
+    .btn:disabled{opacity:.52;cursor:not-allowed}
+    .error-box,.info-box,.success-box{
+      margin-top:14px;border-radius:11px;padding:11px 13px;font-size:15px;font-weight:700;display:none
+    }
+    .error-box{background:#fff1f1;border:1px solid #f0b4b4;color:#b02424}
+    .info-box{background:#eef8f7;border:1px solid #bfdfda;color:#075c54}
+    .success-box{background:#eaf8f3;border:1px solid #9fd8c8;color:#075c54}
+    #app{display:none}
+    .toolbar{
+      padding:15px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px
+    }
+    .toolbar-left,.toolbar-right{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+    .summary-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:14px}
+    .metric{padding:15px 16px}
+    .metric-label{font-size:14px;color:var(--muted);font-weight:750}
+    .metric-value{font-size:29px;line-height:1.2;font-weight:900;margin-top:4px}
+    .metric.ok .metric-value{color:var(--ok)}
+    .metric.warn .metric-value{color:var(--warn)}
+    .metric.bad .metric-value{color:var(--bad)}
+    .verdict{
+      padding:17px 18px;margin-bottom:14px;display:flex;gap:14px;align-items:flex-start;border-left:7px solid #a6b8b5
+    }
+    .verdict.ok{border-left-color:var(--ok);background:#f6fcfa}
+    .verdict.warn{border-left-color:var(--warn);background:#fffaf1}
+    .verdict.bad{border-left-color:var(--bad);background:#fff7f7}
+    .verdict-icon{font-size:28px;line-height:1}
+    .verdict strong{font-size:20px;display:block}
+    .verdict p{margin:2px 0 0;color:var(--muted)}
+    .grid-2{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(340px,.7fr);gap:14px}
+    .section-head{
+      padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center
+    }
+    .section-head h2{font-size:21px;margin:0}
+    .section-body{padding:12px}
+    .check-list{display:grid;gap:9px}
+    .check{
+      border:1px solid var(--line);border-radius:13px;padding:13px 14px;background:#fff;
+      display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:11px;align-items:start
+    }
+    .check-icon{
+      width:30px;height:30px;border-radius:999px;display:grid;place-items:center;font-size:15px;font-weight:900;
+      background:#edf2f1;color:#677572
+    }
+    .check.running .check-icon{background:#e7f2ff;color:#21689c}
+    .check.ok .check-icon{background:#dff4ec;color:var(--ok)}
+    .check.warn .check-icon{background:#fff1d5;color:var(--warn)}
+    .check.bad .check-icon{background:#fde0e0;color:var(--bad)}
+    .check-title{font-size:16px;font-weight:850;line-height:1.4}
+    .check-summary{font-size:14px;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
+    .check-time{font-size:12px;color:#7a8886;white-space:nowrap}
+    details{margin-top:8px}
+    details summary{font-size:13px;color:var(--green-800);font-weight:800;cursor:pointer}
+    pre{
+      white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f7f6;border:1px solid #dde7e5;
+      border-radius:9px;padding:10px;font-size:12px;line-height:1.55;max-height:300px;overflow:auto
+    }
+    .manual-list{display:grid;gap:8px}
+    .manual-item{
+      border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;gap:11px;align-items:flex-start;background:#fff
+    }
+    .manual-item input{width:22px;height:22px;accent-color:var(--green-700);flex:0 0 auto;margin-top:2px}
+    .manual-item strong{display:block;font-size:15px}
+    .manual-item span{display:block;color:var(--muted);font-size:13px;margin-top:1px}
+    .links{display:grid;gap:8px}
+    .page-link{
+      display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line);
+      border-radius:11px;padding:11px 12px;text-decoration:none;color:var(--ink);background:#fff;font-weight:800
+    }
+    .page-link:hover{border-color:#7dbbb2;background:var(--green-50)}
+    .page-link small{font-weight:600;color:var(--muted)}
+    .mini-actions{display:flex;gap:7px;flex-wrap:wrap}
+    .demo-panel{padding:16px 18px;margin-top:14px}
+    .demo-panel h2{font-size:20px;margin:0 0 4px}
+    .demo-panel p{margin:0 0 12px;color:var(--muted);font-size:14px}
+    .demo-output{display:none;margin-top:12px}
+    .footer-note{text-align:center;color:var(--muted);font-size:13px;margin-top:18px}
+    .spin{animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @media(max-width:900px){
+      .hero-inner{align-items:flex-start}.hero-meta{min-width:0}.grid-2{grid-template-columns:1fr}
+      .summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media(max-width:600px){
+      .topbar{padding:9px 12px}.brand-sub{display:none}.hero{padding:26px 16px}.hero-inner{display:block}
+      .hero-meta{margin-top:16px}h1{font-size:27px}.wrap{padding:0 10px}.summary-grid{grid-template-columns:1fr 1fr}
+      .check{grid-template-columns:32px 1fr}.check-time{grid-column:2}.login-row{grid-template-columns:1fr}
+      .top-actions .pill{display:none}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">D</div>
+      <div>
+        <div class="brand-title">DPROリフォーム</div>
+        <div class="brand-sub">内部用｜営業前システムチェック</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <span class="pill" id="topMode">未認証</span>
+      <button class="btn" id="topRefresh" type="button" hidden>再チェック</button>
+      <button class="btn" id="topClear" type="button" hidden>管理コード削除</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <span class="step">STEP REFORM-9・SYSTEM CHECK</span>
+        <h1>営業前に、API・DB・画面を<br>まとめて一括確認</h1>
+        <p>公開画面、管理認証、デモデータ、電話番号、写真Storageを順番に確認します。</p>
+      </div>
+      <div class="hero-meta">
+        <small>対象システム</small><strong>DPROリフォーム</strong>
+        <small style="margin-top:8px">最終チェック</small><strong id="heroUpdated">未実行</strong>
+      </div>
+    </div>
+  </section>
+
+  <main class="wrap">
+    <section class="card login" id="loginCard">
+      <h2>管理コードを入力</h2>
+      <p class="note">営業デモURLでは管理コードを自動設定します。通常URLでは管理コードを入力してください。</p>
+      <div class="login-row">
+        <input id="adminCode" type="password" inputmode="numeric" autocomplete="current-password" placeholder="管理コード">
+        <button class="btn" id="clearInput" type="button">削除</button>
+      </div>
+      <button class="btn primary" id="loginBtn" type="button" style="width:100%;margin-top:10px">認証してチェックを開始</button>
+      <div class="error-box" id="loginError"></div>
+      <div class="info-box" id="loginInfo"></div>
+    </section>
+
+    <div id="app">
+      <section class="card toolbar">
+        <div class="toolbar-left">
+          <button class="btn primary" id="runAll" type="button">自動チェックを実行</button>
+          <button class="btn" id="copyUrls" type="button">確認URLをコピー</button>
+          <button class="btn" id="resetManual" type="button">手動チェックをリセット</button>
+        </div>
+        <div class="toolbar-right">
+          <span class="pill" id="workerVersion">Worker：未確認</span>
+          <span class="pill" id="companyName">対象：未確認</span>
+        </div>
+      </section>
+
+      <section class="summary-grid">
+        <div class="card metric"><div class="metric-label">自動チェック</div><div class="metric-value" id="autoTotal">0/0</div></div>
+        <div class="card metric ok"><div class="metric-label">正常</div><div class="metric-value" id="okCount">0</div></div>
+        <div class="card metric warn"><div class="metric-label">要確認</div><div class="metric-value" id="warnCount">0</div></div>
+        <div class="card metric bad"><div class="metric-label">エラー</div><div class="metric-value" id="badCount">0</div></div>
+        <div class="card metric"><div class="metric-label">手動確認</div><div class="metric-value" id="manualCount">0/8</div></div>
+      </section>
+
+      <section class="card verdict" id="verdict">
+        <div class="verdict-icon" id="verdictIcon">○</div>
+        <div><strong id="verdictTitle">自動チェックを実行してください</strong><p id="verdictText">営業前確認の結果をここに表示します。</p></div>
+      </section>
+
+      <div class="grid-2">
+        <section class="card">
+          <div class="section-head"><h2>自動チェック</h2><span class="pill" id="autoStatus">未実行</span></div>
+          <div class="section-body"><div class="check-list" id="checkList"></div></div>
+        </section>
+
+        <div>
+          <section class="card">
+            <div class="section-head"><h2>手動チェック</h2><span class="pill" id="manualStatus">0/8</span></div>
+            <div class="section-body"><div class="manual-list" id="manualList"></div></div>
+          </section>
+
+          <section class="card" style="margin-top:14px">
+            <div class="section-head"><h2>画面を開く</h2><button class="btn" id="openAllPages" type="button">主要画面を順に開く</button></div>
+            <div class="section-body"><div class="links" id="pageLinks"></div></div>
+          </section>
+        </div>
+      </div>
+
+      <section class="card demo-panel">
+        <h2>営業デモデータを再準備</h2>
+        <p>日付・予定・タスクを営業当日に合わせて再配置します。デモ会社かつ保護機能有効時だけ実行できます。</p>
+        <div class="mini-actions">
+          <button class="btn warn" id="demoPrepare" type="button">営業デモを再準備</button>
+          <button class="btn" id="rerunAfterPrepare" type="button" disabled>再準備後に再チェック</button>
+        </div>
+        <div class="success-box" id="demoSuccess"></div>
+        <div class="error-box" id="demoError"></div>
+        <pre class="demo-output" id="demoOutput"></pre>
+      </section>
+
+      <p class="footer-note">内部用画面です。商談先オーナーへ渡す資料やQRには掲載しません。</p>
+    </div>
+  </main>
+
+  <script src="./config.js"></script>
+  <script>
+  (() => {
+    "use strict";
+    const cfg = window.DPRO_REFORM_CONFIG || {};
+    const API = String(cfg.API_BASE || "https://dpro-reform-line-api.dpromstk2000.workers.dev").replace(/\/+$/, "");
+    const COMPANY = cfg.COMPANY_CODE || "dpro_reform_demo";
+    const DEMO_ID = cfg.DEMO_LINE_USER_ID || "demo_reform_line_001";
+    const EXPECTED_DEMO_ID = "demo_reform_line_001";
+    const TIMEOUT = Number(cfg.REQUEST_TIMEOUT_MS || 30000);
+    const q = new URLSearchParams(location.search);
+    const isDemo = q.get("demo") === "1";
+    const ADMIN_KEY = "dpro_reform_system_check_admin";
+    const MANUAL_KEY = "dpro_reform_system_check_manual_v1";
+    const nowJp = () => new Intl.DateTimeFormat("ja-JP",{timeZone:"Asia/Tokyo",hour:"2-digit",minute:"2-digit",second:"2-digit"}).format(new Date());
+    const todayJp = () => new Intl.DateTimeFormat("sv-SE",{timeZone:"Asia/Tokyo",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+    const $ = id => document.getElementById(id);
+    let adminCode = "";
+    let checkResults = {};
+    let lastDemoPrepared = false;
+
+    const automaticChecks = [
+      {id:"health", title:"Worker Health・Supabase接続", desc:"Worker起動、会社設定、主要機能フラグを確認します。"},
+      {id:"publicConfig", title:"公開設定・UI基準", desc:"相談受付設定、30分枠、文字サイズ基準を確認します。"},
+      {id:"auth", title:"管理コード認証", desc:"管理者APIへ正しく認証できるか確認します。"},
+      {id:"system", title:"DB件数・非公開写真Storage", desc:"会社、スタッフ、工事種別、顧客、案件、タスク、写真、Storageを確認します。"},
+      {id:"phone", title:"電話番号正規化", desc:"ハイフン・全角・空白・+81を同じ番号として判定できるか確認します。"},
+      {id:"dashboard", title:"管理ダッシュボード・デモ案件", desc:"本日の予定、案件、未完了タスクを取得します。"},
+      {id:"member", title:"デモ顧客・お客様マイページAPI", desc:"佐藤太郎様とREFORM-DEMO-001を取得できるか確認します。"},
+      {id:"pages", title:"GitHub Pages主要画面", desc:"相談、マイページ、PC管理、担当者、iPadの公開ファイルを確認します。"}
+    ];
+
+    const manualItems = [
+      ["customer","お客様相談フォーム","スマホで相談内容→物件→写真→現地調査→確認まで進める。"],
+      ["member","お客様マイページ","佐藤太郎様の案件・調査完了・公開写真が表示される。"],
+      ["owner","オーナーPC管理","今日の仕事、期限タスク、検索、案件詳細が見やすい。"],
+      ["staffSurvey","担当者・現地調査","田中担当者で調査開始、内容保存、完了が操作できる。"],
+      ["staffWork","担当者・工事","山本担当者で材料待ち等の工事状態を更新できる。"],
+      ["ipad","共有iPad","本日の現地調査・工事が大きなカードで表示される。"],
+      ["photo","写真公開範囲","社内のみはお客様に出ず、お客様公開だけがマイページに表示される。"],
+      ["clear","コード削除・再ログイン","管理コード／スタッフコード削除ボタンが利用できる。"]
+    ];
+
+    const pages = [
+      ["相談受付","index.html?demo=1&v=reform-9-check","お客様用"],
+      ["お客様マイページ","member.html?demo=1&v=reform-9-check","佐藤太郎様"],
+      ["オーナーPC","owner.html?demo=1&v=reform-9-check","管理コード自動"],
+      ["田中担当者","staff.html?demo=1&staff=tanaka&v=reform-9-check","現地調査"],
+      ["山本担当者","staff.html?demo=1&staff=yamamoto&v=reform-9-check","工事"],
+      ["共有iPad","owner-ipad.html?demo=1&v=reform-9-check","本日の予定"]
+    ];
+
+    function safeJson(v){ try{return JSON.stringify(v,null,2)}catch{return String(v)} }
+    function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+    function setBox(id,msg,show=true){const el=$(id);el.textContent=msg;el.style.display=show?"block":"none"}
+    function adminHeaders(){return {"x-admin-code":adminCode}}
+    async function fetchJson(path,opt={}){
+      const ctl = new AbortController();
+      const timer = setTimeout(()=>ctl.abort(),TIMEOUT);
+      try{
+        const url = path.startsWith("http") ? path : API + path;
+        const res = await fetch(url,{cache:"no-store",...opt,headers:{accept:"application/json",...(opt.headers||{})},signal:ctl.signal});
+        const text = await res.text();
+        let data; try{data=text?JSON.parse(text):null}catch{data={raw:text}}
+        if(!res.ok) throw new Error((data&&data.error&&data.error.message)||`HTTP ${res.status}`);
+        return data;
+      } finally { clearTimeout(timer); }
+    }
+    async function fetchPage(file){
+      const url = new URL(file, location.href);
+      url.searchParams.set("_check",Date.now());
+      const ctl=new AbortController(), timer=setTimeout(()=>ctl.abort(),TIMEOUT);
+      try{
+        const res=await fetch(url,{cache:"no-store",signal:ctl.signal});
+        const text=await res.text();
+        if(!res.ok) throw new Error(`HTTP ${res.status}`);
+        return {ok:true,url:url.toString(),bytes:new Blob([text]).size,hasHtml:/<!doctype html|<html/i.test(text)};
+      }finally{clearTimeout(timer)}
+    }
+
+    function renderChecks(){
+      $("checkList").innerHTML = automaticChecks.map(x=>`
+        <article class="check" id="check-${x.id}">
+          <div class="check-icon" id="icon-${x.id}">−</div>
+          <div>
+            <div class="check-title">${esc(x.title)}</div>
+            <div class="check-summary" id="summary-${x.id}">${esc(x.desc)}</div>
+            <details id="details-${x.id}" hidden><summary>取得内容を表示</summary><pre id="data-${x.id}"></pre></details>
+          </div>
+          <div class="check-time" id="time-${x.id}">未実行</div>
+        </article>`).join("");
+    }
+    function setCheck(id,state,summary,data){
+      const card=$(`check-${id}`), icon=$(`icon-${id}`);
+      card.className=`check ${state}`;
+      icon.textContent=state==="running"?"↻":state==="ok"?"✓":state==="warn"?"!":"×";
+      if(state==="running")icon.classList.add("spin");else icon.classList.remove("spin");
+      $(`summary-${id}`).textContent=summary;
+      $(`time-${id}`).textContent=nowJp();
+      const det=$(`details-${id}`);
+      if(data!==undefined){det.hidden=false;$(`data-${id}`).textContent=safeJson(data)}else det.hidden=true;
+      if(state!=="running")checkResults[id]={state,summary,data};
+      updateSummary();
+    }
+    function updateSummary(){
+      const vals=Object.values(checkResults);
+      const ok=vals.filter(x=>x.state==="ok").length;
+      const warn=vals.filter(x=>x.state==="warn").length;
+      const bad=vals.filter(x=>x.state==="bad").length;
+      $("autoTotal").textContent=`${vals.length}/${automaticChecks.length}`;
+      $("okCount").textContent=ok;$("warnCount").textContent=warn;$("badCount").textContent=bad;
+      $("autoStatus").textContent=vals.length===automaticChecks.length?(bad?"エラーあり":warn?"要確認あり":"自動確認OK"):"確認中";
+      updateVerdict();
+    }
+
+    function loadManual(){
+      let saved={};try{saved=JSON.parse(localStorage.getItem(MANUAL_KEY)||"{}")}catch{}
+      $("manualList").innerHTML=manualItems.map(([id,title,desc])=>`
+        <label class="manual-item">
+          <input type="checkbox" data-manual="${esc(id)}" ${saved[id]?"checked":""}>
+          <span><strong>${esc(title)}</strong><span>${esc(desc)}</span></span>
+        </label>`).join("");
+      document.querySelectorAll("[data-manual]").forEach(el=>el.addEventListener("change",()=>{
+        const state={};document.querySelectorAll("[data-manual]").forEach(x=>state[x.dataset.manual]=x.checked);
+        localStorage.setItem(MANUAL_KEY,JSON.stringify(state));updateManual();
+      }));
+      updateManual();
+    }
+    function updateManual(){
+      const boxes=[...document.querySelectorAll("[data-manual]")];
+      const done=boxes.filter(x=>x.checked).length;
+      $("manualCount").textContent=`${done}/${boxes.length}`;
+      $("manualStatus").textContent=`${done}/${boxes.length}`;
+      updateVerdict();
+    }
+    function updateVerdict(){
+      const vals=Object.values(checkResults), complete=vals.length===automaticChecks.length;
+      const bad=vals.some(x=>x.state==="bad"), warn=vals.some(x=>x.state==="warn");
+      const boxes=[...document.querySelectorAll("[data-manual]")], manualDone=boxes.length&&boxes.every(x=>x.checked);
+      const v=$("verdict");
+      if(!complete){v.className="card verdict";$("verdictIcon").textContent="○";$("verdictTitle").textContent="自動チェックを実行してください";$("verdictText").textContent="営業前確認の結果をここに表示します。";return}
+      if(bad){v.className="card verdict bad";$("verdictIcon").textContent="×";$("verdictTitle").textContent="営業前に修正が必要です";$("verdictText").textContent="赤い自動チェックの詳細を確認してください。";return}
+      if(warn||!manualDone){v.className="card verdict warn";$("verdictIcon").textContent="!";$("verdictTitle").textContent="自動確認OK・手動確認が残っています";$("verdictText").textContent=warn?"要確認項目と手動チェックを確認してください。":"手動チェックを完了すると営業デモ準備OKになります。";return}
+      v.className="card verdict ok";$("verdictIcon").textContent="✓";$("verdictTitle").textContent="営業デモ準備OK";$("verdictText").textContent="自動チェックと手動チェックがすべて完了しています。";
+    }
+
+    function renderLinks(){
+      $("pageLinks").innerHTML=pages.map(([name,file,note])=>{
+        const url=new URL(file,location.href).toString();
+        return `<a class="page-link" href="${esc(url)}" target="_blank" rel="noopener"><span>${esc(name)}<small>　${esc(note)}</small></span><span>開く ↗</span></a>`;
+      }).join("");
+    }
+
+    async function authenticate(){
+      adminCode=$("adminCode").value.trim();
+      if(!adminCode){setBox("loginError","管理コードを入力してください。");return}
+      $("loginBtn").disabled=true;$("loginBtn").textContent="確認中…";setBox("loginError","",false);
+      try{
+        const data=await fetchJson("/api/admin/auth/check",{headers:adminHeaders()});
+        if(!data.ok||!data.authenticated)throw new Error("認証を確認できませんでした。");
+        sessionStorage.setItem(ADMIN_KEY,adminCode);
+        $("loginCard").style.display="none";$("app").style.display="block";
+        $("topMode").textContent=isDemo?"営業デモ・管理者":"管理者として認証済み";
+        $("topRefresh").hidden=false;$("topClear").hidden=false;
+        runAllChecks();
+      }catch(e){setBox("loginError",e.message||String(e))}
+      finally{$("loginBtn").disabled=false;$("loginBtn").textContent="認証してチェックを開始"}
+    }
+
+    async function runOne(id,fn){
+      setCheck(id,"running","確認中…");
+      try{
+        const r=await fn();
+        setCheck(id,r.state||"ok",r.summary,r.data);
+      }catch(e){setCheck(id,"bad",e.name==="AbortError"?"確認がタイムアウトしました。":(e.message||String(e)),{error:e.message||String(e)})}
+    }
+    async function runAllChecks(){
+      checkResults={};
+      $("runAll").disabled=true;$("runAll").textContent="確認中…";
+      automaticChecks.forEach(x=>setCheck(x.id,"running","確認待ち…"));
+      await runOne("health",async()=>{
+        const d=await fetchJson("/api/health");
+        const db=d.database||{}, f=d.features||{};
+        $("workerVersion").textContent=`Worker：${d.version||"不明"}`;
+        $("companyName").textContent=`対象：${db.company_name||COMPANY}`;
+        const ok=d.ok&&db.ok&&db.company_code===COMPANY&&db.production_guard===true;
+        return {state:ok?"ok":"bad",summary:ok?`${db.company_name}／Worker・DB接続正常`:"会社設定または保護設定を確認してください。",data:d};
+      });
+      await runOne("publicConfig",async()=>{
+        const d=await fetchJson("/api/public/config");
+        const s=d.settings||{}, ui=s.ui_config||{};
+        const hardOk=d.ok&&s.default_slot_minutes===30&&s.member_page_enabled&&s.photo_upload_enabled;
+        const uiOk=Number(ui.pc_body_min_px||0)>=16&&Number(ui.tablet_body_px||0)>=18;
+        return {state:hardOk?(uiOk?"ok":"warn"):"bad",summary:hardOk?(uiOk?"30分枠・マイページ・写真・文字サイズ基準OK":"公開機能OK。UI基準値を確認してください。"):"公開設定の必須項目を確認してください。",data:d};
+      });
+      await runOne("auth",async()=>{
+        const d=await fetchJson("/api/admin/auth/check",{headers:adminHeaders()});
+        return {state:d.ok&&d.authenticated?"ok":"bad",summary:d.authenticated?"管理者として認証成功":"管理認証に失敗しました。",data:d};
+      });
+      await runOne("system",async()=>{
+        const d=await fetchJson("/api/admin/system-check",{headers:adminHeaders()});
+        const c=d.checks||{}, db=c.database||{}, st=c.storage||{};
+        const ok=d.ok&&c.company?.ok&&c.settings?.ok&&c.phone_normalization?.ok&&st.ok&&db.staff_count>=1&&db.project_count>=1;
+        const summary=ok?`案件${db.project_count}件・顧客${db.customer_count}件・未完了タスク${db.open_task_count}件・非公開Storage OK`:"DBまたはStorageのチェック結果を確認してください。";
+        return {state:ok?"ok":"bad",summary,data:d};
+      });
+      await runOne("phone",async()=>{
+        const d=await fetchJson("/api/admin/phone-normalize-check",{headers:adminHeaders()});
+        return {state:d.ok&&d.all_same?"ok":"bad",summary:d.all_same?"電話番号5形式を同一番号として判定":"電話番号正規化に不一致があります。",data:d};
+      });
+      await runOne("dashboard",async()=>{
+        const d=await fetchJson(`/api/admin/dashboard?date=${encodeURIComponent(todayJp())}`,{headers:adminHeaders()});
+        const c=d.counts||{};
+        const ok=d.ok&&Array.isArray(d.projects)&&d.projects.length>0&&Array.isArray(d.staff)&&d.staff.length>0;
+        return {state:ok?"ok":"bad",summary:ok?`案件${c.total_projects||d.projects.length}件・本日の予定${c.today_schedules||0}件・未完了タスク${c.open_tasks||0}件`:"ダッシュボードのデモ案件またはスタッフを取得できません。",data:{date:d.date,company:d.company,counts:d.counts,staff:d.staff,project_sample:d.projects?.slice(0,3)}};
+      });
+      await runOne("member",async()=>{
+        const id=EXPECTED_DEMO_ID;
+        const [p,ps,detail]=await Promise.all([
+          fetchJson(`/api/member/profile?line_user_id=${encodeURIComponent(id)}`),
+          fetchJson(`/api/member/projects?line_user_id=${encodeURIComponent(id)}`),
+          fetchJson(`/api/member/project-detail?line_user_id=${encodeURIComponent(id)}&project_no=REFORM-DEMO-001`)
+        ]);
+        const customer=p.profile||ps.customer||{};
+        const projects=ps.projects||[];
+        const ok=p.ok&&p.registered&&projects.some(x=>x.project_no==="REFORM-DEMO-001")&&detail.ok;
+        const demoConfigOk=DEMO_ID===EXPECTED_DEMO_ID;
+        return {state:ok?(demoConfigOk?"ok":"warn"):"bad",summary:ok?`${customer.customer_name||"デモ顧客"}／REFORM-DEMO-001取得OK${demoConfigOk?"":"（config.jsのデモID要確認）"}`:"デモ顧客またはデモ案件を取得できません。",data:{configured_demo_id:DEMO_ID,expected_demo_id:EXPECTED_DEMO_ID,profile:p,projects:projects,detail_project:detail.project?.project}};
+      });
+      await runOne("pages",async()=>{
+        const results=[];
+        for(const [name,file] of pages){
+          try{results.push({name,...await fetchPage(file.split("?")[0])})}
+          catch(e){results.push({name,ok:false,error:e.message})}
+        }
+        const ok=results.every(x=>x.ok&&x.hasHtml&&x.bytes>500);
+        return {state:ok?"ok":"bad",summary:ok?"主要6画面の公開ファイルをすべて確認":"未公開または取得できない画面があります。",data:results};
+      });
+      $("runAll").disabled=false;$("runAll").textContent="自動チェックを実行";
+      $("heroUpdated").textContent=nowJp();
+      updateSummary();
+    }
+
+    async function prepareDemo(){
+      if(!confirm("営業デモデータの日付・予定・タスクを再準備します。実行しますか？"))return;
+      $("demoPrepare").disabled=true;$("demoPrepare").textContent="再準備中…";
+      setBox("demoError","",false);setBox("demoSuccess","",false);$("demoOutput").style.display="none";
+      try{
+        const d=await fetchJson("/api/admin/demo/prepare",{method:"POST",headers:{...adminHeaders(),"content-type":"application/json"},body:JSON.stringify({})});
+        lastDemoPrepared=true;$("rerunAfterPrepare").disabled=false;
+        setBox("demoSuccess",`営業デモを再準備しました（${nowJp()}）。`);
+        $("demoOutput").textContent=safeJson(d);$("demoOutput").style.display="block";
+      }catch(e){setBox("demoError",e.message||String(e))}
+      finally{$("demoPrepare").disabled=false;$("demoPrepare").textContent="営業デモを再準備"}
+    }
+
+    function clearAdmin(){
+      sessionStorage.removeItem(ADMIN_KEY);adminCode="";$("adminCode").value="";
+      $("app").style.display="none";$("loginCard").style.display="block";
+      $("topMode").textContent="未認証";$("topRefresh").hidden=true;$("topClear").hidden=true;
+      setBox("loginInfo","管理コードを削除しました。",true);
+    }
+
+    renderChecks();loadManual();renderLinks();
+    $("loginBtn").addEventListener("click",authenticate);
+    $("adminCode").addEventListener("keydown",e=>{if(e.key==="Enter")authenticate()});
+    $("clearInput").addEventListener("click",()=>{$("adminCode").value="";$("adminCode").focus()});
+    $("runAll").addEventListener("click",runAllChecks);
+    $("topRefresh").addEventListener("click",runAllChecks);
+    $("topClear").addEventListener("click",clearAdmin);
+    $("resetManual").addEventListener("click",()=>{localStorage.removeItem(MANUAL_KEY);loadManual()});
+    $("demoPrepare").addEventListener("click",prepareDemo);
+    $("rerunAfterPrepare").addEventListener("click",runAllChecks);
+    $("copyUrls").addEventListener("click",async()=>{
+      const text=pages.map(([n,f])=>`${n}\n${new URL(f,location.href)}`).join("\n\n");
+      try{await navigator.clipboard.writeText(text);$("copyUrls").textContent="コピーしました";setTimeout(()=>$("copyUrls").textContent="確認URLをコピー",1800)}
+      catch{prompt("確認URLをコピーしてください",text)}
+    });
+    $("openAllPages").addEventListener("click",()=>{
+      pages.forEach(([,f],i)=>setTimeout(()=>window.open(new URL(f,location.href),"_blank","noopener"),i*250));
+    });
+
+    const saved=sessionStorage.getItem(ADMIN_KEY)||"";
+    if(isDemo){$("adminCode").value="1234";setBox("loginInfo","営業デモURLのため管理コードを自動設定しました。");setTimeout(authenticate,100)}
+    else if(saved){$("adminCode").value=saved;setBox("loginInfo","このタブの認証情報を読み込みました。");}
+  })();
+  </script>
+</body>
+</html>
