@@ -59,7 +59,7 @@
 <div class="loading-cover" id="loadingCover"><div class="loading-card"><div class="ring"></div><div id="loadingText">受付画面を準備しています</div></div></div>
 <div class="app" id="app">
   <header class="topbar"><div class="topbar-inner"><div class="logo">D</div><div class="brand"><div class="brand-name" id="brandName">DPROリフォーム</div><div class="brand-sub" id="brandSub">リフォーム相談・現地調査受付</div></div><div class="top-actions"><button type="button" class="history-link" id="historyLink">過去の相談・進捗</button><div class="identity-pill" id="identityPill">受付準備中</div></div></div></header>
-  <section class="hero"><div class="hero-inner"><div class="hero-badge">STEP REFORM-5-R2</div><h1>住まいのお困りごとを<br>写真と一緒に相談できます</h1><p>見積相談、現地調査、修理・補修まで。内容を確認後、担当者からLINEまたはご希望の方法でご連絡します。</p></div></section>
+  <section class="hero"><div class="hero-inner"><div class="hero-badge">STEP REFORM-10・CUSTOMER</div><h1>住まいのお困りごとを<br>写真と一緒に相談できます</h1><p>見積相談、現地調査、修理・補修まで。内容を確認後、担当者からLINEまたはご希望の方法でご連絡します。</p></div></section>
   <div class="steps-wrap"><div class="steps" id="steps"></div></div>
   <main>
     <div class="notice" id="notice" role="alert"></div>
@@ -307,8 +307,8 @@
     navigator.clipboard?.writeText(text).then(()=>showNotice('確認文面をコピーしました。','success')).catch(()=>fallbackCopy(text));
   }
   function fallbackCopy(text){const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();showNotice('確認文面をコピーしました。','success');}
-  function resetForm(){location.href=location.pathname+(state.lineUserId?`?line_user_id=${encodeURIComponent(state.lineUserId)}`:'');}
-  function memberUrl(includeResult=false){const u=new URL(CFG.MEMBER_PAGE||'member.html',location.href);if(state.lineUserId)u.searchParams.set('line_user_id',state.lineUserId);if(includeResult&&state.result?.project?.public_token)u.searchParams.set('token',state.result.project.public_token);return u.toString();}
+  function resetForm(){const u=new URL(location.pathname,location.href);if(state.lineUserId)u.searchParams.set('line_user_id',state.lineUserId);if(getParam('demo')==='1')u.searchParams.set('demo','1');u.searchParams.set('v','reform-10');location.href=u.toString();}
+  function memberUrl(includeResult=false){const u=new URL(CFG.MEMBER_PAGE||'member.html',location.href);if(state.lineUserId)u.searchParams.set('line_user_id',state.lineUserId);if(getParam('demo')==='1')u.searchParams.set('demo','1');if(includeResult&&state.result?.project?.public_token)u.searchParams.set('token',state.result.project.public_token);u.searchParams.set('v','reform-10');return u.toString();}
   function openMember(){location.href=memberUrl(true);}
   function openHistory(){location.href=memberUrl(false);}
   function fmtDate(v){if(!v)return '';const [y,m,d]=v.split('-').map(Number);return `${y}年${m}月${d}日（${'日月火水木金土'[new Date(y,m-1,d).getDay()]}）`;}

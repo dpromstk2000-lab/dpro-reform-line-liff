@@ -112,7 +112,7 @@
   <div id="loginCover" class="login-cover">
     <form id="loginForm" class="login-card" autocomplete="off">
       <div class="login-hero">
-        <span class="step-pill">STEP REFORM-7-R1・STAFF</span>
+        <span class="step-pill">STEP REFORM-10・STAFF</span>
         <h1>担当者用 現場画面</h1>
         <p>自分の訪問予定、現地調査、工事進捗、写真、タスクを確認します。</p>
       </div>
@@ -154,7 +154,7 @@
     <section class="hero">
       <div class="hero-inner">
         <div>
-          <span class="step-pill">STEP REFORM-7-R1・STAFF</span>
+          <span class="step-pill">STEP REFORM-10・STAFF</span>
           <h1>今日の訪問と作業を<br>順番に確認</h1>
           <p>現地調査、工事、写真報告、未完了タスクを担当者ごとに表示します。</p>
         </div>
@@ -241,6 +241,9 @@
   const fmtDateTime=v=>v?`${fmtDate(v)} ${fmtTime(v)}`:'―';
   const toLocalInput=v=>{if(!v)return '';const d=new Date(v);if(Number.isNaN(d.getTime()))return '';const parts=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d).reduce((a,x)=>(a[x.type]=x.value,a),{});return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`};
   const splitLocalInput=v=>{const x=toLocalInput(v);if(!x)return {date:'',time:''};const [date,time='']=x.split('T');return {date,time}};
+  const displayDateInput=v=>v?String(v).replace(/-/g,'/') : '';
+  const normalizeDateInput=v=>{const digits=String(v||'').replace(/\D/g,'');if(!digits)return '';if(digits.length!==8)return '';const y=digits.slice(0,4),m=digits.slice(4,6),d=digits.slice(6,8),iso=`${y}-${m}-${d}`,dt=new Date(`${iso}T00:00:00+09:00`);return Number.isNaN(dt.getTime())||todayParts(dt)!==iso?'':iso};
+  const todayParts=d=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}).format(d);
   const combineLocal=(date,time)=>date&&time?`${date}T${time}`:'';
   const isoFromLocal=v=>v?new Date(`${v}:00+09:00`).toISOString():null;
   const statusLabels={requested:'希望受付',coordinating:'日程調整中',scheduled:'予定済み',reminded:'案内済み',in_progress:'進行中',done:'完了',reschedule_requested:'日程変更希望',cancelled:'取消',not_started:'未着手',material_waiting:'材料待ち',temporary_stop:'一時中断',inspection:'検査中',completion_pending:'完了確認待ち',completed:'完了',aftercare:'アフター対応',open:'未対応'};
@@ -318,8 +321,8 @@
     $('tab-survey').innerHTML=`
     <section class="section"><div class="section-title"><h3>現地調査の進行</h3><small>${esc(statusLabels[s?.status]||'未登録')}</small></div><div class="section-body"><div class="quick-grid">${[['scheduled','訪問予定'],['in_progress','現地到着・調査開始'],['done','調査完了']].map(([v,l])=>`<button class="quick-btn ${s?.status===v?'active':''}" data-survey-quick="${v}" type="button">${l}</button>`).join('')}</div></div></section>
     <section class="section"><div class="section-title"><h3>調査日時・記録</h3></div><div class="section-body"><form id="surveyForm"><div class="form-grid">
-      <div class="field"><label>開始日時</label><div class="date-time-pair"><input id="surveyStartDate" type="date" value="${esc(start.date)}"><input id="surveyStartTime" type="time" step="1800" value="${esc(start.time)}"></div></div>
-      <div class="field"><label>終了日時</label><div class="date-time-pair"><input id="surveyEndDate" type="date" value="${esc(end.date)}"><input id="surveyEndTime" type="time" step="1800" value="${esc(end.time)}"></div></div>
+      <div class="field"><label>開始日時</label><div class="date-time-pair"><input id="surveyStartDate" type="text" inputmode="numeric" autocomplete="off" placeholder="2026/07/15" value="${esc(displayDateInput(start.date))}"><input id="surveyStartTime" type="time" step="1800" value="${esc(start.time)}"></div><div class="help">日付は西暦8桁（例：2026/07/15）で入力します。</div></div>
+      <div class="field"><label>終了日時</label><div class="date-time-pair"><input id="surveyEndDate" type="text" inputmode="numeric" autocomplete="off" placeholder="2026/07/15" value="${esc(displayDateInput(end.date))}"><input id="surveyEndTime" type="time" step="1800" value="${esc(end.time)}"></div><div class="help">曜日の空括弧が出ない日本向け表示です。</div></div>
       <div class="field full"><label>調査結果</label><textarea id="surveySummary" placeholder="劣化状況、工事の方向性、見積に必要な情報">${esc(s?.survey_summary||'')}</textarea></div>
       <div class="field"><label>採寸メモ</label><textarea id="dimensionNote" placeholder="寸法・数量・型番など">${esc(s?.dimension_note||'')}</textarea></div>
       <div class="field"><label>搬入・駐車・周辺メモ</label><textarea id="accessNote" placeholder="駐車場所、搬入経路、近隣配慮など">${esc(s?.access_note||'')}</textarea></div>
@@ -336,7 +339,7 @@
     const s=latestSurvey(),btn=$('surveySaveBtn');
     if(btn){btn.disabled=true;btn.textContent='保存中…'}
     try{
-      const payload={project_id:state.current.project.project.id,survey_id:s?.id||undefined,status:s?.status||(combineLocal($('surveyStartDate').value,$('surveyStartTime').value)?'scheduled':'requested'),scheduled_start_at:isoFromLocal(combineLocal($('surveyStartDate').value,$('surveyStartTime').value)),scheduled_end_at:isoFromLocal(combineLocal($('surveyEndDate').value,$('surveyEndTime').value)),survey_summary:$('surveySummary').value,dimension_note:$('dimensionNote').value,access_note:$('accessNote').value,internal_notes:$('surveyInternal')?.value||'',allow_past:!!s};
+      const startText=$('surveyStartDate').value.trim(),endText=$('surveyEndDate').value.trim(),startDate=normalizeDateInput(startText),endDate=normalizeDateInput(endText);if(startText&&!startDate)throw new Error('開始日は2026/07/15の形式で入力してください。');if(endText&&!endDate)throw new Error('終了日は2026/07/15の形式で入力してください。');const payload={project_id:state.current.project.project.id,survey_id:s?.id||undefined,status:s?.status||(combineLocal(startDate,$('surveyStartTime').value)?'scheduled':'requested'),scheduled_start_at:isoFromLocal(combineLocal(startDate,$('surveyStartTime').value)),scheduled_end_at:isoFromLocal(combineLocal(endDate,$('surveyEndTime').value)),survey_summary:$('surveySummary').value,dimension_note:$('dimensionNote').value,access_note:$('accessNote').value,internal_notes:$('surveyInternal')?.value||'',allow_past:!!s};
       await api('/api/staff/site-surveys/save',{method:'POST',body:JSON.stringify(payload)});
       state.surveyDirty=false;state.lastSurveySaveAt=new Date();
       await reloadProject(true);await loadDay(true);

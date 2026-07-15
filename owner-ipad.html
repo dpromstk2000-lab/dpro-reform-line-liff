@@ -30,7 +30,7 @@
     .step{display:inline-flex;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:4px 11px;font-size:12px;font-weight:900;letter-spacing:.02em}.hero h1{font-size:32px;line-height:1.3;margin:12px 0 5px}.hero p{font-size:15px;margin:0;font-weight:650}.hero-info{min-width:230px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.25);border-radius:16px;padding:15px 18px}.hero-info small{display:block;font-size:12px;opacity:.9}.hero-info strong{font-size:22px;display:block;margin:2px 0}
     .container{max-width:1320px;margin:0 auto;padding:18px 24px}
     .toolbar{background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px;display:flex;gap:10px;align-items:end;flex-wrap:wrap;box-shadow:0 5px 16px rgba(23,72,66,.06)}
-    .field-inline{display:flex;flex-direction:column;gap:4px}.field-inline label{font-size:13px;font-weight:800}.toolbar input[type=date]{height:var(--tap);border:1px solid #bcd2cd;border-radius:11px;padding:0 13px;min-width:190px;background:#fff}
+    .field-inline{display:flex;flex-direction:column;gap:4px}.field-inline label{font-size:13px;font-weight:800}.toolbar input[type=date]{height:var(--tap);border:1px solid #bcd2cd;border-radius:11px;padding:0 13px;min-width:190px;background:#fff}.date-jp-label{min-height:var(--tap);display:flex;align-items:center;padding:0 13px;border-radius:11px;background:var(--green-soft);color:var(--green-deep);font-size:15px;font-weight:900;white-space:nowrap}
     .toolbar .spacer{flex:1}.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.filter{min-height:46px;border-radius:999px;padding:8px 17px;background:#fff;border:1px solid var(--line);font-weight:800;font-size:15px}.filter.active{background:var(--green);color:#fff;border-color:var(--green)}
     .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:14px 0}.kpi{background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px 16px;min-height:90px}.kpi small{font-size:13px;color:var(--muted);font-weight:750;display:block}.kpi strong{font-size:30px;line-height:1.2;display:block;margin-top:4px}.kpi.warn{border-color:#edc77e;background:#fffaf0}.kpi.danger{border-color:#efb0b0;background:#fff7f7}
     .section{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}.section-head{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.section-head h2{font-size:22px;margin:0}.section-head p{margin:0;font-size:13px;color:var(--muted)}.count{min-width:34px;height:34px;border-radius:999px;background:var(--green3);color:var(--green);display:grid;place-items:center;font-weight:900;font-size:15px}
@@ -54,7 +54,7 @@
   <div id="loginCover" class="login-cover">
     <section class="login-card">
       <div class="login-head">
-        <span class="step">STEP REFORM-8-R1・OWNER iPad</span>
+        <span class="step">STEP REFORM-10・OWNER iPad</span>
         <h1>共有iPad 現場ボード</h1>
         <p>本日の現地調査・工事・未完了タスクを、大きな画面で確認します。</p>
       </div>
@@ -76,13 +76,13 @@
     </header>
 
     <section class="hero">
-      <div><span class="step">STEP REFORM-8-R1・OWNER iPad</span><h1>今日の訪問と工事を<br>大きなカードで確認</h1><p>受付・到着・調査中・工事中・完了を、その場で更新できます。</p></div>
+      <div><span class="step">STEP REFORM-10・OWNER iPad</span><h1>今日の訪問と工事を<br>大きなカードで確認</h1><p>受付・到着・調査中・工事中・完了を、その場で更新できます。</p></div>
       <div class="hero-info"><small>表示中</small><strong id="heroDate">―</strong><small id="heroUpdated">最終更新 ―</small></div>
     </section>
 
     <main class="container">
       <section class="toolbar">
-        <div class="field-inline"><label for="targetDate">対象日</label><input id="targetDate" type="date"></div>
+        <div class="field-inline"><label for="targetDate">対象日</label><input id="targetDate" type="date" lang="ja-JP"></div><span id="targetDateLabel" class="date-jp-label">―</span>
         <button id="showDateBtn" class="btn btn-primary" type="button">この日を表示</button>
         <button id="todayBtn" class="btn" type="button">今日へ戻る</button>
         <div class="spacer"></div>
@@ -181,7 +181,7 @@
 
   async function login(code){state.adminCode=code;const data=await api(`/api/admin/day?date=${encodeURIComponent(state.date)}`);saveCode(code);$('loginCover').classList.add('hidden');$('app').classList.remove('hidden');applyDay(data);renderAll()}
   async function loadDay(silent=false){const data=await api(`/api/admin/day?date=${encodeURIComponent(state.date)}`);applyDay(data);renderAll();if(!silent)toast('最新情報へ更新しました')}
-  function applyDay(data){state.schedules=Array.isArray(data.schedules)?data.schedules:[];state.tasks=Array.isArray(data.tasks)?data.tasks:[];$('heroDate').textContent=fmtDate(`${state.date}T00:00:00+09:00`);$('heroUpdated').textContent=`最終更新 ${fmtTime(new Date())}`}
+  function applyDay(data){state.schedules=Array.isArray(data.schedules)?data.schedules:[];state.tasks=Array.isArray(data.tasks)?data.tasks:[];const jpDate=fmtDate(`${state.date}T00:00:00+09:00`);$('heroDate').textContent=jpDate;$('targetDateLabel').textContent=`対象日：${jpDate}`;$('heroUpdated').textContent=`最終更新 ${fmtTime(new Date())}`}
   function renderAll(){renderKpis();renderSchedules();renderTasks()}
   function renderKpis(){const survey=state.schedules.filter(x=>x.schedule_kind==='site_survey').length,work=state.schedules.filter(x=>x.schedule_kind==='work').length,attention=state.schedules.filter(isAttentionSchedule).length,overdue=state.tasks.filter(isOverdue).length;$('kpiAll').textContent=state.schedules.length;$('kpiSurvey').textContent=survey;$('kpiWork').textContent=work;$('kpiAttention').textContent=attention;$('kpiTask').textContent=state.tasks.length;$('kpiAttentionCard').className=`kpi ${attention?'warn':''}`;$('kpiTaskCard').className=`kpi ${overdue?'danger':''}`;$('scheduleCount').textContent=state.schedules.length;$('taskCount').textContent=state.tasks.length}
   function scheduleVisible(s){if(state.filter==='all')return true;if(state.filter==='attention')return isAttentionSchedule(s);return s.schedule_kind===state.filter}
@@ -245,7 +245,7 @@
     document.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;try{if(b.dataset.openProject)await openProject(b.dataset.openProject,b.dataset.kind||'',b.dataset.scheduleId||'');if(b.dataset.taskStatus)await updateTask(b.dataset.taskId,b.dataset.taskStatus)}catch(err){toast(err.message,'error')}});
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('detailModal').classList.contains('open'))closeDetail()})
   }
-  async function init(){bind();state.date=param('date')||todayJst();$('targetDate').value=state.date;state.demo=param('demo')==='1';$('modeChip').textContent=state.demo?'営業デモ':'共有iPad';$('ownerPcLink').href=state.demo?'owner.html?demo=1&v=reform-8-r1':'owner.html?v=reform-8-r1';let code=state.demo?(CFG.DEMO_ADMIN_CODE||'1234'):getCode();if(code){$('adminCode').value=code;try{await login(code);setInterval(()=>{if(!$('detailModal').classList.contains('open'))loadDay(true).catch(()=>{})},60000);return}catch(err){$('loginError').textContent=err.message;$('loginError').classList.add('show')}}$('loginCover').classList.remove('hidden')}
+  async function init(){bind();state.date=param('date')||todayJst();$('targetDate').value=state.date;state.demo=param('demo')==='1';$('modeChip').textContent=state.demo?'営業デモ':'共有iPad';$('ownerPcLink').href=state.demo?'owner.html?demo=1&v=reform-10':'owner.html?v=reform-10';let code=state.demo?(CFG.DEMO_ADMIN_CODE||'1234'):getCode();if(code){$('adminCode').value=code;try{await login(code);setInterval(()=>{if(!$('detailModal').classList.contains('open'))loadDay(true).catch(()=>{})},60000);return}catch(err){$('loginError').textContent=err.message;$('loginError').classList.add('show')}}$('loginCover').classList.remove('hidden')}
   init();
 })();
 </script>
