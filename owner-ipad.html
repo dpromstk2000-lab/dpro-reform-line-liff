@@ -54,7 +54,7 @@
   <div id="loginCover" class="login-cover">
     <section class="login-card">
       <div class="login-head">
-        <span class="step">STEP REFORM-8・OWNER iPad</span>
+        <span class="step">STEP REFORM-8-R1・OWNER iPad</span>
         <h1>共有iPad 現場ボード</h1>
         <p>本日の現地調査・工事・未完了タスクを、大きな画面で確認します。</p>
       </div>
@@ -76,7 +76,7 @@
     </header>
 
     <section class="hero">
-      <div><span class="step">STEP REFORM-8・OWNER iPad</span><h1>今日の訪問と工事を<br>大きなカードで確認</h1><p>受付・到着・調査中・工事中・完了を、その場で更新できます。</p></div>
+      <div><span class="step">STEP REFORM-8-R1・OWNER iPad</span><h1>今日の訪問と工事を<br>大きなカードで確認</h1><p>受付・到着・調査中・工事中・完了を、その場で更新できます。</p></div>
       <div class="hero-info"><small>表示中</small><strong id="heroDate">―</strong><small id="heroUpdated">最終更新 ―</small></div>
     </section>
 
@@ -148,6 +148,7 @@
   const $=id=>document.getElementById(id), qa=s=>[...document.querySelectorAll(s)];
   const state={adminCode:'',date:'',schedules:[],tasks:[],filter:'all',loading:0,current:null,currentProjectId:'',tab:'summary',selectedKind:'',selectedScheduleId:'',selectedFiles:[],demo:false};
   const labels={
+    phase:{inquiry_received:'相談受付',need_reply:'初回対応',survey_coordination:'現地調整',survey_scheduled:'現地調査',estimate_preparing:'見積作成',estimate_sent:'見積送付',estimate_decision_waiting:'見積回答待ち',work_coordination:'工事調整',work_scheduled:'工事予定',work_in_progress:'工事中',completion_check:'完了確認',completed:'完了',after_follow:'アフター',closed:'終了',cancelled:'取消'},
     survey:{requested:'希望受付',coordinating:'日程調整中',scheduled:'訪問予定',reminded:'案内済み',in_progress:'調査中',done:'調査完了',reschedule_requested:'日程変更希望',cancelled:'中止'},
     work:{not_started:'未着手',scheduled:'工事予定',in_progress:'工事中',material_waiting:'材料待ち',temporary_stop:'一時中断',inspection:'検査中',completion_pending:'本日作業完了',completed:'工事完了',aftercare:'アフター対応',cancelled:'中止'},
     building:{detached_house:'戸建て住宅',condominium:'マンション',apartment:'アパート',shop:'店舗',office:'事務所',vacant_house:'空き家',other:'その他'},
@@ -202,7 +203,7 @@
   function renderDetail(){const d=state.current;if(!d)return;const p=d.project;$('detailTitle').textContent=p.project_title||'案件詳細';$('detailSub').textContent=`${p.project_no||''}　${d.customer?.customer_name||''} 様　担当：${d.assigned_staff?.staff_name||'未設定'}`;renderSummary(d);renderProgress(d);renderPhotos(d);renderDetailTasks(d)}
   function renderSummary(d){const p=d.project,c=d.customer||{},prop=d.property||{},addr=addressOf(d),phone=c.phone||'';$('tab-summary').innerHTML=`
     <section class="detail-section"><div class="detail-title"><h3>お客様・施工先</h3></div><div class="detail-body"><div class="info-grid"><div class="info"><small>お客様</small><strong>${esc(c.customer_name||'―')} 様</strong></div><div class="info"><small>電話番号</small><strong>${esc(phone||'―')}</strong></div><div class="info"><small>工事種別</small><strong>${esc(d.category?.category_name||'―')}</strong></div><div class="info wide"><small>施工先</small><strong>${esc(addr||prop.customer_visible_label||'―')}</strong></div><div class="info"><small>建物</small><strong>${esc(labels.building[prop.building_type]||prop.building_type||'―')}</strong></div></div><div class="action-row">${phone?`<a class="btn btn-primary btn-sm" href="tel:${esc(phone.replace(/[^0-9+]/g,''))}">電話する</a>`:''}${addr?`<a class="btn btn-soft btn-sm" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}">地図を開く</a>`:''}</div></div></section>
-    <section class="detail-section"><div class="detail-title"><h3>案件の概要</h3><span class="badge">優先度 ${esc(labels.priority[p.priority]||p.priority||'通常')}</span></div><div class="detail-body"><div class="info-grid"><div class="info"><small>案件番号</small><strong>${esc(p.project_no||'―')}</strong></div><div class="info"><small>現在工程</small><strong>${esc(p.phase||'―')}</strong></div><div class="info"><small>次の対応</small><strong>${esc(p.next_action_title||'―')}</strong></div><div class="info wide"><small>相談内容</small><strong>${esc(p.inquiry_summary||p.requested_work||'―')}</strong></div><div class="info"><small>希望予算</small><strong>${esc(p.desired_budget_code||'―')}</strong></div></div></div></section>
+    <section class="detail-section"><div class="detail-title"><h3>案件の概要</h3><span class="badge">優先度 ${esc(labels.priority[p.priority]||p.priority||'通常')}</span></div><div class="detail-body"><div class="info-grid"><div class="info"><small>案件番号</small><strong>${esc(p.project_no||'―')}</strong></div><div class="info"><small>現在工程</small><strong>${esc(labels.phase[p.phase]||p.phase||'―')}</strong></div><div class="info"><small>次の対応</small><strong>${esc(p.next_action_title||'―')}</strong></div><div class="info wide"><small>相談内容</small><strong>${esc(p.inquiry_summary||p.requested_work||'―')}</strong></div><div class="info"><small>希望予算</small><strong>${esc(p.desired_budget_code||'―')}</strong></div></div></div></section>
     <section class="detail-section"><div class="detail-title"><h3>お客様への案内</h3></div><div class="detail-body">${p.customer_public_note?esc(p.customer_public_note):'お客様向けの案内は未入力です。'}</div></section>
     <section class="detail-section"><div class="detail-title"><h3>社内メモ</h3></div><div class="detail-body">${p.internal_notes?esc(p.internal_notes):'社内メモはありません。'}</div></section>`}
 
@@ -244,7 +245,7 @@
     document.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;try{if(b.dataset.openProject)await openProject(b.dataset.openProject,b.dataset.kind||'',b.dataset.scheduleId||'');if(b.dataset.taskStatus)await updateTask(b.dataset.taskId,b.dataset.taskStatus)}catch(err){toast(err.message,'error')}});
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('detailModal').classList.contains('open'))closeDetail()})
   }
-  async function init(){bind();state.date=param('date')||todayJst();$('targetDate').value=state.date;state.demo=param('demo')==='1';$('modeChip').textContent=state.demo?'営業デモ':'共有iPad';$('ownerPcLink').href=state.demo?'owner.html?demo=1&v=reform-8':'owner.html?v=reform-8';let code=state.demo?(CFG.DEMO_ADMIN_CODE||'1234'):getCode();if(code){$('adminCode').value=code;try{await login(code);setInterval(()=>{if(!$('detailModal').classList.contains('open'))loadDay(true).catch(()=>{})},60000);return}catch(err){$('loginError').textContent=err.message;$('loginError').classList.add('show')}}$('loginCover').classList.remove('hidden')}
+  async function init(){bind();state.date=param('date')||todayJst();$('targetDate').value=state.date;state.demo=param('demo')==='1';$('modeChip').textContent=state.demo?'営業デモ':'共有iPad';$('ownerPcLink').href=state.demo?'owner.html?demo=1&v=reform-8-r1':'owner.html?v=reform-8-r1';let code=state.demo?(CFG.DEMO_ADMIN_CODE||'1234'):getCode();if(code){$('adminCode').value=code;try{await login(code);setInterval(()=>{if(!$('detailModal').classList.contains('open'))loadDay(true).catch(()=>{})},60000);return}catch(err){$('loginError').textContent=err.message;$('loginError').classList.add('show')}}$('loginCover').classList.remove('hidden')}
   init();
 })();
 </script>
