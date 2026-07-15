@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="format-detection" content="telephone=no,address=no,email=no">
+  <title>DPROリフォーム｜相談・現地調査受付</title>
+  <script src="./config.js"></script>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    :root{
+      --brand:#0f766e;--brand-deep:#075e58;--brand-soft:#e7f5f2;--accent:#f59e0b;
+      --ink:#17201f;--muted:#5f6d6b;--line:#d9e2e0;--bg:#f4f7f6;--card:#fff;
+      --danger:#b42318;--danger-bg:#fff1f0;--success:#08785d;--shadow:0 10px 28px rgba(18,52,48,.09);
+      --radius:18px;--tap:52px;
+    }
+    *{box-sizing:border-box}
+    html{font-size:16px;scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased}
+    button,input,select,textarea{font:inherit;color:inherit}
+    button{cursor:pointer}
+    .app{min-height:100vh;padding-bottom:104px}
+    .topbar{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+    .topbar-inner{max-width:920px;margin:auto;padding:12px 16px;display:flex;align-items:center;gap:12px}
+    .logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(145deg,#2bb8a8,var(--brand));display:grid;place-items:center;color:#fff;font-weight:900;font-size:22px;box-shadow:0 7px 18px rgba(15,118,110,.26);flex:none}
+    .brand{min-width:0}.brand-name{font-weight:900;font-size:18px;line-height:1.25}.brand-sub{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .identity-pill{margin-left:auto;font-size:13px;font-weight:800;border-radius:999px;padding:7px 10px;background:var(--brand-soft);color:var(--brand-deep);white-space:nowrap}
+    .hero{background:linear-gradient(135deg,#0b6a63,#0f766e 58%,#198d82);color:#fff}
+    .hero-inner{max-width:920px;margin:auto;padding:26px 18px 30px}
+    .hero-badge{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.42);background:rgba(255,255,255,.1);border-radius:999px;padding:5px 10px;font-weight:800;font-size:13px}
+    .hero h1{font-size:clamp(28px,7vw,40px);line-height:1.28;margin:12px 0 8px;letter-spacing:.01em}.hero p{margin:0;max-width:650px;font-size:16px;font-weight:650;color:rgba(255,255,255,.92)}
+    .steps-wrap{max-width:920px;margin:-12px auto 0;padding:0 14px;position:relative;z-index:2}
+    .steps{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:12px;display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+    .step-dot{min-width:0;text-align:center;color:#82908e;font-size:11px;font-weight:800}.step-dot span{display:grid;place-items:center;width:30px;height:30px;margin:auto auto 4px;border-radius:50%;background:#edf1f0;font-size:14px}.step-dot.active{color:var(--brand-deep)}.step-dot.active span{background:var(--brand);color:#fff}.step-dot.done span{background:#bfe8df;color:var(--brand-deep)}
+    main{max-width:920px;margin:auto;padding:16px 14px}
+    .notice{display:none;margin:0 0 14px;border-radius:14px;padding:13px 14px;font-weight:750}.notice.show{display:block}.notice.info{background:#eaf4ff;color:#174f7c;border:1px solid #c7e0f5}.notice.error{background:var(--danger-bg);color:var(--danger);border:1px solid #f2c5c1}.notice.success{background:#eaf8f3;color:#08785d;border:1px solid #bfe7d9}
+    .panel{display:none;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}.panel.active{display:block}.panel-head{padding:20px 18px 14px;border-bottom:1px solid #e8eeec}.panel-head h2{font-size:24px;line-height:1.35;margin:0 0 5px}.panel-head p{margin:0;color:var(--muted);font-size:15px}.panel-body{padding:18px}
+    .section-title{font-size:19px;margin:0 0 10px}.required{font-size:12px;color:#fff;background:#d13f32;border-radius:5px;padding:2px 6px;margin-left:6px;vertical-align:2px}.optional{font-size:12px;color:var(--muted);background:#edf1f0;border-radius:5px;padding:2px 6px;margin-left:6px;vertical-align:2px}
+    .choice-grid{display:grid;grid-template-columns:1fr;gap:10px}.choice{position:relative}.choice input{position:absolute;opacity:0;pointer-events:none}.choice label{min-height:62px;border:2px solid var(--line);border-radius:14px;padding:13px 14px;display:flex;align-items:center;gap:12px;font-weight:850;background:#fff;transition:.16s}.choice label small{display:block;color:var(--muted);font-size:13px;font-weight:600}.choice .icon{width:36px;height:36px;border-radius:11px;background:#eff5f3;display:grid;place-items:center;font-size:20px;flex:none}.choice input:checked+label{border-color:var(--brand);background:var(--brand-soft);box-shadow:0 0 0 3px rgba(15,118,110,.08)}.choice input:focus-visible+label{outline:3px solid rgba(15,118,110,.25);outline-offset:2px}
+    .category-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.category label{min-height:58px;justify-content:center;text-align:center;padding:10px;font-size:15px}
+    .field{margin:0 0 17px}.field:last-child{margin-bottom:0}.field label,.field-label{display:block;font-size:15px;font-weight:850;margin:0 0 7px}.help{font-size:13px;color:var(--muted);margin:6px 0 0}.counter{text-align:right;font-size:12px;color:var(--muted);margin-top:4px}
+    input[type=text],input[type=tel],input[type=email],input[type=number],input[type=date],select,textarea{width:100%;min-height:52px;background:#fff;border:1.5px solid #bdcac7;border-radius:12px;padding:12px 13px;font-size:16px;outline:none;transition:.15s}textarea{min-height:145px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(15,118,110,.12)}
+    .two{display:grid;grid-template-columns:1fr;gap:12px}.divider{height:1px;background:#e6ecea;margin:20px 0}.subcard{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fbfdfc}.subcard+.subcard{margin-top:12px}.subcard.selected{border:2px solid var(--brand);background:var(--brand-soft)}
+    .returning{display:none;background:linear-gradient(135deg,#e8f7f3,#f7fffd);border:1px solid #aeddd2;border-radius:15px;padding:14px;margin-bottom:16px}.returning.show{display:block}.returning-title{font-weight:900;color:var(--brand-deep);font-size:17px}.returning p{margin:4px 0 0;color:#3e5f5a}.text-button{border:0;background:transparent;color:var(--brand-deep);font-weight:850;text-decoration:underline;padding:8px 0}
+    .photo-zone{border:2px dashed #9eb6b1;background:#f8fbfa;border-radius:16px;padding:20px;text-align:center}.photo-zone.drag{border-color:var(--brand);background:var(--brand-soft)}.photo-zone input{position:absolute;left:-9999px}.photo-button{display:inline-flex;align-items:center;justify-content:center;min-height:52px;border:0;border-radius:12px;padding:0 20px;background:var(--brand);color:#fff;font-weight:900}.photo-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}.photo-card{position:relative;border:1px solid var(--line);border-radius:13px;overflow:hidden;background:#fff}.photo-card img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}.photo-meta{padding:7px 9px;font-size:12px;color:var(--muted)}.photo-remove{position:absolute;right:7px;top:7px;width:34px;height:34px;border:0;border-radius:50%;background:rgba(20,27,26,.78);color:#fff;font-size:18px;font-weight:900}
+    .survey-mode{display:grid;grid-template-columns:1fr;gap:10px}.date-strip{display:flex;overflow:auto;gap:8px;padding:3px 1px 8px;scrollbar-width:thin}.date-btn{min-width:92px;min-height:62px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-weight:850}.date-btn.selected{background:var(--brand);border-color:var(--brand);color:#fff}.date-btn:disabled{opacity:.45}.slot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.slot-btn{min-height:48px;border:1.5px solid var(--line);border-radius:11px;background:#fff;font-weight:850}.slot-btn.selected{background:var(--brand);border-color:var(--brand);color:#fff}.slot-btn:disabled{background:#edf1f0;color:#9aa5a3}
+    .summary{display:grid;gap:11px}.summary-row{border-bottom:1px solid #e7eceb;padding-bottom:10px}.summary-row:last-child{border-bottom:0}.summary-key{color:var(--muted);font-size:13px;font-weight:800}.summary-value{font-weight:850;white-space:pre-wrap;word-break:break-word}.consent{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:13px;padding:13px;background:#fbfdfc}.consent input{width:23px;height:23px;accent-color:var(--brand);flex:none;margin-top:2px}.consent label{font-size:14px;font-weight:700}.consent-note{max-height:130px;overflow:auto;border:1px solid #e0e7e5;background:#fff;border-radius:10px;padding:10px;margin-top:8px;color:var(--muted);font-size:13px;white-space:pre-wrap}
+    .bottom{position:fixed;z-index:40;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:10px max(14px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left))}.bottom-inner{max-width:920px;margin:auto;display:grid;grid-template-columns:112px 1fr;gap:10px}.btn{min-height:54px;border-radius:13px;border:1px solid #b9c6c3;background:#fff;font-weight:900;font-size:16px;padding:0 16px}.btn.primary{border-color:var(--brand);background:var(--brand);color:#fff;box-shadow:0 7px 17px rgba(15,118,110,.23)}.btn.primary:disabled{opacity:.55;box-shadow:none}.btn.secondary{background:#fff}.btn.danger{color:var(--danger)}
+    .spinner{width:22px;height:22px;border:3px solid rgba(255,255,255,.45);border-top-color:#fff;border-radius:50%;display:inline-block;animation:spin .7s linear infinite;vertical-align:-5px;margin-right:8px}@keyframes spin{to{transform:rotate(360deg)}}
+    .success-screen{display:none;background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px 20px;text-align:center}.success-screen.show{display:block}.success-icon{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:#dff5ed;color:var(--success);font-size:38px;font-weight:900;margin:0 auto 14px}.success-screen h2{font-size:26px;margin:0 0 8px}.success-screen p{color:var(--muted);margin:0 0 14px}.receipt{text-align:left;background:#f6faf9;border:1px solid var(--line);border-radius:14px;padding:14px;margin:16px 0}.receipt strong{font-size:18px;color:var(--brand-deep)}.success-actions{display:grid;gap:10px}.hidden{display:none!important}
+    .loading-cover{position:fixed;inset:0;z-index:100;background:rgba(244,247,246,.88);backdrop-filter:blur(3px);display:grid;place-items:center}.loading-card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:22px;text-align:center;font-weight:850}.loading-card .ring{width:42px;height:42px;border:4px solid #d6e6e2;border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+    @media(min-width:700px){.choice-grid{grid-template-columns:repeat(2,1fr)}.category-grid{grid-template-columns:repeat(3,1fr)}.two{grid-template-columns:repeat(2,1fr)}.photo-list{grid-template-columns:repeat(4,1fr)}.survey-mode{grid-template-columns:repeat(2,1fr)}.slot-grid{grid-template-columns:repeat(5,1fr)}.panel-head{padding:24px 26px 16px}.panel-body{padding:24px 26px}.bottom-inner{grid-template-columns:150px 1fr}.step-dot{font-size:13px}}
+    @media(max-width:380px){.category-grid{grid-template-columns:1fr}.step-dot b{display:none}.steps{padding:9px 6px}.step-dot span{width:28px;height:28px}}
+  </style>
+</head>
+<body>
+<div class="loading-cover" id="loadingCover"><div class="loading-card"><div class="ring"></div><div id="loadingText">受付画面を準備しています</div></div></div>
+<div class="app" id="app">
+  <header class="topbar"><div class="topbar-inner"><div class="logo">D</div><div class="brand"><div class="brand-name" id="brandName">DPROリフォーム</div><div class="brand-sub" id="brandSub">リフォーム相談・現地調査受付</div></div><div class="identity-pill" id="identityPill">受付準備中</div></div></header>
+  <section class="hero"><div class="hero-inner"><div class="hero-badge">STEP REFORM-4</div><h1>住まいのお困りごとを<br>写真と一緒に相談できます</h1><p>見積相談、現地調査、修理・補修まで。内容を確認後、担当者からLINEまたはご希望の方法でご連絡します。</p></div></section>
+  <div class="steps-wrap"><div class="steps" id="steps"></div></div>
+  <main>
+    <div class="notice" id="notice" role="alert"></div>
+    <form id="intakeForm" novalidate>
+      <section class="panel active" data-step="1"><div class="panel-head"><h2>どのようなご相談ですか？</h2><p>一番近い内容と工事種別を選んでください。</p></div><div class="panel-body"><h3 class="section-title">相談方法<span class="required">必須</span></h3><div class="choice-grid" id="inquiryChoices"></div><div class="divider"></div><h3 class="section-title">工事種別<span class="required">必須</span></h3><div class="category-grid" id="categoryChoices"></div></div></section>
+      <section class="panel" data-step="2"><div class="panel-head"><h2>お困りごと・希望内容</h2><p>分かる範囲で大丈夫です。担当者が確認しやすい内容を入力します。</p></div><div class="panel-body"><div class="field"><label for="detail">相談内容<span class="required">必須</span></label><textarea id="detail" maxlength="5000" placeholder="例：浴室が古くなり、冬場に寒いので交換を検討しています。費用と工期を知りたいです。"></textarea><div class="counter"><span id="detailCount">0</span>/5000</div></div><div class="field"><div class="field-label">希望予算<span class="optional">任意</span></div><div class="category-grid" id="budgetChoices"></div></div><div class="field"><div class="field-label">希望時期<span class="optional">任意</span></div><div class="category-grid" id="timingChoices"></div></div><div class="field"><label for="supplement">補足事項<span class="optional">任意</span></label><textarea id="supplement" maxlength="2000" placeholder="駐車場所、連絡時の注意、特に気になる点など"></textarea></div></div></section>
+      <section class="panel" data-step="3"><div class="panel-head"><h2>工事する建物について</h2><p>すでに登録済みの方は、物件を選ぶだけで進めます。</p></div><div class="panel-body"><div class="returning" id="returningBox"><div class="returning-title" id="returningTitle"></div><p id="returningText"></p></div><div id="existingPropertyArea" class="hidden"><div class="field"><label for="propertySelect">登録済み物件</label><select id="propertySelect"></select></div><button type="button" class="text-button" id="useNewProperty">＋ 別の物件を登録する</button><div class="divider"></div></div><div id="newPropertyArea"><div class="two"><div class="field"><label for="propertyName">物件名<span class="optional">任意</span></label><input id="propertyName" type="text" maxlength="200" placeholder="例：自宅、実家、店舗"></div><div class="field"><label for="postalCode">郵便番号<span class="optional">任意</span></label><input id="postalCode" type="text" inputmode="numeric" maxlength="8" placeholder="123-4567"></div></div><div class="two"><div class="field"><label for="prefecture">都道府県<span class="optional">任意</span></label><input id="prefecture" type="text" maxlength="100" placeholder="福岡県"></div><div class="field"><label for="city">市区町村<span class="optional">任意</span></label><input id="city" type="text" maxlength="100" placeholder="福岡市博多区"></div></div><div class="field"><label for="address1">町名・番地<span class="required">必須</span></label><input id="address1" type="text" maxlength="500" placeholder="博多駅前1-2-3"></div><div class="field"><label for="address2">建物名・部屋番号<span class="optional">任意</span></label><input id="address2" type="text" maxlength="300" placeholder="DPROマンション101号"></div><div class="two"><div class="field"><label for="buildingType">建物種別</label><select id="buildingType"><option value="detached_house">戸建住宅</option><option value="condominium">分譲マンション</option><option value="apartment">アパート</option><option value="shop">店舗</option><option value="office">事務所</option><option value="vacant_house">空き家</option><option value="other">その他</option></select></div><div class="field"><label for="occupancyStatus">居住状況</label><select id="occupancyStatus"><option value="occupied">居住中</option><option value="vacant">空き家・空室</option><option value="before_move_in">入居前</option><option value="rented">賃貸中</option><option value="other">その他</option></select></div></div><div class="field"><label for="builtYear">築年数<span class="optional">任意</span></label><input id="builtYear" type="number" min="1900" max="2100" inputmode="numeric" placeholder="例：2005（建築年）"><p class="help">おおよその建築年が分かる場合に入力してください。</p></div></div></div></section>
+      <section class="panel" data-step="4"><div class="panel-head"><h2>相談写真を追加</h2><p>不具合箇所と周辺が分かる写真があると、初回確認がスムーズです。</p></div><div class="panel-body"><div class="photo-zone" id="photoZone"><input id="photoInput" type="file" accept="image/jpeg,image/png,image/webp" multiple><div style="font-size:32px">📷</div><h3 style="margin:5px 0 4px;font-size:19px">写真を選択・撮影</h3><p class="help" id="photoHelp">最大5枚。自動で送信しやすい大きさに調整します。</p><label for="photoInput" class="photo-button">写真を追加する</label></div><div class="photo-list" id="photoList"></div><div class="notice info show" style="margin-top:15px">外観・室内・住所などの個人情報が写る場合があります。相談に必要な写真だけを登録してください。</div></div></section>
+      <section class="panel" data-step="5"><div class="panel-head"><h2>現地調査の希望</h2><p>候補日時を送るか、担当者との相談を選べます。ここでは予約確定ではありません。</p></div><div class="panel-body"><div class="survey-mode"><div class="choice"><input type="radio" name="survey_mode" id="surveySlot" value="slot"><label for="surveySlot"><span class="icon">📅</span><span>空き候補から選ぶ<small>希望日時を担当者へ送ります</small></span></label></div><div class="choice"><input type="radio" name="survey_mode" id="surveyConsult" value="consult" checked><label for="surveyConsult"><span class="icon">💬</span><span>日程は担当者と相談<small>相談内容だけ先に送ります</small></span></label></div></div><div id="slotArea" class="hidden"><div class="divider"></div><div class="field"><div class="field-label">希望日</div><div class="date-strip" id="dateStrip"></div></div><div class="field"><div class="field-label">希望時間</div><div class="slot-grid" id="slotGrid"></div><p class="help">表示は希望受付枠です。担当者からの連絡をもって日時確定となります。</p></div></div></div></section>
+      <section class="panel" data-step="6"><div class="panel-head"><h2>お客様情報・入力確認</h2><p>内容を確認し、個人情報の取り扱いに同意して送信してください。</p></div><div class="panel-body"><div class="returning" id="customerKnown"><div class="returning-title" id="knownName"></div><p id="knownPhone"></p><button type="button" class="text-button" id="useDifferentCustomer">別のお客様として入力する</button></div><div id="customerFields"><div class="two"><div class="field"><label for="customerName">お名前<span class="required">必須</span></label><input id="customerName" type="text" autocomplete="name" maxlength="100" placeholder="山田 太郎"></div><div class="field"><label for="phone">電話番号<span class="required">必須</span></label><input id="phone" type="tel" autocomplete="tel" maxlength="50" inputmode="tel" placeholder="090-1234-5678"></div></div></div><div class="two"><div class="field"><label for="contactMethod">希望連絡方法</label><select id="contactMethod"></select></div><div class="field"><label for="contactTime">連絡しやすい時間<span class="optional">任意</span></label><input id="contactTime" type="text" maxlength="200" placeholder="平日18時以降など"></div></div><div class="field"><label for="email">メールアドレス<span class="optional">任意</span></label><input id="email" type="email" autocomplete="email" maxlength="200" placeholder="example@email.jp"></div><div class="divider"></div><h3 class="section-title">入力内容</h3><div class="summary subcard" id="summary"></div><div class="divider"></div><div class="consent"><input id="privacyConsent" type="checkbox"><label for="privacyConsent">個人情報の利用目的と写真に関する注意事項を確認し、相談受付のために情報を送信することに同意します。<div class="consent-note" id="privacyNote"></div></label></div></div></section>
+    </form>
+    <section class="success-screen" id="successScreen"><div class="success-icon">✓</div><h2>ご相談を受け付けました</h2><p>担当者が内容を確認後、ご希望の方法でご連絡します。</p><div class="receipt"><div>受付番号</div><strong id="projectNo">—</strong><div id="successSurvey" class="help"></div></div><div class="success-actions"><button type="button" class="btn primary" id="openMember">マイページを確認する</button><button type="button" class="btn secondary" id="copyMessage">LINE用の確認文面をコピー</button><button type="button" class="btn secondary" id="newConsultation">続けて別の相談をする</button></div></section>
+  </main>
+  <div class="bottom" id="bottomNav"><div class="bottom-inner"><button type="button" class="btn secondary" id="prevBtn">戻る</button><button type="button" class="btn primary" id="nextBtn">次へ進む</button></div></div>
+</div>
+<script>
+(() => {
+  'use strict';
+  const CFG = window.DPRO_REFORM_CONFIG || {};
+  const STEP_NAMES = ['相談内容','希望詳細','物件情報','写真','現地調査','確認・送信'];
+  const ICONS = {estimate:'🧾',site_survey:'🏠',photo_consultation:'📷',repair:'🛠️',aftercare:'🔎',other:'💬'};
+  const state = {step:1, publicConfig:null, options:null, lineUserId:'', lineProfile:null, member:null, returning:false, useLineIdentity:true, useExistingProperty:false, photos:[], surveyDays:[], selectedDate:'', selectedSlot:null, submitting:false, result:null};
+  const $ = id => document.getElementById(id);
+  const q = (s,r=document) => r.querySelector(s);
+  const qa = (s,r=document) => [...r.querySelectorAll(s)];
+  const esc = s => String(s ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  const selected = name => q(`input[name="${name}"]:checked`)?.value || '';
+  const getParam = name => new URLSearchParams(location.search).get(name) || '';
+  const withCompany = path => {
+    const u = new URL(String(CFG.API_BASE||'').replace(/\/+$/,'') + path);
+    if (CFG.COMPANY_CODE) u.searchParams.set('company_code',CFG.COMPANY_CODE);
+    return u.toString();
+  };
+
+  async function api(path, options={}) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), Number(CFG.REQUEST_TIMEOUT_MS)||30000);
+    try {
+      const headers = {'accept':'application/json',...(options.headers||{})};
+      if (state.lineUserId) headers['x-line-user-id'] = state.lineUserId;
+      const res = await fetch(withCompany(path), {...options, headers, signal:ctrl.signal});
+      const text = await res.text();
+      let data={}; try{data=text?JSON.parse(text):{}}catch{throw new Error('サーバー応答を読み取れませんでした。');}
+      if(!res.ok || data.ok===false) throw new Error(data?.error?.message || `通信エラー（${res.status}）`);
+      return data;
+    } catch(e) {
+      if(e.name==='AbortError') throw new Error('通信が混み合っています。時間をおいてもう一度お試しください。');
+      throw e;
+    } finally { clearTimeout(timer); }
+  }
+
+  function showNotice(message,type='error') {
+    const el=$('notice'); el.textContent=message; el.className=`notice ${type} show`; el.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  function clearNotice(){ $('notice').className='notice'; $('notice').textContent=''; }
+  function setLoading(show,text='受付画面を準備しています'){ $('loadingText').textContent=text; $('loadingCover').classList.toggle('hidden',!show); }
+
+  async function initIdentity(){
+    let lineId=getParam('line_user_id');
+    const demo=getParam('demo')==='1';
+    if(!lineId && demo) lineId=CFG.DEMO_LINE_USER_ID||'';
+    if(!lineId && CFG.LIFF_ID && window.liff){
+      try{
+        await liff.init({liffId:CFG.LIFF_ID});
+        if(liff.isLoggedIn()){
+          const p=await liff.getProfile(); state.lineProfile=p; lineId=p.userId||'';
+        }
+      }catch(e){ console.warn('LIFF init:',e); }
+    }
+    state.lineUserId=lineId;
+    if(!lineId){ $('identityPill').textContent='初回受付'; return; }
+    try{
+      const data=await api('/api/member/profile'); state.member=data;
+      if(data.registered && data.profile){
+        state.returning=true;
+        $('identityPill').textContent='登録済み';
+        $('returningBox').classList.add('show');
+        $('returningTitle').textContent=`${data.profile.customer_name} 様`;
+        $('returningText').textContent=`登録済み情報を利用します（${data.profile.phone_masked||'電話番号登録済み'}）`;
+        $('customerKnown').classList.add('show'); $('knownName').textContent=`${data.profile.customer_name} 様`; $('knownPhone').textContent=data.profile.phone_masked||'電話番号登録済み';
+        $('customerFields').classList.add('hidden');
+        setupProperties(data.properties||[]);
+      }else $('identityPill').textContent='初回受付';
+    }catch(e){ $('identityPill').textContent='入力受付'; console.warn(e); }
+  }
+
+  function setupProperties(properties){
+    if(!properties.length) return;
+    const sel=$('propertySelect'); sel.innerHTML=properties.map(p=>`<option value="${esc(p.id)}">${esc(p.customer_visible_label||p.property_name||[p.prefecture,p.city,p.address_line1].filter(Boolean).join(' '))}</option>`).join('');
+    state.useExistingProperty=true; $('existingPropertyArea').classList.remove('hidden'); $('newPropertyArea').classList.add('hidden');
+  }
+
+  function renderSteps(){ $('steps').innerHTML=STEP_NAMES.map((n,i)=>`<div class="step-dot ${i+1===state.step?'active':''} ${i+1<state.step?'done':''}"><span>${i+1<state.step?'✓':i+1}</span><b>${esc(n)}</b></div>`).join(''); }
+  function renderChoices(){
+    const opts=state.options||{};
+    $('inquiryChoices').innerHTML=(opts.inquiry_types||[]).map((x,i)=>`<div class="choice"><input type="radio" name="inquiry_type" id="inq_${esc(x.value)}" value="${esc(x.value)}" ${i===0?'checked':''}><label for="inq_${esc(x.value)}"><span class="icon">${ICONS[x.value]||'💬'}</span><span>${esc(x.label)}</span></label></div>`).join('');
+    $('categoryChoices').innerHTML=(opts.categories||[]).map((x,i)=>`<div class="choice category"><input type="radio" name="category" id="cat_${esc(x.category_code)}" value="${esc(x.category_code)}" data-label="${esc(x.category_name)}" ${i===0?'checked':''}><label for="cat_${esc(x.category_code)}">${esc(x.category_name)}</label></div>`).join('');
+    renderSimpleChoices('budgetChoices','budget',opts.budget_options||[],'相談して決めたい');
+    renderSimpleChoices('timingChoices','timing',opts.timing_options||[],'時期は相談したい');
+    $('contactMethod').innerHTML=(opts.contact_methods||[{value:'line',label:'LINE'},{value:'phone',label:'電話'}]).map(x=>`<option value="${esc(x.value)}">${esc(x.label)}</option>`).join('');
+    const photo=opts.photo||{}; $('photoHelp').textContent=`最大${photo.max_initial_photos||CFG.DEFAULT_MAX_PHOTOS||5}枚。自動で送信しやすい大きさに調整します。`;
+    $('privacyNote').textContent=[opts.notices?.privacy||'',photo.notice||'',opts.notices?.estimate||''].filter(Boolean).join('\n\n') || 'お預かりした情報は、ご相談への対応、現地調査、見積、工事連絡のために利用します。';
+  }
+  function renderSimpleChoices(id,name,items,fallback){
+    const arr=items.length?items.map((x,i)=>typeof x==='string'?{value:x,label:x}:{value:x.value||x.code||String(i),label:x.label||x.name||x.value}):[{value:'consult',label:fallback}];
+    $(id).innerHTML=arr.map((x,i)=>`<div class="choice category"><input type="radio" name="${name}" id="${name}_${i}" value="${esc(x.value)}" data-label="${esc(x.label)}" ${i===0?'checked':''}><label for="${name}_${i}">${esc(x.label)}</label></div>`).join('');
+  }
+
+  function showStep(n){
+    clearNotice(); state.step=Math.max(1,Math.min(6,n));
+    qa('.panel').forEach(p=>p.classList.toggle('active',Number(p.dataset.step)===state.step));
+    $('prevBtn').style.visibility=state.step===1?'hidden':'visible';
+    $('nextBtn').textContent=state.step===6?'この内容で相談を送る':'次へ進む';
+    renderSteps();
+    if(state.step===5 && selected('survey_mode')==='slot' && !state.surveyDays.length) loadSlots();
+    if(state.step===6) renderSummary();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function validateStep(step){
+    if(step===1){ if(!selected('inquiry_type')) return '相談方法を選択してください。'; if(!selected('category')) return '工事種別を選択してください。'; }
+    if(step===2){ const v=$('detail').value.trim(); if(v.length<10) return '相談内容を10文字以上で入力してください。'; }
+    if(step===3 && !state.useExistingProperty){ if(!$('address1').value.trim()) return '町名・番地を入力してください。'; }
+    if(step===5 && selected('survey_mode')==='slot' && (!state.selectedDate || !state.selectedSlot)) return '現地調査の希望日と希望時間を選択してください。';
+    if(step===6){
+      if(!state.returning){ if(!$('customerName').value.trim()) return 'お名前を入力してください。'; if(normalizePhone($('phone').value).length<10) return '電話番号を正しく入力してください。'; }
+      if(!$('privacyConsent').checked) return '個人情報の取り扱いを確認し、同意してください。';
+    }
+    return '';
+  }
+
+  async function next(){
+    const err=validateStep(state.step); if(err){showNotice(err);return;}
+    if(state.step<6){showStep(state.step+1);return;}
+    await submit();
+  }
+
+  function normalizePhone(v){
+    let s=String(v||'').normalize('NFKC').replace(/[ー−―‐‑–—]/g,'-').replace(/[^\d+]/g,'');
+    if(s.startsWith('+81'))s='0'+s.slice(3); else if(s.startsWith('81')&&s.length>=11)s='0'+s.slice(2);
+    return s.replace(/\D/g,'');
+  }
+
+  function getLabel(name){ const el=q(`input[name="${name}"]:checked`); return el?.dataset.label || el?.closest('.choice')?.querySelector('label')?.innerText?.trim() || ''; }
+  function renderSummary(){
+    const prop=state.useExistingProperty?$('propertySelect').selectedOptions[0]?.textContent:[$('prefecture').value,$('city').value,$('address1').value,$('address2').value].filter(Boolean).join(' ');
+    const survey=selected('survey_mode')==='slot'&&state.selectedSlot?`${fmtDate(state.selectedDate)} ${state.selectedSlot.start_time}頃`:'担当者と相談';
+    const rows=[['相談方法',q('input[name="inquiry_type"]:checked')?.nextElementSibling?.innerText?.trim()||''],['工事種別',getLabel('category')],['相談内容',$('detail').value.trim()],['希望予算',getLabel('budget')],['希望時期',getLabel('timing')],['物件',prop||''],['写真',`${state.photos.length}枚`],['現地調査',survey],['連絡方法',$('contactMethod').selectedOptions[0]?.textContent||'']];
+    $('summary').innerHTML=rows.map(([k,v])=>`<div class="summary-row"><div class="summary-key">${esc(k)}</div><div class="summary-value">${esc(v)}</div></div>`).join('');
+  }
+
+  async function loadSlots(){
+    $('dateStrip').innerHTML='<span class="help">空き候補を確認しています...</span>'; $('slotGrid').innerHTML='';
+    try{
+      const from=localDate(new Date()), to=localDate(new Date(Date.now()+13*86400000));
+      const cat=selected('category');
+      const data=await api(`/api/public/site-survey-slots?date_from=${encodeURIComponent(from)}&date_to=${encodeURIComponent(to)}&category_code=${encodeURIComponent(cat)}`);
+      state.surveyDays=(data.days||[]).filter(d=>(d.slots||[]).some(s=>s.available));
+      renderDates();
+    }catch(e){ $('dateStrip').innerHTML=''; showNotice(e.message); }
+  }
+  function renderDates(){
+    if(!state.surveyDays.length){$('dateStrip').innerHTML='<span class="help">現在選択できる候補がありません。「日程は担当者と相談」を選んでください。</span>';return;}
+    $('dateStrip').innerHTML=state.surveyDays.map((d,i)=>`<button type="button" class="date-btn ${state.selectedDate===d.date?'selected':''}" data-date="${d.date}">${fmtDateShort(d.date)}<br><small>${(d.slots||[]).filter(s=>s.available).length}枠</small></button>`).join('');
+    qa('.date-btn',$('dateStrip')).forEach(b=>b.addEventListener('click',()=>{state.selectedDate=b.dataset.date;state.selectedSlot=null;renderDates();renderSlots();}));
+    if(!state.selectedDate){state.selectedDate=state.surveyDays[0].date;renderDates();renderSlots();}
+  }
+  function renderSlots(){
+    const day=state.surveyDays.find(d=>d.date===state.selectedDate); const slots=(day?.slots||[]).filter(s=>s.available);
+    $('slotGrid').innerHTML=slots.map(s=>`<button type="button" class="slot-btn ${state.selectedSlot?.start_time===s.start_time?'selected':''}" data-start="${s.start_time}" data-end="${s.end_time}">${esc(s.start_time)}</button>`).join('');
+    qa('.slot-btn',$('slotGrid')).forEach(b=>b.addEventListener('click',()=>{state.selectedSlot={start_time:b.dataset.start,end_time:b.dataset.end};renderSlots();}));
+  }
+
+  async function handlePhotos(files){
+    const max=Number(state.options?.photo?.max_initial_photos||CFG.DEFAULT_MAX_PHOTOS||5);
+    const remaining=max-state.photos.length; if(remaining<=0){showNotice(`写真は最大${max}枚までです。`);return;}
+    setLoading(true,'写真を調整しています');
+    try{
+      for(const file of [...files].slice(0,remaining)){
+        if(!/^image\/(jpeg|png|webp)$/.test(file.type)){showNotice(`${file.name}は対応していない形式です。`);continue;}
+        const processed=await compressImage(file);
+        state.photos.push(processed);
+      }
+      renderPhotos();
+    }catch(e){showNotice(e.message);}finally{setLoading(false);$('photoInput').value='';}
+  }
+  async function compressImage(file){
+    const img=await fileToImage(file); const maxEdge=Number(CFG.PHOTO_LONG_EDGE_PX)||1600; const scale=Math.min(1,maxEdge/Math.max(img.naturalWidth,img.naturalHeight));
+    const canvas=document.createElement('canvas'); canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));
+    const ctx=canvas.getContext('2d',{alpha:false});ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);
+    let quality=.84, blob=await canvasBlob(canvas,quality), target=Math.min(Number(CFG.PHOTO_TARGET_BYTES)||1250000,Number(state.options?.photo?.max_photo_size_bytes)||1572864);
+    while(blob.size>target && quality>.48){quality-=.08;blob=await canvasBlob(canvas,quality);}
+    if(blob.size>Number(state.options?.photo?.max_photo_size_bytes||1572864))throw new Error(`${file.name}を送信可能な大きさに調整できませんでした。`);
+    const dataUrl=await blobToDataURL(blob);return {id:crypto.randomUUID(),filename:file.name.replace(/\.[^.]+$/,'')+'.jpg',mime_type:'image/jpeg',data_url:dataUrl,size:blob.size,preview:dataUrl};
+  }
+  function fileToImage(file){return new Promise((resolve,reject)=>{const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{URL.revokeObjectURL(url);resolve(img)};img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error(`${file.name}を読み込めませんでした。`))};img.src=url;});}
+  function canvasBlob(canvas,q){return new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('写真の調整に失敗しました。')),'image/jpeg',q));}
+  function blobToDataURL(blob){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>reject(new Error('写真の変換に失敗しました。'));r.readAsDataURL(blob);});}
+  function renderPhotos(){
+    $('photoList').innerHTML=state.photos.map(p=>`<div class="photo-card"><img src="${p.preview}" alt="相談写真"><button type="button" class="photo-remove" data-id="${p.id}" aria-label="写真を削除">×</button><div class="photo-meta">${esc(p.filename)}<br>${Math.round(p.size/1024)}KB</div></div>`).join('');
+    qa('.photo-remove',$('photoList')).forEach(b=>b.addEventListener('click',()=>{state.photos=state.photos.filter(p=>p.id!==b.dataset.id);renderPhotos();}));
+  }
+
+  function payload(){
+    const useSurvey=selected('survey_mode')==='slot'&&state.selectedSlot;
+    const p={line_user_id:(state.useLineIdentity&&state.lineUserId)||undefined,customer_name:state.returning?undefined:$('customerName').value.trim(),phone:state.returning?undefined:$('phone').value.trim(),email:$('email').value.trim()||undefined,preferred_contact_method:$('contactMethod').value,preferred_contact_time:$('contactTime').value.trim()||undefined,privacy_consent:true,inquiry_type:selected('inquiry_type'),category_code:selected('category'),inquiry_summary:$('detail').value.trim(),requested_work:$('detail').value.trim(),desired_budget_code:selected('budget')||undefined,desired_timing_code:selected('timing')||undefined,customer_public_note:$('supplement').value.trim()||undefined,photos:state.photos.map(x=>({data_url:x.data_url,mime_type:x.mime_type,filename:x.filename,photo_type:'customer_consultation'})),intake_answers:[{question_code:'supplement',question_label:'補足事項',answer_type:'textarea',answer:$('supplement').value.trim()||'なし',customer_visible:true,sort_order:10}]};
+    if(state.useExistingProperty)p.property_id=$('propertySelect').value; else Object.assign(p,{property_name:$('propertyName').value.trim()||undefined,property_postal_code:$('postalCode').value.trim()||undefined,prefecture:$('prefecture').value.trim()||undefined,city:$('city').value.trim()||undefined,address_line1:$('address1').value.trim(),address_line2:$('address2').value.trim()||undefined,building_type:$('buildingType').value,occupancy_status:$('occupancyStatus').value,built_year:$('builtYear').value?Number($('builtYear').value):undefined,customer_visible_label:$('propertyName').value.trim()||undefined});
+    if(useSurvey)Object.assign(p,{requested_date:state.selectedDate,requested_time_text:`${state.selectedSlot.start_time}頃`,survey_method:'on_site',survey_note:'相談受付画面で選択した希望日時'});
+    return p;
+  }
+
+  async function submit(){
+    if(state.submitting)return; state.submitting=true; clearNotice(); const btn=$('nextBtn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>送信しています';
+    try{
+      const data=await api('/api/public/inquiries',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload())});
+      state.result=data; qa('.panel').forEach(p=>p.classList.remove('active'));$('bottomNav').classList.add('hidden');$('successScreen').classList.add('show');$('projectNo').textContent=data.project?.project_no||'受付完了';
+      $('successSurvey').textContent=data.survey?`現地調査希望：${fmtDate(data.survey.requested_date)} ${data.survey.requested_time_text||''}`:'現地調査の日程は担当者からご連絡します。';
+      window.scrollTo({top:0,behavior:'smooth'});
+    }catch(e){showNotice(e.message);}finally{state.submitting=false;btn.disabled=false;btn.textContent='この内容で相談を送る';}
+  }
+
+  function copySuccess(){
+    if(!state.result)return; const text=`${state.result.customer?.customer_name||''}です。\nリフォーム相談を送信しました。\n受付番号：${state.result.project?.project_no||''}\n相談内容：${$('detail').value.trim()}\n確認をお願いいたします。`;
+    navigator.clipboard?.writeText(text).then(()=>showNotice('確認文面をコピーしました。','success')).catch(()=>fallbackCopy(text));
+  }
+  function fallbackCopy(text){const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();showNotice('確認文面をコピーしました。','success');}
+  function resetForm(){location.href=location.pathname+(state.lineUserId?`?line_user_id=${encodeURIComponent(state.lineUserId)}`:'');}
+  function openMember(){const u=new URL(CFG.MEMBER_PAGE||'member.html',location.href);if(state.lineUserId)u.searchParams.set('line_user_id',state.lineUserId);if(state.result?.project?.public_token)u.searchParams.set('token',state.result.project.public_token);location.href=u.toString();}
+  function fmtDate(v){if(!v)return '';const [y,m,d]=v.split('-').map(Number);return `${y}年${m}月${d}日（${'日月火水木金土'[new Date(y,m-1,d).getDay()]}）`;}
+  function fmtDateShort(v){const [y,m,d]=v.split('-').map(Number);return `${m}/${d}（${'日月火水木金土'[new Date(y,m-1,d).getDay()]}）`;}
+  function localDate(date){const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,'0'),d=String(date.getDate()).padStart(2,'0');return `${y}-${m}-${d}`;}
+
+  function bind(){
+    $('nextBtn').addEventListener('click',next); $('prevBtn').addEventListener('click',()=>showStep(state.step-1));
+    $('detail').addEventListener('input',()=>{$('detailCount').textContent=$('detail').value.length});
+    $('photoInput').addEventListener('change',e=>handlePhotos(e.target.files));
+    const z=$('photoZone');['dragenter','dragover'].forEach(n=>z.addEventListener(n,e=>{e.preventDefault();z.classList.add('drag')}));['dragleave','drop'].forEach(n=>z.addEventListener(n,e=>{e.preventDefault();z.classList.remove('drag')}));z.addEventListener('drop',e=>handlePhotos(e.dataTransfer.files));
+    qa('input[name="survey_mode"]').forEach(r=>r.addEventListener('change',()=>{const slot=selected('survey_mode')==='slot';$('slotArea').classList.toggle('hidden',!slot);if(slot&&!state.surveyDays.length)loadSlots();}));
+    $('useNewProperty').addEventListener('click',()=>{state.useExistingProperty=false;$('newPropertyArea').classList.remove('hidden');$('existingPropertyArea').classList.add('hidden');});
+    $('useDifferentCustomer').addEventListener('click',()=>{state.returning=false;state.useLineIdentity=false;$('customerKnown').classList.remove('show');$('customerFields').classList.remove('hidden');$('customerName').value=state.member?.profile?.customer_name||'';});
+    $('copyMessage').addEventListener('click',copySuccess);$('newConsultation').addEventListener('click',resetForm);$('openMember').addEventListener('click',openMember);if(!CFG.MEMBER_PAGE_ENABLED)$('openMember').classList.add('hidden');
+  }
+
+  async function init(){
+    bind();renderSteps();
+    try{
+      const [pc,opt]=await Promise.all([api('/api/public/config'),api('/api/public/consultation-options')]); state.publicConfig=pc;state.options=opt;
+      $('brandName').textContent=pc.company?.company_name||'DPROリフォーム';$('brandSub').textContent=pc.company?.subtitle||'リフォーム相談・現地調査受付';document.title=`${pc.company?.company_name||'DPROリフォーム'}｜相談受付`;
+      renderChoices();await initIdentity();showStep(1);
+    }catch(e){showNotice(`受付画面の準備に失敗しました。${e.message}`);$('nextBtn').disabled=true;}
+    finally{setLoading(false);}
+  }
+  init();
+})();
+</script>
+</body>
+</html>
