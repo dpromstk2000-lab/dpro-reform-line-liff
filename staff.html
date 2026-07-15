@@ -93,6 +93,11 @@
     .report-list,.photo-grid,.detail-task-list{display:grid;gap:8px}.report{padding:11px;border:1px solid var(--line);border-radius:11px;background:#fff}.report strong{font-size:15px}.report p{font-size:14px;margin:5px 0 0;white-space:pre-wrap}.report small{color:var(--muted);font-size:12px}
     .photo-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.photo{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}.photo img,.photo-placeholder{width:100%;aspect-ratio:4/3;object-fit:cover;background:#e9f1ef;display:grid;place-items:center;color:var(--muted);font-weight:800}.photo-meta{padding:8px}.photo-meta strong{font-size:13px;display:block}.photo-meta small{font-size:12px;color:var(--muted)}
     .upload-preview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:8px}.upload-preview img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:9px;border:1px solid var(--line)}
+    .date-time-pair{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:10px}
+    .save-feedback{margin-top:10px;padding:11px 13px;border-radius:11px;background:#eef5f3;color:#536561;font-size:14px;font-weight:800;border:1px solid #d6e3e0}
+    .save-feedback.saved{background:#e5f7f2;color:#066c63;border-color:#a9ddd4}
+    .save-feedback.dirty{background:#fff4df;color:#8a5200;border-color:#f0cf8e}
+    @media(max-width:620px){.date-time-pair{grid-template-columns:1fr}}
     .toast-area{position:fixed;z-index:200;right:16px;top:82px;display:grid;gap:8px;width:min(390px,calc(100vw - 32px))}.toast{padding:12px 14px;border-radius:12px;background:#163a35;color:#fff;box-shadow:var(--shadow);font-weight:800;animation:toastIn .2s ease}.toast.error{background:#8f2626}.toast.ok{background:#076b61}@keyframes toastIn{from{transform:translateY(-8px);opacity:0}to{transform:none;opacity:1}}
     .loading{position:fixed;inset:0;z-index:180;background:rgba(255,255,255,.58);display:none;place-items:center}.loading.show{display:grid}.spinner{width:50px;height:50px;border-radius:50%;border:5px solid #cce6e1;border-top-color:var(--green-700);animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
     @media(max-width:900px){
@@ -107,7 +112,7 @@
   <div id="loginCover" class="login-cover">
     <form id="loginForm" class="login-card" autocomplete="off">
       <div class="login-hero">
-        <span class="step-pill">STEP REFORM-7・STAFF</span>
+        <span class="step-pill">STEP REFORM-7-R1・STAFF</span>
         <h1>担当者用 現場画面</h1>
         <p>自分の訪問予定、現地調査、工事進捗、写真、タスクを確認します。</p>
       </div>
@@ -149,7 +154,7 @@
     <section class="hero">
       <div class="hero-inner">
         <div>
-          <span class="step-pill">STEP REFORM-7・STAFF</span>
+          <span class="step-pill">STEP REFORM-7-R1・STAFF</span>
           <h1>今日の訪問と作業を<br>順番に確認</h1>
           <p>現地調査、工事、写真報告、未完了タスクを担当者ごとに表示します。</p>
         </div>
@@ -225,7 +230,7 @@
   const CFG=window.DPRO_REFORM_CONFIG||{};
   const API_BASE=String(CFG.API_BASE||'https://dpro-reform-line-api.dpromstk2000.workers.dev').replace(/\/$/,'');
   const COMPANY_CODE=CFG.COMPANY_CODE||'dpro_reform_demo';
-  const state={staffCode:'',actor:null,date:'',schedules:[],tasks:[],current:null,currentProjectId:'',tab:'summary',loading:0,demo:false,selectedFiles:[]};
+  const state={staffCode:'',actor:null,date:'',schedules:[],tasks:[],current:null,currentProjectId:'',tab:'summary',loading:0,demo:false,selectedFiles:[],surveyDirty:false,lastSurveySaveAt:null};
   const $=id=>document.getElementById(id), qa=(s,r=document)=>[...r.querySelectorAll(s)];
   const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   const param=k=>new URLSearchParams(location.search).get(k)||'';
@@ -235,10 +240,14 @@
   const fmtTime=v=>{if(!v)return '未定';const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v);return new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',hour12:false}).format(d)};
   const fmtDateTime=v=>v?`${fmtDate(v)} ${fmtTime(v)}`:'―';
   const toLocalInput=v=>{if(!v)return '';const d=new Date(v);if(Number.isNaN(d.getTime()))return '';const parts=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d).reduce((a,x)=>(a[x.type]=x.value,a),{});return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`};
+  const splitLocalInput=v=>{const x=toLocalInput(v);if(!x)return {date:'',time:''};const [date,time='']=x.split('T');return {date,time}};
+  const combineLocal=(date,time)=>date&&time?`${date}T${time}`:'';
   const isoFromLocal=v=>v?new Date(`${v}:00+09:00`).toISOString():null;
   const statusLabels={requested:'希望受付',coordinating:'日程調整中',scheduled:'予定済み',reminded:'案内済み',in_progress:'進行中',done:'完了',reschedule_requested:'日程変更希望',cancelled:'取消',not_started:'未着手',material_waiting:'材料待ち',temporary_stop:'一時中断',inspection:'検査中',completion_pending:'完了確認待ち',completed:'完了',aftercare:'アフター対応',open:'未対応'};
   const phaseLabels={inquiry_received:'相談受付',need_reply:'初回対応',survey_coordination:'現地調整',survey_scheduled:'現地調査',estimate_preparing:'見積作成',estimate_sent:'見積送付',estimate_decision_waiting:'見積回答待ち',work_coordination:'工事調整',work_scheduled:'工事予定',work_in_progress:'工事中',completion_check:'完了確認',completed:'完了',after_follow:'アフター',closed:'終了',cancelled:'取消'};
   const workLabels={not_started:'未着手',scheduled:'工事予定',in_progress:'工事中',material_waiting:'材料待ち',temporary_stop:'一時中断',inspection:'検査中',completion_pending:'完了確認待ち',completed:'完了',aftercare:'アフター対応'};
+  const buildingTypeLabels={detached_house:'戸建て住宅',apartment:'マンション・集合住宅',condominium:'マンション・集合住宅',shop:'店舗',office:'事務所',factory:'工場・倉庫',other:'その他'};
+  const priorityLabels={low:'低',normal:'通常',high:'高',urgent:'至急'};
   const photoTypeLabels={customer_consultation:'相談写真',site_survey:'現地調査',before_work:'工事前',during_work:'工事中',completed:'完成',aftercare_issue:'完了後相談',other:'その他'};
   const visibilityLabels={customer_public:'お客様公開',internal_only:'社内のみ',hidden:'非表示'};
   const taskTypeLabels={inquiry_reply:'初回返信',survey_coordination:'現地調整',survey_reminder:'現地前案内',survey_result:'調査結果',estimate_prepare:'見積作成',estimate_send:'見積送付',estimate_follow:'見積フォロー',work_schedule_notice:'工事予定案内',work_start_notice:'工事開始案内',progress_photo:'進捗写真',material_update:'材料状況',completion_check:'完了確認',after_follow:'アフター',review_request:'口コミ依頼',other:'その他'};
@@ -263,7 +272,7 @@
   function clearCode(){try{localStorage.removeItem(storageKey())}catch{}location.href='staff.html'}
 
   async function login(code){state.staffCode=code;const data=await api(`/api/staff/day?date=${encodeURIComponent(state.date)}`);state.actor=data.actor;saveCode(code);$('loginCover').classList.add('hidden');$('app').classList.remove('hidden');applyDay(data);renderAll()}
-  async function loadDay(){const data=await api(`/api/staff/day?date=${encodeURIComponent(state.date)}`);state.actor=data.actor;applyDay(data);renderAll();toast('最新情報へ更新しました')}
+  async function loadDay(silent=false){const data=await api(`/api/staff/day?date=${encodeURIComponent(state.date)}`);state.actor=data.actor;applyDay(data);renderAll();if(!silent)toast('最新情報へ更新しました')}
   function applyDay(data){state.schedules=Array.isArray(data.schedules)?data.schedules:[];state.tasks=Array.isArray(data.tasks)?data.tasks:[];$('staffChip').textContent=data.actor?.name||'担当者';$('heroDate').textContent=fmtDate(`${state.date}T00:00:00+09:00`);$('heroUpdated').textContent=`最終更新 ${fmtTime(new Date())}`}
 
   function renderAll(){renderKpis();renderSchedules();renderTasks()}
@@ -288,7 +297,7 @@
     if(scheduleKind==='work'&&scheduleId)state.current._selectedWorkId=scheduleId;
     renderDetail();setTab(tab);$('detailModal').classList.add('open');document.body.style.overflow='hidden'
   }
-  async function reloadProject(){if(!state.currentProjectId)return;const data=await api(`/api/staff/project-detail?project_id=${encodeURIComponent(state.currentProjectId)}`);state.current=data;renderDetail();setTab(state.tab);toast('案件情報を更新しました')}
+  async function reloadProject(silent=false){if(!state.currentProjectId)return;const data=await api(`/api/staff/project-detail?project_id=${encodeURIComponent(state.currentProjectId)}`);state.current=data;renderDetail();setTab(state.tab);if(!silent)toast('案件情報を更新しました')}
   function closeDetail(){$('detailModal').classList.remove('open');document.body.style.overflow='';state.selectedFiles=[]}
   function setTab(tab){state.tab=tab;qa('.tab-btn').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));qa('.tab-panel').forEach(x=>x.classList.toggle('active',x.id===`tab-${tab}`))}
   function latestSurvey(){const a=state.current?.project?.site_surveys||[];const selected=state.current?._selectedSurveyId;return (selected&&a.find(x=>x.id===selected))||a[0]||null}
@@ -297,18 +306,47 @@
   function addressOf(d){const p=d.property||{};return [p.postal_code?`〒${p.postal_code}`:'',p.prefecture,p.city,p.address_line1,p.address_line2].filter(Boolean).join(' ')}
   function phaseIndex(phase){if(['inquiry_received','need_reply'].includes(phase))return 0;if(['survey_coordination','survey_scheduled'].includes(phase))return 1;if(['estimate_preparing','estimate_sent','estimate_decision_waiting'].includes(phase))return 2;if(['work_coordination','work_scheduled'].includes(phase))return 3;if(phase==='work_in_progress')return 4;return 5}
   function renderSummary(d){const p=d.project,c=d.customer||{},prop=d.property||{},idx=phaseIndex(p.phase),addr=addressOf(d),phone=c.phone||'';$('tab-summary').innerHTML=`
-    <section class="section"><div class="section-title"><h3>お客様・施工先</h3></div><div class="section-body"><div class="info-grid"><div class="info"><small>お客様</small><strong>${esc(c.customer_name||'―')} 様</strong></div><div class="info"><small>電話番号</small><strong>${esc(phone||'―')}</strong></div><div class="info"><small>工事種別</small><strong>${esc(d.category?.category_name||'―')}</strong></div><div class="info wide"><small>施工先</small><strong>${esc(addr||prop.customer_visible_label||'―')}</strong></div><div class="info"><small>建物</small><strong>${esc(prop.building_type||'―')}</strong></div></div><div class="action-row">${phone?`<a class="btn btn-primary btn-sm" href="tel:${esc(phone.replace(/[^0-9+]/g,''))}">電話する</a>`:''}${addr?`<a class="btn btn-soft btn-sm" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}">地図を開く</a>`:''}</div></div></section>
-    <section class="section"><div class="section-title"><h3>現在の進行</h3><small>${esc(phaseLabels[p.phase]||p.phase||'―')}</small></div><div class="section-body"><div class="info-grid"><div class="info"><small>案件番号</small><strong>${esc(p.project_no||'―')}</strong></div><div class="info"><small>優先度</small><strong>${esc(p.priority||'normal')}</strong></div><div class="info"><small>次の対応</small><strong>${esc(p.next_action_title||'―')}</strong></div><div class="info wide"><small>相談内容</small><strong>${esc(p.inquiry_summary||p.requested_work||'―')}</strong></div><div class="info"><small>希望予算</small><strong>${esc(p.desired_budget_code||'未定')}</strong></div></div><div class="phase-line">${['相談','現地調査','見積','工事予定','工事中','完了'].map((x,i)=>`<div class="phase-step ${i<idx?'done':i===idx?'current':''}"><i>${i<idx?'✓':i+1}</i>${x}</div>`).join('')}</div></div></section>
+    <section class="section"><div class="section-title"><h3>お客様・施工先</h3></div><div class="section-body"><div class="info-grid"><div class="info"><small>お客様</small><strong>${esc(c.customer_name||'―')} 様</strong></div><div class="info"><small>電話番号</small><strong>${esc(phone||'―')}</strong></div><div class="info"><small>工事種別</small><strong>${esc(d.category?.category_name||'―')}</strong></div><div class="info wide"><small>施工先</small><strong>${esc(addr||prop.customer_visible_label||'―')}</strong></div><div class="info"><small>建物</small><strong>${esc(buildingTypeLabels[prop.building_type]||prop.building_type||'―')}</strong></div></div><div class="action-row">${phone?`<a class="btn btn-primary btn-sm" href="tel:${esc(phone.replace(/[^0-9+]/g,''))}">電話する</a>`:''}${addr?`<a class="btn btn-soft btn-sm" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}">地図を開く</a>`:''}</div></div></section>
+    <section class="section"><div class="section-title"><h3>現在の進行</h3><small>${esc(phaseLabels[p.phase]||p.phase||'―')}</small></div><div class="section-body"><div class="info-grid"><div class="info"><small>案件番号</small><strong>${esc(p.project_no||'―')}</strong></div><div class="info"><small>優先度</small><strong>${esc(priorityLabels[p.priority]||p.priority||'通常')}</strong></div><div class="info"><small>次の対応</small><strong>${esc(p.next_action_title||'―')}</strong></div><div class="info wide"><small>相談内容</small><strong>${esc(p.inquiry_summary||p.requested_work||'―')}</strong></div><div class="info"><small>希望予算</small><strong>${esc(p.desired_budget_code||'未定')}</strong></div></div><div class="phase-line">${['相談','現地調査','見積','工事予定','工事中','完了'].map((x,i)=>`<div class="phase-step ${i<idx?'done':i===idx?'current':''}"><i>${i<idx?'✓':i+1}</i>${x}</div>`).join('')}</div></div></section>
     ${p.customer_public_note?`<section class="section"><div class="section-title"><h3>お客様への案内</h3></div><div class="section-body"><div class="note">${esc(p.customer_public_note)}</div></div></section>`:''}
     ${state.actor?.can_view_internal_notes&&p.internal_notes?`<section class="section"><div class="section-title"><h3>社内メモ</h3></div><div class="section-body" style="white-space:pre-wrap">${esc(p.internal_notes)}</div></section>`:''}`}
-  function renderSurvey(d){const s=latestSurvey(),p=d.project;const start=s?.scheduled_start_at||'',end=s?.scheduled_end_at||'';$('tab-survey').innerHTML=`
+  function renderSurvey(d){
+    const s=latestSurvey(),p=d.project;
+    const start=splitLocalInput(s?.scheduled_start_at||''),end=splitLocalInput(s?.scheduled_end_at||'');
+    const savedText=state.lastSurveySaveAt?`保存しました ${fmtTime(state.lastSurveySaveAt)}（再読み込み確認済み）`:state.surveyDirty?'未保存の変更があります':'入力後、「現地調査内容を保存」を押してください';
+    const savedClass=state.lastSurveySaveAt&&!state.surveyDirty?' saved':state.surveyDirty?' dirty':'';
+    $('tab-survey').innerHTML=`
     <section class="section"><div class="section-title"><h3>現地調査の進行</h3><small>${esc(statusLabels[s?.status]||'未登録')}</small></div><div class="section-body"><div class="quick-grid">${[['scheduled','訪問予定'],['in_progress','現地到着・調査開始'],['done','調査完了']].map(([v,l])=>`<button class="quick-btn ${s?.status===v?'active':''}" data-survey-quick="${v}" type="button">${l}</button>`).join('')}</div></div></section>
-    <section class="section"><div class="section-title"><h3>調査日時・記録</h3></div><div class="section-body"><form id="surveyForm"><div class="form-grid"><div class="field"><label>開始日時</label><input id="surveyStart" type="datetime-local" step="1800" value="${esc(toLocalInput(start))}"></div><div class="field"><label>終了日時</label><input id="surveyEnd" type="datetime-local" step="1800" value="${esc(toLocalInput(end))}"></div><div class="field full"><label>調査結果</label><textarea id="surveySummary" placeholder="劣化状況、工事の方向性、見積に必要な情報">${esc(s?.survey_summary||'')}</textarea></div><div class="field"><label>採寸メモ</label><textarea id="dimensionNote" placeholder="寸法・数量・型番など">${esc(s?.dimension_note||'')}</textarea></div><div class="field"><label>搬入・駐車・周辺メモ</label><textarea id="accessNote" placeholder="駐車場所、搬入経路、近隣配慮など">${esc(s?.access_note||'')}</textarea></div>${state.actor?.can_view_internal_notes?`<div class="field full"><label>社内メモ</label><textarea id="surveyInternal" placeholder="お客様には表示されません">${esc(s?.internal_notes||'')}</textarea></div>`:''}<div class="full"><button class="btn btn-primary" style="width:100%" type="submit">現地調査内容を保存</button></div></div></form></div></section>
+    <section class="section"><div class="section-title"><h3>調査日時・記録</h3></div><div class="section-body"><form id="surveyForm"><div class="form-grid">
+      <div class="field"><label>開始日時</label><div class="date-time-pair"><input id="surveyStartDate" type="date" value="${esc(start.date)}"><input id="surveyStartTime" type="time" step="1800" value="${esc(start.time)}"></div></div>
+      <div class="field"><label>終了日時</label><div class="date-time-pair"><input id="surveyEndDate" type="date" value="${esc(end.date)}"><input id="surveyEndTime" type="time" step="1800" value="${esc(end.time)}"></div></div>
+      <div class="field full"><label>調査結果</label><textarea id="surveySummary" placeholder="劣化状況、工事の方向性、見積に必要な情報">${esc(s?.survey_summary||'')}</textarea></div>
+      <div class="field"><label>採寸メモ</label><textarea id="dimensionNote" placeholder="寸法・数量・型番など">${esc(s?.dimension_note||'')}</textarea></div>
+      <div class="field"><label>搬入・駐車・周辺メモ</label><textarea id="accessNote" placeholder="駐車場所、搬入経路、近隣配慮など">${esc(s?.access_note||'')}</textarea></div>
+      ${state.actor?.can_view_internal_notes?`<div class="field full"><label>社内メモ</label><textarea id="surveyInternal" placeholder="お客様には表示されません">${esc(s?.internal_notes||'')}</textarea></div>`:''}
+      <div class="full"><button id="surveySaveBtn" class="btn btn-primary" style="width:100%" type="submit">現地調査内容を保存</button><div id="surveySaveFeedback" class="save-feedback${savedClass}">${esc(savedText)}</div></div>
+    </div></form></div></section>
     ${!s?'<div class="note">現地調査情報が未登録です。日時を入力して保存すると新しい現地調査記録を作成します。</div>':''}`;
-    $('surveyForm').addEventListener('submit',saveSurvey)
+    $('surveyForm').addEventListener('submit',saveSurvey);
+    ['surveyStartDate','surveyStartTime','surveyEndDate','surveyEndTime','surveySummary','dimensionNote','accessNote','surveyInternal'].forEach(id=>$(id)?.addEventListener('input',markSurveyDirty));
   }
-  async function saveSurvey(e){e.preventDefault();const s=latestSurvey();const payload={project_id:state.current.project.project.id,survey_id:s?.id||undefined,status:s?.status||($('surveyStart').value?'scheduled':'requested'),scheduled_start_at:isoFromLocal($('surveyStart').value),scheduled_end_at:isoFromLocal($('surveyEnd').value),survey_summary:$('surveySummary').value,dimension_note:$('dimensionNote').value,access_note:$('accessNote').value,internal_notes:$('surveyInternal')?.value||'',allow_past:!!s};await api('/api/staff/site-surveys/save',{method:'POST',body:JSON.stringify(payload)});toast('現地調査内容を保存しました');await reloadProject();await loadDay()}
-  async function quickSurvey(status){const s=latestSurvey();const payload={project_id:state.current.project.project.id,survey_id:s?.id||undefined,status,scheduled_start_at:s?.scheduled_start_at||null,scheduled_end_at:s?.scheduled_end_at||null,survey_summary:$('surveySummary')?.value||s?.survey_summary||'',dimension_note:$('dimensionNote')?.value||s?.dimension_note||'',access_note:$('accessNote')?.value||s?.access_note||'',internal_notes:$('surveyInternal')?.value||s?.internal_notes||'',allow_past:!!s};await api('/api/staff/site-surveys/save',{method:'POST',body:JSON.stringify(payload)});toast(status==='done'?'現地調査を完了しました':'現地調査の状態を更新しました');await reloadProject();await loadDay()}
+  function markSurveyDirty(){state.surveyDirty=true;state.lastSurveySaveAt=null;const box=$('surveySaveFeedback');if(box){box.className='save-feedback dirty';box.textContent='未保存の変更があります'}}
+  async function saveSurvey(e){
+    e.preventDefault();
+    const s=latestSurvey(),btn=$('surveySaveBtn');
+    if(btn){btn.disabled=true;btn.textContent='保存中…'}
+    try{
+      const payload={project_id:state.current.project.project.id,survey_id:s?.id||undefined,status:s?.status||(combineLocal($('surveyStartDate').value,$('surveyStartTime').value)?'scheduled':'requested'),scheduled_start_at:isoFromLocal(combineLocal($('surveyStartDate').value,$('surveyStartTime').value)),scheduled_end_at:isoFromLocal(combineLocal($('surveyEndDate').value,$('surveyEndTime').value)),survey_summary:$('surveySummary').value,dimension_note:$('dimensionNote').value,access_note:$('accessNote').value,internal_notes:$('surveyInternal')?.value||'',allow_past:!!s};
+      await api('/api/staff/site-surveys/save',{method:'POST',body:JSON.stringify(payload)});
+      state.surveyDirty=false;state.lastSurveySaveAt=new Date();
+      await reloadProject(true);await loadDay(true);
+      toast('現地調査内容を保存しました');
+    }catch(err){
+      if(btn){btn.disabled=false;btn.textContent='現地調査内容を保存'}
+      toast(err.message,'error');
+    }
+  }
+  async function quickSurvey(status){const s=latestSurvey();const payload={project_id:state.current.project.project.id,survey_id:s?.id||undefined,status,scheduled_start_at:s?.scheduled_start_at||null,scheduled_end_at:s?.scheduled_end_at||null,survey_summary:$('surveySummary')?.value||s?.survey_summary||'',dimension_note:$('dimensionNote')?.value||s?.dimension_note||'',access_note:$('accessNote')?.value||s?.access_note||'',internal_notes:$('surveyInternal')?.value||s?.internal_notes||'',allow_past:!!s};await api('/api/staff/site-surveys/save',{method:'POST',body:JSON.stringify(payload)});state.surveyDirty=false;await reloadProject(true);await loadDay(true);toast(status==='done'?'現地調査を完了しました':'現地調査の状態を更新しました')}
   function renderWork(d){const p=d.project,w=latestWork(),reports=d.progress_reports||[];$('tab-work').innerHTML=`
     <section class="section"><div class="section-title"><h3>工事の進行状態</h3><small>${esc(workLabels[p.work_status]||p.work_status||'未着手')}</small></div><div class="section-body"><div class="quick-grid">${[['scheduled','工事予定'],['in_progress','工事開始'],['material_waiting','材料待ち'],['temporary_stop','一時中断'],['inspection','検査中'],['completion_pending','本日作業完了'],['completed','工事完了']].map(([v,l])=>`<button class="quick-btn ${p.work_status===v?'active':''} ${['material_waiting','temporary_stop'].includes(v)?'warn':''}" data-work-status="${v}" type="button">${l}</button>`).join('')}</div><p class="help">工事状態はお客様マイページの進行表示にも反映されます。</p></div></section>
     <section class="section"><div class="section-title"><h3>工事予定</h3><small>${(d.work_schedules||[]).length}件</small></div><div class="section-body">${(d.work_schedules||[]).length?(d.work_schedules||[]).map(x=>`<div class="report"><strong>${esc(x.title||'工事予定')}</strong> <span class="status ${statusClass(x.status)}">${esc(workLabels[x.status]||x.status)}</span><p>${esc(fmtDateTime(x.planned_start_at))} ～ ${esc(fmtTime(x.planned_end_at))}</p>${x.customer_note?`<p>${esc(x.customer_note)}</p>`:''}</div>`).join(''):'<div class="empty" style="min-height:100px">工事予定はまだ登録されていません。</div>'}</div></section>
