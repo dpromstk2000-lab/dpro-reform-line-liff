@@ -1,9 +1,9 @@
 /**
  * DPRO リフォーム・工務店 LINE
- * STEP REFORM-5-R1 お客様マイページ端末連携修正版 設定
+ * STEP REFORM-5-R2 お客様識別マッピング対応版 設定
  */
 window.DPRO_REFORM_CONFIG = Object.freeze({
-  VERSION: "REFORM-5-MEMBER-PAGE-LINK-20260715",
+  VERSION: "REFORM-5-R2-MEMBER-IDENTITY-MAP-20260715",
   COMPANY_CODE: "dpro_reform_demo",
   API_BASE: "https://dpro-reform-line-api.dpromstk2000.workers.dev",
 

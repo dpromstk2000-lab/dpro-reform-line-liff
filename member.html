@@ -52,7 +52,7 @@
       <div class="top-actions"><button type="button" class="top-button primary" id="newConsultationTop">新しい相談</button><div class="identity-pill" id="identityPill">確認準備中</div></div>
     </div>
   </header>
-  <section class="hero"><div class="hero-inner"><div class="hero-badge">STEP REFORM-5-R1</div><h1>相談内容と工事の進捗を<br>まとめて確認できます</h1><p>受付済みの相談、現地調査、見積、工事予定、進捗写真を案件ごとに確認できます。</p></div></section>
+  <section class="hero"><div class="hero-inner"><div class="hero-badge">STEP REFORM-5-R2</div><h1>相談内容と工事の進捗を<br>まとめて確認できます</h1><p>受付済みの相談、現地調査、見積、工事予定、進捗写真を案件ごとに確認できます。</p></div></section>
   <main>
     <div class="notice" id="notice" role="alert"></div>
     <section class="account-card" id="accountCard">
@@ -124,12 +124,13 @@
   async function load(){clearNotice();loading(true,'相談履歴を確認しています');try{
       await identity();const token=param('token')||param('public_token');if(token)rememberToken(token);
       const tokenList=[token,...tokens()].filter(Boolean).filter((x,i,a)=>a.indexOf(x)===i).slice(0,20);
+      let memberLinkError='';
       if(state.browserIdentity&&state.lineUserId&&tokenList.length){
         for(const t of tokenList){
           try{
             const linked=await api('/api/member/link-current',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({line_user_id:state.lineUserId,public_token:t})});
             if(linked.linked)break;
-          }catch(e){console.warn('member auto link',e);}
+          }catch(e){memberLinkError=e.message||'端末連携に失敗しました。';console.warn('member auto link',e);}
         }
       }
       state.publicConfig=await api('/api/public/config');$('brandName').textContent=state.publicConfig.company?.company_name||'DPROリフォーム';$('brandSub').textContent=state.publicConfig.company?.subtitle||'相談・工事進捗マイページ';
@@ -138,6 +139,7 @@
       for(const t of tokenList){try{const d=await api(`/api/member/project-detail?public_token=${encodeURIComponent(t)}`,{skipIdentity:true});const ov=d.project?.overview||{};const pr=d.project?.project||{};const no=pr.project_no||ov.project_no;if(no&&!map.has(no))map.set(no,{...overviewFromDetail(d.project),source:'token',public_token:t});}catch(e){console.warn('token detail',e);}}
       state.projects=[...map.values()].sort((a,b)=>String(b.updated_at||b.created_at||'').localeCompare(String(a.updated_at||a.created_at||'')));
       renderAccount(profile);renderList();
+      if(state.browserIdentity&&tokenList.length&&!state.profile&&memberLinkError)showNotice(`相談履歴の端末連携に失敗しました。${memberLinkError}`);
       const requested=param('project_no');let initial=state.projects.find(x=>x.project_no===requested)||state.projects.find(x=>x.public_token===token)||state.projects[0];if(initial)await selectProject(initial);
     }catch(e){showNotice(`マイページの準備に失敗しました。${e.message}`);renderList();}finally{loading(false);}}
   function overviewFromDetail(d){const o=d.overview||{},p=d.project||{};return {project_id:p.id||o.project_id,project_no:p.project_no||o.project_no,public_token:p.public_token||o.public_token,project_title:p.project_title||o.project_title,phase:p.phase||o.phase,survey_status:p.survey_status||o.survey_status,estimate_status:p.estimate_status||o.estimate_status,work_status:p.work_status||o.work_status,customer_action_required:p.customer_action_required||o.customer_action_required,next_action_title:p.next_action_title||o.next_action_title,next_action_at:p.next_action_at||o.next_action_at,property_label:d.property?.customer_visible_label||d.property?.property_name||[d.property?.prefecture,d.property?.city].filter(Boolean).join(' '),category_name:d.category?.category_name||o.category_name,assigned_staff_name:d.assigned_staff?.staff_name||o.assigned_staff_name,photo_count:d.photos?.length||o.photo_count||0,created_at:p.created_at||o.created_at,updated_at:p.updated_at||o.updated_at};}
