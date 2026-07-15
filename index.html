@@ -25,7 +25,7 @@
     .topbar-inner{max-width:920px;margin:auto;padding:12px 16px;display:flex;align-items:center;gap:12px}
     .logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(145deg,#2bb8a8,var(--brand));display:grid;place-items:center;color:#fff;font-weight:900;font-size:22px;box-shadow:0 7px 18px rgba(15,118,110,.26);flex:none}
     .brand{min-width:0}.brand-name{font-weight:900;font-size:18px;line-height:1.25}.brand-sub{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .identity-pill{margin-left:auto;font-size:13px;font-weight:800;border-radius:999px;padding:7px 10px;background:var(--brand-soft);color:var(--brand-deep);white-space:nowrap}
+    .top-actions{margin-left:auto;display:flex;align-items:center;gap:8px}.history-link{min-height:42px;border:1px solid #a9c8c2;border-radius:11px;background:#fff;color:var(--brand-deep);font-weight:900;padding:0 13px;white-space:nowrap}.history-link:hover{background:var(--brand-soft)}.identity-pill{font-size:13px;font-weight:800;border-radius:999px;padding:7px 10px;background:var(--brand-soft);color:var(--brand-deep);white-space:nowrap}
     .hero{background:linear-gradient(135deg,#0b6a63,#0f766e 58%,#198d82);color:#fff}
     .hero-inner{max-width:920px;margin:auto;padding:26px 18px 30px}
     .hero-badge{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.42);background:rgba(255,255,255,.1);border-radius:999px;padding:5px 10px;font-weight:800;font-size:13px}
@@ -50,6 +50,7 @@
     .spinner{width:22px;height:22px;border:3px solid rgba(255,255,255,.45);border-top-color:#fff;border-radius:50%;display:inline-block;animation:spin .7s linear infinite;vertical-align:-5px;margin-right:8px}@keyframes spin{to{transform:rotate(360deg)}}
     .success-screen{display:none;background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px 20px;text-align:center}.success-screen.show{display:block}.success-icon{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:#dff5ed;color:var(--success);font-size:38px;font-weight:900;margin:0 auto 14px}.success-screen h2{font-size:26px;margin:0 0 8px}.success-screen p{color:var(--muted);margin:0 0 14px}.receipt{text-align:left;background:#f6faf9;border:1px solid var(--line);border-radius:14px;padding:14px;margin:16px 0}.receipt strong{font-size:18px;color:var(--brand-deep)}.success-actions{display:grid;gap:10px}.hidden{display:none!important}
     .loading-cover{position:fixed;inset:0;z-index:100;background:rgba(244,247,246,.88);backdrop-filter:blur(3px);display:grid;place-items:center}.loading-card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:22px;text-align:center;font-weight:850}.loading-card .ring{width:42px;height:42px;border:4px solid #d6e6e2;border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+    @media(max-width:520px){.history-link{font-size:0;width:42px;padding:0}.history-link::before{content:"履";font-size:15px}.brand-sub{max-width:150px}}
     @media(min-width:700px){.choice-grid{grid-template-columns:repeat(2,1fr)}.category-grid{grid-template-columns:repeat(3,1fr)}.two{grid-template-columns:repeat(2,1fr)}.photo-list{grid-template-columns:repeat(4,1fr)}.survey-mode{grid-template-columns:repeat(2,1fr)}.slot-grid{grid-template-columns:repeat(5,1fr)}.panel-head{padding:24px 26px 16px}.panel-body{padding:24px 26px}.bottom-inner{grid-template-columns:150px 1fr}.step-dot{font-size:13px}}
     @media(max-width:380px){.category-grid{grid-template-columns:1fr}.step-dot b{display:none}.steps{padding:9px 6px}.step-dot span{width:28px;height:28px}}
   </style>
@@ -57,8 +58,8 @@
 <body>
 <div class="loading-cover" id="loadingCover"><div class="loading-card"><div class="ring"></div><div id="loadingText">受付画面を準備しています</div></div></div>
 <div class="app" id="app">
-  <header class="topbar"><div class="topbar-inner"><div class="logo">D</div><div class="brand"><div class="brand-name" id="brandName">DPROリフォーム</div><div class="brand-sub" id="brandSub">リフォーム相談・現地調査受付</div></div><div class="identity-pill" id="identityPill">受付準備中</div></div></header>
-  <section class="hero"><div class="hero-inner"><div class="hero-badge">STEP REFORM-4</div><h1>住まいのお困りごとを<br>写真と一緒に相談できます</h1><p>見積相談、現地調査、修理・補修まで。内容を確認後、担当者からLINEまたはご希望の方法でご連絡します。</p></div></section>
+  <header class="topbar"><div class="topbar-inner"><div class="logo">D</div><div class="brand"><div class="brand-name" id="brandName">DPROリフォーム</div><div class="brand-sub" id="brandSub">リフォーム相談・現地調査受付</div></div><div class="top-actions"><button type="button" class="history-link" id="historyLink">過去の相談・進捗</button><div class="identity-pill" id="identityPill">受付準備中</div></div></div></header>
+  <section class="hero"><div class="hero-inner"><div class="hero-badge">STEP REFORM-5</div><h1>住まいのお困りごとを<br>写真と一緒に相談できます</h1><p>見積相談、現地調査、修理・補修まで。内容を確認後、担当者からLINEまたはご希望の方法でご連絡します。</p></div></section>
   <div class="steps-wrap"><div class="steps" id="steps"></div></div>
   <main>
     <div class="notice" id="notice" role="alert"></div>
@@ -80,13 +81,26 @@
   const CFG = window.DPRO_REFORM_CONFIG || {};
   const STEP_NAMES = ['相談内容','希望詳細','物件情報','写真','現地調査','確認・送信'];
   const ICONS = {estimate:'🧾',site_survey:'🏠',photo_consultation:'📷',repair:'🛠️',aftercare:'🔎',other:'💬'};
-  const state = {step:1, publicConfig:null, options:null, lineUserId:'', lineProfile:null, member:null, returning:false, useLineIdentity:true, useExistingProperty:false, photos:[], surveyDays:[], selectedDate:'', selectedSlot:null, submitting:false, result:null};
+  const state = {step:1, publicConfig:null, options:null, lineUserId:'', lineProfile:null, member:null, returning:false, useLineIdentity:true, useExistingProperty:false, browserIdentity:false, photos:[], surveyDays:[], selectedDate:'', selectedSlot:null, submitting:false, result:null};
   const $ = id => document.getElementById(id);
   const q = (s,r=document) => r.querySelector(s);
   const qa = (s,r=document) => [...r.querySelectorAll(s)];
   const esc = s => String(s ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   const selected = name => q(`input[name="${name}"]:checked`)?.value || '';
   const getParam = name => new URLSearchParams(location.search).get(name) || '';
+  function browserMemberId(){
+    const key=CFG.BROWSER_MEMBER_ID_STORAGE_KEY||'dpro_reform_browser_member_id_v1';
+    try{
+      let id=localStorage.getItem(key)||'';
+      if(!id){id=`browser_reform_${crypto.randomUUID()}`;localStorage.setItem(key,id);}
+      return id;
+    }catch{return `browser_reform_${crypto.randomUUID()}`;}
+  }
+  function rememberToken(token){
+    if(!token)return;
+    const key=CFG.MEMBER_TOKEN_STORAGE_KEY||'dpro_reform_member_tokens_v1';
+    try{const a=JSON.parse(localStorage.getItem(key)||'[]');const next=[token,...a.filter(x=>x!==token)].slice(0,20);localStorage.setItem(key,JSON.stringify(next));}catch{}
+  }
   const withCompany = path => {
     const u = new URL(String(CFG.API_BASE||'').replace(/\/+$/,'') + path);
     if (CFG.COMPANY_CODE) u.searchParams.set('company_code',CFG.COMPANY_CODE);
@@ -128,20 +142,22 @@
         }
       }catch(e){ console.warn('LIFF init:',e); }
     }
+    if(!lineId)lineId=browserMemberId();
+    state.browserIdentity=String(lineId).startsWith('browser_reform_');
     state.lineUserId=lineId;
-    if(!lineId){ $('identityPill').textContent='初回受付'; return; }
+    if(state.browserIdentity)$('identityPill').textContent='この端末で受付';
     try{
       const data=await api('/api/member/profile'); state.member=data;
       if(data.registered && data.profile){
         state.returning=true;
-        $('identityPill').textContent='登録済み';
+        $('identityPill').textContent=state.browserIdentity?'この端末に登録済み':'登録済み';
         $('returningBox').classList.add('show');
         $('returningTitle').textContent=`${data.profile.customer_name} 様`;
         $('returningText').textContent=`登録済み情報を利用します（${data.profile.phone_masked||'電話番号登録済み'}）`;
         $('customerKnown').classList.add('show'); $('knownName').textContent=`${data.profile.customer_name} 様`; $('knownPhone').textContent=data.profile.phone_masked||'電話番号登録済み';
         $('customerFields').classList.add('hidden');
         setupProperties(data.properties||[]);
-      }else $('identityPill').textContent='初回受付';
+      }else $('identityPill').textContent=state.browserIdentity?'この端末で初回受付':'初回受付';
     }catch(e){ $('identityPill').textContent='入力受付'; console.warn(e); }
   }
 
@@ -274,7 +290,7 @@
     if(state.submitting)return; state.submitting=true; clearNotice(); const btn=$('nextBtn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>送信しています';
     try{
       const data=await api('/api/public/inquiries',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload())});
-      state.result=data; qa('.panel').forEach(p=>p.classList.remove('active'));$('bottomNav').classList.add('hidden');$('successScreen').classList.add('show');$('projectNo').textContent=data.project?.project_no||'受付完了';
+      state.result=data; rememberToken(data.project?.public_token); qa('.panel').forEach(p=>p.classList.remove('active'));$('bottomNav').classList.add('hidden');$('successScreen').classList.add('show');$('projectNo').textContent=data.project?.project_no||'受付完了';
       $('successSurvey').textContent=data.survey?`現地調査希望：${fmtDate(data.survey.requested_date)} ${data.survey.requested_time_text||''}`:'現地調査の日程は担当者からご連絡します。';
       window.scrollTo({top:0,behavior:'smooth'});
     }catch(e){showNotice(e.message);}finally{state.submitting=false;btn.disabled=false;btn.textContent='この内容で相談を送る';}
@@ -286,7 +302,9 @@
   }
   function fallbackCopy(text){const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();showNotice('確認文面をコピーしました。','success');}
   function resetForm(){location.href=location.pathname+(state.lineUserId?`?line_user_id=${encodeURIComponent(state.lineUserId)}`:'');}
-  function openMember(){const u=new URL(CFG.MEMBER_PAGE||'member.html',location.href);if(state.lineUserId)u.searchParams.set('line_user_id',state.lineUserId);if(state.result?.project?.public_token)u.searchParams.set('token',state.result.project.public_token);location.href=u.toString();}
+  function memberUrl(includeResult=false){const u=new URL(CFG.MEMBER_PAGE||'member.html',location.href);if(state.lineUserId)u.searchParams.set('line_user_id',state.lineUserId);if(includeResult&&state.result?.project?.public_token)u.searchParams.set('token',state.result.project.public_token);return u.toString();}
+  function openMember(){location.href=memberUrl(true);}
+  function openHistory(){location.href=memberUrl(false);}
   function fmtDate(v){if(!v)return '';const [y,m,d]=v.split('-').map(Number);return `${y}年${m}月${d}日（${'日月火水木金土'[new Date(y,m-1,d).getDay()]}）`;}
   function fmtDateShort(v){const [y,m,d]=v.split('-').map(Number);return `${m}/${d}（${'日月火水木金土'[new Date(y,m-1,d).getDay()]}）`;}
   function localDate(date){const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,'0'),d=String(date.getDate()).padStart(2,'0');return `${y}-${m}-${d}`;}
@@ -299,7 +317,7 @@
     qa('input[name="survey_mode"]').forEach(r=>r.addEventListener('change',()=>{const slot=selected('survey_mode')==='slot';$('slotArea').classList.toggle('hidden',!slot);if(slot&&!state.surveyDays.length)loadSlots();}));
     $('useNewProperty').addEventListener('click',()=>{state.useExistingProperty=false;$('newPropertyArea').classList.remove('hidden');$('existingPropertyArea').classList.add('hidden');});
     $('useDifferentCustomer').addEventListener('click',()=>{state.returning=false;state.useLineIdentity=false;$('customerKnown').classList.remove('show');$('customerFields').classList.remove('hidden');$('customerName').value=state.member?.profile?.customer_name||'';});
-    $('copyMessage').addEventListener('click',copySuccess);$('newConsultation').addEventListener('click',resetForm);$('openMember').addEventListener('click',openMember);if(!CFG.MEMBER_PAGE_ENABLED)$('openMember').classList.add('hidden');
+    $('copyMessage').addEventListener('click',copySuccess);$('newConsultation').addEventListener('click',resetForm);$('openMember').addEventListener('click',openMember);$('historyLink').addEventListener('click',openHistory);if(!CFG.MEMBER_PAGE_ENABLED){$('openMember').classList.add('hidden');$('historyLink').classList.add('hidden');}
   }
 
   async function init(){
