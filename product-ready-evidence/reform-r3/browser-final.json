@@ -1,20 +1,26 @@
 {
-  "sourceHead": "d06cfe576cbb0f213e15eebc2deaad882979f2a1",
+  "r2SourceLock": "1a1d57b23591b7d25a97f60ec99ec7bb82577e8a",
+  "remediationSourceHead": "bd27196c25d05f18b1bbb89929860f33c37fc1ad",
+  "remediation": "owner.html only: add 1500px stats 5-column overflow guard",
   "results": [
     {
       "key": "pc-owner",
       "path": "/owner.html?demo=1",
       "status": 200,
+      "innerWidth": 1440,
+      "scrollWidth": 1440,
       "loadError": null,
-      "overflow": true,
+      "overflow": false,
       "technicalTermExposure": false,
       "pageErrors": [],
-      "ok": false
+      "ok": true
     },
     {
       "key": "mobile390",
       "path": "/index.html?demo=1",
       "status": 200,
+      "innerWidth": 390,
+      "scrollWidth": 390,
       "loadError": null,
       "overflow": false,
       "technicalTermExposure": false,
@@ -25,6 +31,8 @@
       "key": "mobile320",
       "path": "/index.html?demo=1",
       "status": 200,
+      "innerWidth": 320,
+      "scrollWidth": 320,
       "loadError": null,
       "overflow": false,
       "technicalTermExposure": false,
@@ -35,6 +43,8 @@
       "key": "member320",
       "path": "/member.html?demo=1",
       "status": 200,
+      "innerWidth": 320,
+      "scrollWidth": 320,
       "loadError": null,
       "overflow": false,
       "technicalTermExposure": false,
@@ -45,6 +55,8 @@
       "key": "staff390",
       "path": "/staff.html?demo=1",
       "status": 200,
+      "innerWidth": 390,
+      "scrollWidth": 390,
       "loadError": null,
       "overflow": false,
       "technicalTermExposure": false,
@@ -55,6 +67,8 @@
       "key": "ipad",
       "path": "/owner-ipad.html?demo=1",
       "status": 200,
+      "innerWidth": 1024,
+      "scrollWidth": 1024,
       "loadError": null,
       "overflow": false,
       "technicalTermExposure": false,
@@ -73,12 +87,12 @@
     "mode": "営業デモ・管理者",
     "verdict": "!\n自動確認OK・手動確認が残っています\n\n手動チェックを完了すると営業デモ準備OKになります。"
   },
-  "ready018": false,
+  "ready018": true,
   "ready019": true,
   "ready020": true,
   "ready021": true,
   "ready022": true,
   "ready023": true,
-  "ready025": false,
-  "ok": false
+  "ready025": true,
+  "ok": true
 }
