@@ -1,0 +1,186 @@
+name: DPRO REFORM Product READY R3 Remediate 1440
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/dpro-reform-product-ready-r3-remediate-1440.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  remediate-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BASE: https://dpromstk2000-lab.github.io/dpro-reform-line-liff
+      R2_SOURCE_LOCK: 1a1d57b23591b7d25a97f60ec99ec7bb82577e8a
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Let prior QA runs finish
+        run: sleep 120
+
+      - name: Refresh main
+        run: git pull --ff-only origin main
+
+      - name: Apply REFORM-only 1440 overflow guard
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path("owner.html")
+          s = p.read_text(encoding="utf-8")
+          marker = "/* R3 1440 overflow guard */"
+          rule = marker + "\n@media(max-width:1500px){.stats{grid-template-columns:repeat(5,minmax(0,1fr))}}\n"
+          anchor = "@media(max-width:1280px){.stats{grid-template-columns:repeat(5,1fr)}"
+          if marker not in s:
+              if anchor not in s:
+                  raise SystemExit("expected CSS anchor not found")
+              s = s.replace(anchor, rule + anchor, 1)
+              p.write_text(s, encoding="utf-8")
+          s2 = p.read_text(encoding="utf-8")
+          assert s2.count(marker) == 1
+          assert "@media(max-width:1500px){.stats{grid-template-columns:repeat(5,minmax(0,1fr))}}" in s2
+          PY
+
+      - name: Commit minimal product remediation
+        run: |
+          git config user.name 'DPRO Product Ready QA'
+          git config user.email 'actions@users.noreply.github.com'
+          git add owner.html
+          if ! git diff --cached --quiet; then
+            git commit -m 'REFORM R3: prevent 1440 owner stats overflow'
+            git push
+          fi
+          echo "FIX_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Wait for GitHub Pages remediation
+        run: |
+          for i in $(seq 1 60); do
+            if curl -fsSL "${BASE}/owner.html?demo=1&qa=${FIX_SHA}-${i}" | grep -Fq 'R3 1440 overflow guard'; then
+              echo "GitHub Pages remediation visible."
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Timed out waiting for GitHub Pages remediation."
+          exit 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install --no-audit --no-fund playwright@1.55.0 >/dev/null
+          npx playwright install --with-deps chromium >/dev/null
+
+      - name: Run final browser evidence after remediation
+        run: |
+          mkdir -p product-ready-evidence/reform-r3/screens
+          cat > reform-r3-remediation.js <<'JS'
+          const { chromium } = require('playwright');
+          const fs = require('fs');
+          const cp = require('child_process');
+          const base=process.env.BASE;
+          const cases=[
+            ['pc-owner','/owner.html?demo=1',1440,1000],
+            ['mobile390','/index.html?demo=1',390,844],
+            ['mobile320','/index.html?demo=1',320,720],
+            ['member320','/member.html?demo=1',320,844],
+            ['staff390','/staff.html?demo=1',390,844],
+            ['ipad','/owner-ipad.html?demo=1',1024,768],
+          ];
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const results=[];
+            for(const [key,path,w,h] of cases){
+              const page=await browser.newPage({viewport:{width:w,height:h}});
+              const pageErrors=[];
+              page.on('pageerror',e=>pageErrors.push(String(e)));
+              let status=null,loadError=null;
+              try{
+                const r=await page.goto(base+path+`&qa=${Date.now()}`,{waitUntil:'networkidle',timeout:45000});
+                status=r?.status()??null;
+              }catch(e){ loadError=String(e); }
+              const m=await page.evaluate(()=>({
+                innerWidth:innerWidth,
+                scrollWidth:Math.max(document.documentElement.scrollWidth,document.body?.scrollWidth||0),
+                text:(document.body?.innerText||'').slice(0,12000),
+                visible:!!document.body&&getComputedStyle(document.body).display!=='none'
+              })).catch(()=>({}));
+              const overflow=(m.scrollWidth||0)>(m.innerWidth||0)+2;
+              const tech=/service[_ -]?role|supabase[_ -]?key|channel[_ -]?secret|stack trace|SUPABASE_SERVICE_ROLE_KEY/i.test(m.text||'');
+              const ok=status===200&&!loadError&&!overflow&&!tech&&pageErrors.length===0&&m.visible;
+              await page.screenshot({path:`product-ready-evidence/reform-r3/screens/${key}.png`,fullPage:true}).catch(()=>{});
+              results.push({key,path,status,innerWidth:m.innerWidth,scrollWidth:m.scrollWidth,loadError,overflow,technicalTermExposure:tech,pageErrors,ok});
+              await page.close();
+            }
+
+            const sc=await browser.newPage({viewport:{width:1440,height:1000}});
+            const scErrors=[];
+            sc.on('pageerror',e=>scErrors.push(String(e)));
+            let scStatus=null,scLoadError=null;
+            try{
+              const r=await sc.goto(base+'/system-check.html?demo=1&qa='+Date.now(),{waitUntil:'domcontentloaded',timeout:45000});
+              scStatus=r?.status()??null;
+            }catch(e){ scLoadError=String(e); }
+
+            let system={status:scStatus,loadError:scLoadError,pageErrors:scErrors,ok:false};
+            if(scStatus===200&&!scLoadError){
+              try{
+                await sc.waitForFunction(()=>document.getElementById('app')?.style.display==='block',{timeout:30000});
+                await sc.waitForFunction(()=>{
+                  const a=document.getElementById('autoTotal')?.textContent||'';
+                  const m=a.match(/^(\d+)\/(\d+)$/);
+                  return m&&m[1]===m[2]&&Number(m[2])>0;
+                },{timeout:60000});
+                const vals=await sc.evaluate(()=>({
+                  autoTotal:document.getElementById('autoTotal')?.textContent||'',
+                  warn:Number(document.getElementById('warnCount')?.textContent||'0'),
+                  bad:Number(document.getElementById('badCount')?.textContent||'0'),
+                  mode:document.getElementById('topMode')?.textContent||'',
+                  verdict:document.getElementById('verdict')?.innerText||''
+                }));
+                system={...system,...vals,ok:vals.bad===0&&vals.warn===0&&scErrors.length===0};
+              }catch(e){ system.error=String(e); }
+            }
+            await sc.screenshot({path:'product-ready-evidence/reform-r3/screens/system-check.png',fullPage:true}).catch(()=>{});
+            await sc.close();
+            await browser.close();
+
+            const out={
+              r2SourceLock:process.env.R2_SOURCE_LOCK,
+              remediationSourceHead:cp.execSync('git rev-parse HEAD').toString().trim(),
+              remediation:'owner.html only: add 1500px stats 5-column overflow guard',
+              results,
+              systemCheck:system
+            };
+            out.ready018=results.find(x=>x.key==='pc-owner')?.ok===true;
+            out.ready019=results.find(x=>x.key==='mobile390')?.ok===true;
+            out.ready020=results.find(x=>x.key==='mobile320')?.ok===true;
+            out.ready021=results.find(x=>x.key==='ipad')?.ok===true;
+            out.ready022=results.every(x=>x.technicalTermExposure===false&&x.pageErrors.length===0);
+            out.ready023=system.ok===true;
+            out.ready025=results.find(x=>x.key==='pc-owner')?.ok===true;
+            out.ok=out.ready018&&out.ready019&&out.ready020&&out.ready021&&out.ready022&&out.ready023&&out.ready025;
+            fs.writeFileSync('product-ready-evidence/reform-r3/browser-final.json',JSON.stringify(out,null,2)+'\n');
+            if(!out.ok) process.exitCode=1;
+          })();
+          JS
+          node reform-r3-remediation.js
+
+      - name: Commit final R3 evidence
+        if: always()
+        run: |
+          git config user.name 'DPRO Product Ready QA'
+          git config user.email 'actions@users.noreply.github.com'
+          git add product-ready-evidence/reform-r3
+          git diff --cached --quiet && exit 0
+          git commit -m 'REFORM Product Ready: publish R3 post-remediation evidence'
+          git push
