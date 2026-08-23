@@ -1,0 +1,84 @@
+{
+  "sourceHead": "379b5e7255414111394514cc482bf066187a59c8",
+  "results": [
+    {
+      "key": "pc-owner",
+      "path": "/owner.html?demo=1",
+      "status": 200,
+      "loadError": null,
+      "overflow": true,
+      "technicalTermExposure": false,
+      "pageErrors": [],
+      "ok": false
+    },
+    {
+      "key": "mobile390",
+      "path": "/index.html?demo=1",
+      "status": 200,
+      "loadError": null,
+      "overflow": false,
+      "technicalTermExposure": false,
+      "pageErrors": [],
+      "ok": true
+    },
+    {
+      "key": "mobile320",
+      "path": "/index.html?demo=1",
+      "status": 200,
+      "loadError": null,
+      "overflow": false,
+      "technicalTermExposure": false,
+      "pageErrors": [],
+      "ok": true
+    },
+    {
+      "key": "member320",
+      "path": "/member.html?demo=1",
+      "status": 200,
+      "loadError": null,
+      "overflow": false,
+      "technicalTermExposure": false,
+      "pageErrors": [],
+      "ok": true
+    },
+    {
+      "key": "staff390",
+      "path": "/staff.html?demo=1",
+      "status": 200,
+      "loadError": null,
+      "overflow": false,
+      "technicalTermExposure": false,
+      "pageErrors": [],
+      "ok": true
+    },
+    {
+      "key": "ipad",
+      "path": "/owner-ipad.html?demo=1",
+      "status": 200,
+      "loadError": null,
+      "overflow": false,
+      "technicalTermExposure": false,
+      "pageErrors": [],
+      "ok": true
+    }
+  ],
+  "systemCheck": {
+    "status": 200,
+    "loadError": null,
+    "pageErrors": [],
+    "ok": true,
+    "autoTotal": "8/8",
+    "warn": 0,
+    "bad": 0,
+    "mode": "営業デモ・管理者",
+    "verdict": "!\n自動確認OK・手動確認が残っています\n\n手動チェックを完了すると営業デモ準備OKになります。"
+  },
+  "ready018": false,
+  "ready019": true,
+  "ready020": true,
+  "ready021": true,
+  "ready022": true,
+  "ready023": true,
+  "ready025": false,
+  "ok": false
+}
