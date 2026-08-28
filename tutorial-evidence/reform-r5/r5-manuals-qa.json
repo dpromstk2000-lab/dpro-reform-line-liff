@@ -1,0 +1,205 @@
+{
+  "schema": "DPRO_TUTORIAL_REFORM_R5_MANUALS_QA_V1_0",
+  "sourceSha": "cb1dfc557b2f0153dd719ed74afa395ac58e5253",
+  "base": "https://dpromstk2000-lab.github.io/dpro-reform-line-liff",
+  "startedAt": "2026-08-28T07:20:18.546Z",
+  "preflight": {
+    "assets": [
+      {
+        "path": "manuals/reform-quick-start.pdf",
+        "kind": "pdf",
+        "exists": true,
+        "pass": true,
+        "pages": 1,
+        "metadataSubject": "QR_DESTINATION=https://dpromstk2000-lab.github.io/dpro-reform-line-liff/guide-center.html; PRODUCT_SITE=https://dpromstk2000-lab.github.io/dpro-line-systems-site/systems/reform.html; BUSINESS_MUTATION=0"
+      },
+      {
+        "path": "manuals/reform-quick-start.png",
+        "kind": "png",
+        "exists": true,
+        "pass": true,
+        "width": 1489,
+        "height": 2105
+      },
+      {
+        "path": "manuals/reform-detailed-manual.pdf",
+        "kind": "pdf",
+        "exists": true,
+        "pass": true,
+        "pages": 8,
+        "metadataSubject": "QR_DESTINATION=https://dpromstk2000-lab.github.io/dpro-reform-line-liff/guide-center.html; PRODUCT_SITE=https://dpromstk2000-lab.github.io/dpro-line-systems-site/systems/reform.html; BUSINESS_MUTATION=0"
+      },
+      {
+        "path": "manuals/reform-detailed-manual.png",
+        "kind": "png",
+        "exists": true,
+        "pass": true,
+        "width": 1323,
+        "height": 15136
+      }
+    ],
+    "qrDestination": "https://dpromstk2000-lab.github.io/dpro-reform-line-liff/guide-center.html",
+    "ok": true,
+    "errors": [],
+    "qrDecoded": "https://dpromstk2000-lab.github.io/dpro-reform-line-liff/guide-center.html",
+    "qrPass": true
+  },
+  "assetChecks": [
+    {
+      "route": "manuals/reform-quick-start.pdf",
+      "status": 200,
+      "contentType": "application/pdf",
+      "pass": true
+    },
+    {
+      "route": "manuals/reform-quick-start.png",
+      "status": 200,
+      "contentType": "image/png",
+      "pass": true
+    },
+    {
+      "route": "manuals/reform-detailed-manual.pdf",
+      "status": 200,
+      "contentType": "application/pdf",
+      "pass": true
+    },
+    {
+      "route": "manuals/reform-detailed-manual.png",
+      "status": 200,
+      "contentType": "image/png",
+      "pass": true
+    }
+  ],
+  "viewportRuns": [
+    {
+      "viewport": "1440",
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "documentElementScrollWidth": 1440,
+      "bodyScrollWidth": 1440,
+      "readyState": "complete",
+      "stepCount": 10,
+      "renderedCount": 10,
+      "manualCount": 4,
+      "tutorialRootHidden": true,
+      "launcherHidden": true,
+      "hrefs": [
+        "manuals/reform-quick-start.pdf",
+        "manuals/reform-quick-start.png",
+        "manuals/reform-detailed-manual.pdf",
+        "manuals/reform-detailed-manual.png"
+      ],
+      "pass": true
+    },
+    {
+      "viewport": "1024",
+      "innerWidth": 1024,
+      "innerHeight": 768,
+      "documentElementScrollWidth": 1024,
+      "bodyScrollWidth": 1024,
+      "readyState": "complete",
+      "stepCount": 10,
+      "renderedCount": 10,
+      "manualCount": 4,
+      "tutorialRootHidden": true,
+      "launcherHidden": true,
+      "hrefs": [
+        "manuals/reform-quick-start.pdf",
+        "manuals/reform-quick-start.png",
+        "manuals/reform-detailed-manual.pdf",
+        "manuals/reform-detailed-manual.png"
+      ],
+      "pass": true
+    },
+    {
+      "viewport": "390",
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "documentElementScrollWidth": 390,
+      "bodyScrollWidth": 390,
+      "readyState": "complete",
+      "stepCount": 10,
+      "renderedCount": 10,
+      "manualCount": 4,
+      "tutorialRootHidden": true,
+      "launcherHidden": true,
+      "hrefs": [
+        "manuals/reform-quick-start.pdf",
+        "manuals/reform-quick-start.png",
+        "manuals/reform-detailed-manual.pdf",
+        "manuals/reform-detailed-manual.png"
+      ],
+      "pass": true
+    },
+    {
+      "viewport": "320",
+      "innerWidth": 320,
+      "innerHeight": 720,
+      "documentElementScrollWidth": 320,
+      "bodyScrollWidth": 320,
+      "readyState": "complete",
+      "stepCount": 10,
+      "renderedCount": 10,
+      "manualCount": 4,
+      "tutorialRootHidden": true,
+      "launcherHidden": true,
+      "hrefs": [
+        "manuals/reform-quick-start.pdf",
+        "manuals/reform-quick-start.png",
+        "manuals/reform-detailed-manual.pdf",
+        "manuals/reform-detailed-manual.png"
+      ],
+      "pass": true
+    }
+  ],
+  "manualLinks": [
+    {
+      "route": "manuals/reform-quick-start.pdf",
+      "exists": true,
+      "keyboardFocus": true,
+      "pass": true
+    },
+    {
+      "route": "manuals/reform-quick-start.png",
+      "exists": true,
+      "keyboardFocus": true,
+      "pass": true
+    },
+    {
+      "route": "manuals/reform-detailed-manual.pdf",
+      "exists": true,
+      "keyboardFocus": true,
+      "pass": true
+    },
+    {
+      "route": "manuals/reform-detailed-manual.png",
+      "exists": true,
+      "keyboardFocus": true,
+      "pass": true
+    }
+  ],
+  "keyboardFocus": {
+    "manualLinks": true
+  },
+  "errors": [],
+  "mutations": [],
+  "first10": {
+    "count": 10,
+    "ids": [
+      "F10-01",
+      "F10-02",
+      "F10-03",
+      "F10-04",
+      "F10-05",
+      "F10-06",
+      "F10-07",
+      "F10-08",
+      "F10-09",
+      "F10-10"
+    ],
+    "pass": true
+  },
+  "qrDestination": "https://dpromstk2000-lab.github.io/dpro-reform-line-liff/guide-center.html",
+  "ok": true,
+  "finishedAt": "2026-08-28T07:20:21.079Z"
+}

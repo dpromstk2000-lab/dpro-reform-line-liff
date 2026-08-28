@@ -1,0 +1,41 @@
+{
+  "assets": [
+    {
+      "path": "manuals/reform-quick-start.pdf",
+      "kind": "pdf",
+      "exists": true,
+      "pass": true,
+      "pages": 1,
+      "metadataSubject": "QR_DESTINATION=https://dpromstk2000-lab.github.io/dpro-reform-line-liff/guide-center.html; PRODUCT_SITE=https://dpromstk2000-lab.github.io/dpro-line-systems-site/systems/reform.html; BUSINESS_MUTATION=0"
+    },
+    {
+      "path": "manuals/reform-quick-start.png",
+      "kind": "png",
+      "exists": true,
+      "pass": true,
+      "width": 1489,
+      "height": 2105
+    },
+    {
+      "path": "manuals/reform-detailed-manual.pdf",
+      "kind": "pdf",
+      "exists": true,
+      "pass": true,
+      "pages": 8,
+      "metadataSubject": "QR_DESTINATION=https://dpromstk2000-lab.github.io/dpro-reform-line-liff/guide-center.html; PRODUCT_SITE=https://dpromstk2000-lab.github.io/dpro-line-systems-site/systems/reform.html; BUSINESS_MUTATION=0"
+    },
+    {
+      "path": "manuals/reform-detailed-manual.png",
+      "kind": "png",
+      "exists": true,
+      "pass": true,
+      "width": 1323,
+      "height": 15136
+    }
+  ],
+  "qrDestination": "https://dpromstk2000-lab.github.io/dpro-reform-line-liff/guide-center.html",
+  "ok": true,
+  "errors": [],
+  "qrDecoded": "https://dpromstk2000-lab.github.io/dpro-reform-line-liff/guide-center.html",
+  "qrPass": true
+}
