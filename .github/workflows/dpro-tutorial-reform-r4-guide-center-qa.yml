@@ -1,0 +1,178 @@
+name: DPRO TUTORIAL REFORM R4 GUIDE CENTER QA
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'guide-center.html'
+      - 'demo-guide.html'
+      - 'tutorial-first10.js'
+      - '.github/workflows/dpro-tutorial-reform-r4-guide-center-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dpro-tutorial-reform-r4-guide-center-qa
+  cancel-in-progress: false
+
+jobs:
+  r4-guide-center-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Resolve current main source
+        run: echo "SOURCE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install --no-audit --no-fund playwright@1.55.0 >/dev/null
+          npx playwright install --with-deps chromium >/dev/null
+
+      - name: Wait for GitHub Pages R4 source
+        env:
+          BASE: https://dpromstk2000-lab.github.io/dpro-reform-line-liff
+        run: |
+          for i in $(seq 1 36); do
+            if curl -fsSL "$BASE/guide-center.html?qa=${SOURCE_SHA}" | grep -q "GUIDE CENTER / R4"; then
+              echo "R4 Guide Center visible on GitHub Pages"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "GitHub Pages did not expose current R4 Guide Center"
+          exit 1
+
+      - name: Run exact-width R4 LIVE QA
+        env:
+          BASE: https://dpromstk2000-lab.github.io/dpro-reform-line-liff
+          SOURCE_SHA: ${{ env.SOURCE_SHA }}
+        run: |
+          mkdir -p tutorial-evidence/reform-r4/screens
+          trap 'rm -f reform-r4-qa.js' EXIT
+          cat > reform-r4-qa.js <<'JS'
+          const { chromium } = require('playwright');
+          const fs = require('fs');
+          const base = process.env.BASE;
+          const sourceSha = process.env.SOURCE_SHA || process.env.GITHUB_SHA || null;
+          const mutationMethods = new Set(['POST','PUT','PATCH','DELETE']);
+          const widths=[
+            {key:'1440',w:1440,h:1000},{key:'1024',w:1024,h:768},{key:'390',w:390,h:844},{key:'320',w:320,h:720}
+          ];
+          const evidence={schema:'DPRO_TUTORIAL_REFORM_R4_GUIDE_CENTER_QA_V1_0',sourceSha,base,startedAt:new Date().toISOString(),viewportRuns:[],canonical:[],guideRoutes:[],stateAlignment:{},keyboardFocus:{},errors:[],mutations:[],ok:false};
+          const assert=(c,m)=>{if(!c)throw new Error(m)};
+          function attach(page,scope){
+            page.on('pageerror',e=>evidence.errors.push({scope,type:'pageerror',message:String(e)}));
+            page.on('console',m=>{if(m.type()==='error')evidence.errors.push({scope,type:'console',message:m.text()})});
+            page.on('request',r=>{if(mutationMethods.has(r.method()))evidence.mutations.push({scope,method:r.method(),url:r.url()})});
+          }
+          async function waitGuide(page){await page.waitForSelector('#guideCenterReady[data-ready="1"]',{timeout:20000})}
+          async function metric(page){return page.evaluate(()=>({innerWidth,innerHeight,documentElementScrollWidth:document.documentElement.scrollWidth,bodyScrollWidth:document.body?.scrollWidth||0,readyState:document.readyState}))}
+          async function clearState(page){await page.evaluate(()=>{localStorage.removeItem('dpro_tutorial_reform_first10_v1');localStorage.removeItem('dpro_tutorial_reform_first10_pos_v1')})}
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            try{
+              for(const vp of widths){
+                const context=await browser.newContext({viewport:{width:vp.w,height:vp.h}});
+                const page=await context.newPage();attach(page,`viewport-${vp.key}`);
+                await page.goto(base+'/guide-center.html?qa='+encodeURIComponent(sourceSha||''),{waitUntil:'domcontentloaded',timeout:45000});await waitGuide(page);
+                const m=await metric(page);
+                const info=await page.evaluate(()=>({
+                  stepCount:window.DPRO_REFORM_TUTORIAL?.steps?.length||0,
+                  renderedCount:document.querySelectorAll('#gc-first10 .first10-item').length,
+                  tutorialRootHidden:document.getElementById('dpro-tutorial-first10')?.hidden!==false,
+                  launcherHidden:document.getElementById('dpro-tutorial-launcher')?.hidden!==false
+                }));
+                const row={viewport:vp.key,...m,...info};
+                row.pass=m.innerWidth===vp.w&&m.documentElementScrollWidth<=m.innerWidth&&m.bodyScrollWidth<=m.innerWidth&&info.stepCount===10&&info.renderedCount===10&&info.tutorialRootHidden&&info.launcherHidden;
+                evidence.viewportRuns.push(row);
+                await page.screenshot({path:`tutorial-evidence/reform-r4/screens/${vp.key}.png`,fullPage:true});
+                await page.close();await context.close();
+              }
+
+              const context=await browser.newContext({viewport:{width:1440,height:1000}});
+              const page=await context.newPage();attach(page,'canonical-state');
+              await page.goto(base+'/guide-center.html',{waitUntil:'domcontentloaded',timeout:45000});await waitGuide(page);
+              const canonical=await page.evaluate(()=>{
+                const T=window.DPRO_REFORM_TUTORIAL;
+                return [...document.querySelectorAll('#gc-first10 .first10-item')].map((el,i)=>({
+                  index:i,id:el.dataset.stepId,route:el.dataset.route,title:el.querySelector('h3')?.textContent||'',
+                  sourceId:T.steps[i]?.id||null,sourceRoute:T.steps[i]?.route||null,sourceTitle:T.steps[i]?.title||null,
+                  pass:el.dataset.stepId===T.steps[i]?.id&&el.dataset.route===T.steps[i]?.route&&(el.querySelector('h3')?.textContent||'')===T.steps[i]?.title
+                }));
+              });
+              evidence.canonical=canonical;assert(canonical.length===10&&canonical.every(x=>x.pass),'Guide Center canonical First10 mismatch');
+
+              const links=await page.evaluate(()=>[...document.querySelectorAll('#gc-extras [data-extra-route]')].map(a=>a.getAttribute('href')));
+              assert(links.length===3,'non-First10 guide count mismatch');
+              for(const route of links){const res=await context.request.get(new URL(route,base+'/').href);evidence.guideRoutes.push({route,status:res.status(),pass:res.status()===200});assert(res.status()===200,`guide route failed: ${route}`)}
+
+              await clearState(page);await page.reload({waitUntil:'domcontentloaded'});await waitGuide(page);
+              let ui=await page.evaluate(()=>({state:document.getElementById('gc-state').textContent,resumeDisabled:document.getElementById('gc-resume').disabled,replayDisabled:document.getElementById('gc-replay').disabled}));
+              assert(ui.state==='未開始'&&ui.resumeDisabled&&ui.replayDisabled,'not-started state mismatch');evidence.stateAlignment.notStarted=true;
+              await page.locator('#gc-start').focus();evidence.keyboardFocus.startFocused=await page.evaluate(()=>document.activeElement?.id==='gc-start');assert(evidence.keyboardFocus.startFocused,'Start focus failed');await page.keyboard.press('Enter');
+              await page.waitForURL(u=>u.pathname.endsWith('/demo-guide.html'),{timeout:20000});await page.waitForFunction(()=>window.DPRO_REFORM_TUTORIAL?.snapshot().state.currentStepId==='F10-01',{timeout:20000});
+              let s=await page.evaluate(()=>window.DPRO_REFORM_TUTORIAL.snapshot().state);assert(s.status==='active'&&s.currentStepId==='F10-01','Start state mismatch');evidence.stateAlignment.start=true;
+
+              await page.evaluate(()=>localStorage.setItem('dpro_tutorial_reform_first10_v1',JSON.stringify({schemaVersion:'1.1',tutorialVersion:'R3-V1.1',currentStepId:'F10-05',expectedRoute:'/member.html?demo=1&v=reform-10',status:'paused',updatedAt:new Date().toISOString()})));
+              await page.goto(base+'/guide-center.html',{waitUntil:'domcontentloaded'});await waitGuide(page);
+              ui=await page.evaluate(()=>({state:document.getElementById('gc-state').textContent,resumeDisabled:document.getElementById('gc-resume').disabled}));
+              assert(ui.state.includes('PAUSED / F10-05')&&!ui.resumeDisabled,'Resume state display mismatch');
+              await page.locator('#gc-resume').focus();evidence.keyboardFocus.resumeFocused=await page.evaluate(()=>document.activeElement?.id==='gc-resume');assert(evidence.keyboardFocus.resumeFocused,'Resume focus failed');await page.keyboard.press('Enter');
+              await page.waitForURL(u=>u.pathname.endsWith('/member.html'),{timeout:20000});await page.waitForFunction(()=>window.DPRO_REFORM_TUTORIAL?.snapshot().state.currentStepId==='F10-05',{timeout:20000});
+              s=await page.evaluate(()=>window.DPRO_REFORM_TUTORIAL.snapshot().state);assert(s.status==='active'&&s.currentStepId==='F10-05','Resume did not align with R3 state');evidence.stateAlignment.resume=true;
+
+              await page.evaluate(()=>localStorage.setItem('dpro_tutorial_reform_first10_v1',JSON.stringify({schemaVersion:'1.1',tutorialVersion:'R3-V1.1',currentStepId:'F10-10',expectedRoute:'/owner.html?demo=1&v=reform-10',status:'completed',updatedAt:new Date().toISOString()})));
+              await page.goto(base+'/guide-center.html',{waitUntil:'domcontentloaded'});await waitGuide(page);
+              ui=await page.evaluate(()=>({state:document.getElementById('gc-state').textContent,resumeDisabled:document.getElementById('gc-resume').disabled,replayDisabled:document.getElementById('gc-replay').disabled}));
+              assert(ui.state.includes('COMPLETED / F10-10')&&ui.resumeDisabled&&!ui.replayDisabled,'Completed state display mismatch');
+              await page.locator('#gc-replay').focus();evidence.keyboardFocus.replayFocused=await page.evaluate(()=>document.activeElement?.id==='gc-replay');assert(evidence.keyboardFocus.replayFocused,'Replay focus failed');await page.keyboard.press('Enter');
+              await page.waitForURL(u=>u.pathname.endsWith('/demo-guide.html'),{timeout:20000});await page.waitForFunction(()=>window.DPRO_REFORM_TUTORIAL?.snapshot().state.currentStepId==='F10-01',{timeout:20000});
+              s=await page.evaluate(()=>window.DPRO_REFORM_TUTORIAL.snapshot().state);assert(s.status==='active'&&s.currentStepId==='F10-01','Replay state mismatch');evidence.stateAlignment.replay=true;
+              await context.close();
+
+              assert(evidence.viewportRuns.length===4&&evidence.viewportRuns.every(x=>x.pass),'viewport/overflow failure');
+              assert(evidence.guideRoutes.every(x=>x.pass),'guide link failure');
+              assert(evidence.mutations.length===0,'business mutation detected');
+              assert(evidence.errors.length===0,'page/console error detected');
+              evidence.ok=true;
+            }catch(e){evidence.errors.push({scope:'qa',type:'assertion',message:String(e&&e.stack||e)});}
+            finally{evidence.finishedAt=new Date().toISOString();fs.writeFileSync('tutorial-evidence/reform-r4/r4-live-qa.json',JSON.stringify(evidence,null,2));await browser.close();}
+            if(!evidence.ok)process.exit(1);
+          })();
+          JS
+          node reform-r4-qa.js
+
+      - name: Commit R4 QA evidence
+        if: always()
+        run: |
+          git config user.name "DPRO Tutorial QA"
+          git config user.email "actions@users.noreply.github.com"
+          git add tutorial-evidence/reform-r4
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "REFORM Tutorial R4: publish Guide Center QA evidence"
+          for i in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main || { git rebase --abort; sleep 3; continue; }
+            git push origin HEAD:main && exit 0
+            sleep 3
+          done
+          exit 1
+
+      - name: Upload R4 QA evidence artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dpro-tutorial-reform-r4-guide-center-qa
+          path: tutorial-evidence/reform-r4
