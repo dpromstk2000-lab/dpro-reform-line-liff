@@ -1,8 +1,8 @@
 {
-  "schema": "DPRO_TUTORIAL_REFORM_R3_LIVE_QA_V1_3",
-  "sourceSha": "06eea8ae3c241b930f8cd01308a0fd832652f1ad",
+  "schema": "DPRO_TUTORIAL_REFORM_R3_LIVE_QA_V1_4",
+  "sourceSha": "62b406434cfb8655a2292cbcfd539cac6ab3ff5a",
   "base": "https://dpromstk2000-lab.github.io/dpro-reform-line-liff",
-  "startedAt": "2026-08-28T06:09:44.914Z",
+  "startedAt": "2026-08-28T06:13:30.347Z",
   "viewportRuns": [
     {
       "viewport": "1440",
@@ -442,16 +442,16 @@
     "keyboardDrag": true,
     "productControlsDoNotDrag": true,
     "nextBack": true,
-    "closeEscSkipResume": true
+    "closeEscSkipResume": true,
+    "keyboardOnlyCompletion": true,
+    "crossPageResume": true,
+    "focusRecovery": true,
+    "replay": true,
+    "touchPointerDrag": true,
+    "viewportClamp": true
   },
-  "errors": [
-    {
-      "scope": "qa",
-      "type": "assertion",
-      "message": "Error: focus recovery failed at F10-01\n    at assert (/home/runner/work/dpro-reform-line-liff/dpro-reform-line-liff/reform-r3-qa.js:36:45)\n    at /home/runner/work/dpro-reform-line-liff/dpro-reform-line-liff/reform-r3-qa.js:150:98"
-    }
-  ],
+  "errors": [],
   "mutations": [],
-  "ok": false,
-  "finishedAt": "2026-08-28T06:09:58.774Z"
+  "ok": true,
+  "finishedAt": "2026-08-28T06:13:45.210Z"
 }
