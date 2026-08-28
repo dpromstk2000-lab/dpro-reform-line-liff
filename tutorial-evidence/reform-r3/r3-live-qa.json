@@ -1,8 +1,8 @@
 {
-  "schema": "DPRO_TUTORIAL_REFORM_R3_LIVE_QA_V1_1",
-  "sourceSha": "1240b059dd5f794a235c3edb139f0000afead555",
+  "schema": "DPRO_TUTORIAL_REFORM_R3_LIVE_QA_V1_3",
+  "sourceSha": "06eea8ae3c241b930f8cd01308a0fd832652f1ad",
   "base": "https://dpromstk2000-lab.github.io/dpro-reform-line-liff",
-  "startedAt": "2026-08-28T05:59:27.080Z",
+  "startedAt": "2026-08-28T06:09:44.914Z",
   "viewportRuns": [
     {
       "viewport": "1440",
@@ -437,15 +437,21 @@
       "pass": true
     }
   ],
-  "interactions": {},
+  "interactions": {
+    "mouseDrag": true,
+    "keyboardDrag": true,
+    "productControlsDoNotDrag": true,
+    "nextBack": true,
+    "closeEscSkipResume": true
+  },
   "errors": [
     {
       "scope": "qa",
       "type": "assertion",
-      "message": "Error: mouse drag did not move card\n    at assert (/home/runner/work/dpro-reform-line-liff/dpro-reform-line-liff/reform-r3-qa.js:36:45)\n    at /home/runner/work/dpro-reform-line-liff/dpro-reform-line-liff/reform-r3-qa.js:120:39"
+      "message": "Error: focus recovery failed at F10-01\n    at assert (/home/runner/work/dpro-reform-line-liff/dpro-reform-line-liff/reform-r3-qa.js:36:45)\n    at /home/runner/work/dpro-reform-line-liff/dpro-reform-line-liff/reform-r3-qa.js:150:98"
     }
   ],
   "mutations": [],
   "ok": false,
-  "finishedAt": "2026-08-28T05:59:38.831Z"
+  "finishedAt": "2026-08-28T06:09:58.774Z"
 }
