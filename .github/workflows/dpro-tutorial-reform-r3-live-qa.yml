@@ -93,7 +93,7 @@ jobs:
             ['F10-10','/owner.html?demo=1&v=reform-10','#sidebar .nav','#sidebar'],
           ];
           const evidence = {
-            schema:'DPRO_TUTORIAL_REFORM_R3_LIVE_QA_V1_1',
+            schema:'DPRO_TUTORIAL_REFORM_R3_LIVE_QA_V1_3',
             sourceSha,base,startedAt:new Date().toISOString(),
             viewportRuns:[],selectorRuns:[],interactions:{},errors:[],mutations:[],ok:false
           };
@@ -180,7 +180,7 @@ jobs:
               assert((await state(page)).state.currentStepId==='F10-01','start step mismatch');
 
               const before=await cardRect(page); const hb=await page.locator('#dpro-tut-handle').boundingBox();
-              await page.mouse.move(hb.x+20,hb.y+20);await page.mouse.down();await page.mouse.move(hb.x+120,hb.y+80,{steps:5});await page.mouse.up();
+              await page.mouse.move(hb.x+20,hb.y+20);await page.mouse.down();await page.mouse.move(hb.x-100,hb.y-60,{steps:5});await page.mouse.up();
               const after=await cardRect(page); assert(Math.abs(after.x-before.x)>20||Math.abs(after.y-before.y)>20,'mouse drag did not move card');
               evidence.interactions.mouseDrag=true;
 
@@ -234,8 +234,8 @@ jobs:
               await touch.waitForSelector('#dpro-tutorial-first10:not([hidden])');
               const t0=await cardRect(touch); const th=await touch.locator('#dpro-tut-handle').boundingBox();
               await touch.dispatchEvent('#dpro-tut-handle','pointerdown',{pointerId:9,pointerType:'touch',clientX:th.x+20,clientY:th.y+20,button:0,isPrimary:true});
-              await touch.dispatchEvent('#dpro-tut-handle','pointermove',{pointerId:9,pointerType:'touch',clientX:th.x+110,clientY:th.y+70,button:0,isPrimary:true});
-              await touch.dispatchEvent('#dpro-tut-handle','pointerup',{pointerId:9,pointerType:'touch',clientX:th.x+110,clientY:th.y+70,button:0,isPrimary:true});
+              await touch.dispatchEvent('#dpro-tut-handle','pointermove',{pointerId:9,pointerType:'touch',clientX:th.x+20,clientY:th.y-70,button:0,isPrimary:true});
+              await touch.dispatchEvent('#dpro-tut-handle','pointerup',{pointerId:9,pointerType:'touch',clientX:th.x+20,clientY:th.y-70,button:0,isPrimary:true});
               const t1=await cardRect(touch); assert(Math.abs(t1.x-t0.x)>15||Math.abs(t1.y-t0.y)>15,'touch pointer drag failed');
               await touch.dispatchEvent('#dpro-tut-handle','pointerdown',{pointerId:10,pointerType:'touch',clientX:t1.x+20,clientY:t1.y+20,button:0,isPrimary:true});
               await touch.dispatchEvent('#dpro-tut-handle','pointermove',{pointerId:10,pointerType:'touch',clientX:9999,clientY:9999,button:0,isPrimary:true});
