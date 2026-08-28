@@ -30,3 +30,17 @@ window.DPRO_REFORM_CONFIG = Object.freeze({
   DEMO_LINE_USER_ID: "demo_reform_line_001",
   DEMO_ADMIN_CODE: "1234"
 });
+
+/* DPRO TUTORIAL R3 loader: demo/tutorial routes only. No business API calls. */
+(() => {
+  try {
+    const q = new URLSearchParams(location.search);
+    if (q.get('demo') !== '1' && q.get('tutorial') !== '1') return;
+    if (document.querySelector('script[data-dpro-reform-tutorial]')) return;
+    const s = document.createElement('script');
+    s.src = './tutorial-first10.js?v=20260828-r3-v11';
+    s.defer = true;
+    s.dataset.dproReformTutorial = '1';
+    (document.head || document.documentElement).appendChild(s);
+  } catch (_) {}
+})();
