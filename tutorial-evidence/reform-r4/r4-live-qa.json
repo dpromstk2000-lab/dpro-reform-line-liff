@@ -1,0 +1,194 @@
+{
+  "schema": "DPRO_TUTORIAL_REFORM_R4_GUIDE_CENTER_QA_V1_0",
+  "sourceSha": "a0177477b2d4a0d6bc7515c8b4bbad226898a901",
+  "base": "https://dpromstk2000-lab.github.io/dpro-reform-line-liff",
+  "startedAt": "2026-08-28T06:24:14.327Z",
+  "viewportRuns": [
+    {
+      "viewport": "1440",
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "documentElementScrollWidth": 1440,
+      "bodyScrollWidth": 1440,
+      "readyState": "complete",
+      "stepCount": 10,
+      "renderedCount": 10,
+      "tutorialRootHidden": true,
+      "launcherHidden": true,
+      "pass": true
+    },
+    {
+      "viewport": "1024",
+      "innerWidth": 1024,
+      "innerHeight": 768,
+      "documentElementScrollWidth": 1024,
+      "bodyScrollWidth": 1024,
+      "readyState": "complete",
+      "stepCount": 10,
+      "renderedCount": 10,
+      "tutorialRootHidden": true,
+      "launcherHidden": true,
+      "pass": true
+    },
+    {
+      "viewport": "390",
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "documentElementScrollWidth": 390,
+      "bodyScrollWidth": 390,
+      "readyState": "complete",
+      "stepCount": 10,
+      "renderedCount": 10,
+      "tutorialRootHidden": true,
+      "launcherHidden": true,
+      "pass": true
+    },
+    {
+      "viewport": "320",
+      "innerWidth": 320,
+      "innerHeight": 720,
+      "documentElementScrollWidth": 320,
+      "bodyScrollWidth": 320,
+      "readyState": "complete",
+      "stepCount": 10,
+      "renderedCount": 10,
+      "tutorialRootHidden": true,
+      "launcherHidden": true,
+      "pass": true
+    }
+  ],
+  "canonical": [
+    {
+      "index": 0,
+      "id": "F10-01",
+      "route": "/demo-guide.html",
+      "title": "公開デモの入口",
+      "sourceId": "F10-01",
+      "sourceRoute": "/demo-guide.html",
+      "sourceTitle": "公開デモの入口",
+      "pass": true
+    },
+    {
+      "index": 1,
+      "id": "F10-02",
+      "route": "/demo-guide.html",
+      "title": "4画面・5業務ステップの全体像",
+      "sourceId": "F10-02",
+      "sourceRoute": "/demo-guide.html",
+      "sourceTitle": "4画面・5業務ステップの全体像",
+      "pass": true
+    },
+    {
+      "index": 2,
+      "id": "F10-03",
+      "route": "/index.html?demo=1&v=reform-10",
+      "title": "相談受付は6段階",
+      "sourceId": "F10-03",
+      "sourceRoute": "/index.html?demo=1&v=reform-10",
+      "sourceTitle": "相談受付は6段階",
+      "pass": true
+    },
+    {
+      "index": 3,
+      "id": "F10-04",
+      "route": "/index.html?demo=1&v=reform-10",
+      "title": "相談後はマイページへ",
+      "sourceId": "F10-04",
+      "sourceRoute": "/index.html?demo=1&v=reform-10",
+      "sourceTitle": "相談後はマイページへ",
+      "pass": true
+    },
+    {
+      "index": 4,
+      "id": "F10-05",
+      "route": "/member.html?demo=1&v=reform-10",
+      "title": "案件一覧から状況を確認",
+      "sourceId": "F10-05",
+      "sourceRoute": "/member.html?demo=1&v=reform-10",
+      "sourceTitle": "案件一覧から状況を確認",
+      "pass": true
+    },
+    {
+      "index": 5,
+      "id": "F10-06",
+      "route": "/member.html?demo=1&v=reform-10",
+      "title": "調査・見積・工事・公開写真を読む",
+      "sourceId": "F10-06",
+      "sourceRoute": "/member.html?demo=1&v=reform-10",
+      "sourceTitle": "調査・見積・工事・公開写真を読む",
+      "pass": true
+    },
+    {
+      "index": 6,
+      "id": "F10-07",
+      "route": "/staff.html?demo=1&staff=tanaka&v=reform-10",
+      "title": "担当者は今日の訪問・工事から確認",
+      "sourceId": "F10-07",
+      "sourceRoute": "/staff.html?demo=1&staff=tanaka&v=reform-10",
+      "sourceTitle": "担当者は今日の訪問・工事から確認",
+      "pass": true
+    },
+    {
+      "index": 7,
+      "id": "F10-08",
+      "route": "/staff.html?demo=1&staff=tanaka&v=reform-10",
+      "title": "案件詳細はタブで追う",
+      "sourceId": "F10-08",
+      "sourceRoute": "/staff.html?demo=1&staff=tanaka&v=reform-10",
+      "sourceTitle": "案件詳細はタブで追う",
+      "pass": true
+    },
+    {
+      "index": 8,
+      "id": "F10-09",
+      "route": "/owner.html?demo=1&v=reform-10",
+      "title": "オーナーは今日の優先順位を俯瞰",
+      "sourceId": "F10-09",
+      "sourceRoute": "/owner.html?demo=1&v=reform-10",
+      "sourceTitle": "オーナーは今日の優先順位を俯瞰",
+      "pass": true
+    },
+    {
+      "index": 9,
+      "id": "F10-10",
+      "route": "/owner.html?demo=1&v=reform-10",
+      "title": "相談からアフターまで一つの管理導線",
+      "sourceId": "F10-10",
+      "sourceRoute": "/owner.html?demo=1&v=reform-10",
+      "sourceTitle": "相談からアフターまで一つの管理導線",
+      "pass": true
+    }
+  ],
+  "guideRoutes": [
+    {
+      "route": "demo-guide.html",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "route": "owner-ipad.html?demo=1&v=reform-10",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "route": "system-check.html?demo=1&v=reform-10",
+      "status": 200,
+      "pass": true
+    }
+  ],
+  "stateAlignment": {
+    "notStarted": true,
+    "start": true,
+    "resume": true,
+    "replay": true
+  },
+  "keyboardFocus": {
+    "startFocused": true,
+    "resumeFocused": true,
+    "replayFocused": true
+  },
+  "errors": [],
+  "mutations": [],
+  "ok": true,
+  "finishedAt": "2026-08-28T06:24:17.909Z"
+}
