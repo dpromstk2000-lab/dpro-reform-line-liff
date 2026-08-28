@@ -93,7 +93,7 @@ jobs:
             ['F10-10','/owner.html?demo=1&v=reform-10','#sidebar .nav','#sidebar'],
           ];
           const evidence = {
-            schema:'DPRO_TUTORIAL_REFORM_R3_LIVE_QA_V1_3',
+            schema:'DPRO_TUTORIAL_REFORM_R3_LIVE_QA_V1_4',
             sourceSha,base,startedAt:new Date().toISOString(),
             viewportRuns:[],selectorRuns:[],interactions:{},errors:[],mutations:[],ok:false
           };
@@ -211,7 +211,7 @@ jobs:
               for(let i=0;i<10;i++){
                 await waitTutorial(page); await page.waitForSelector('#dpro-tutorial-first10:not([hidden])');
                 const snap=await state(page); assert(snap.state.currentStepId===steps[i][0],`keyboard step ${i+1} mismatch`);
-                const focusedTitle=await page.evaluate(()=>document.activeElement?.id==='dpro-tut-title'); assert(focusedTitle,`focus recovery failed at ${steps[i][0]}`);
+                await page.waitForFunction(()=>document.activeElement?.id==='dpro-tut-title',null,{timeout:2000}); const focusedTitle=await page.evaluate(()=>document.activeElement?.id==='dpro-tut-title'); assert(focusedTitle,`focus recovery failed at ${steps[i][0]}`);
                 await page.locator('#dpro-tut-next').focus(); await page.keyboard.press('Enter');
                 if(i<9){
                   const expected=pathOf(steps[i+1][1]);
