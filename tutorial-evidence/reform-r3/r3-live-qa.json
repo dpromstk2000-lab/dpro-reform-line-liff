@@ -1,24 +1,451 @@
 {
   "schema": "DPRO_TUTORIAL_REFORM_R3_LIVE_QA_V1_1",
-  "sourceSha": "a304b975fd5287ee226e8d7731809f3c507ca576",
+  "sourceSha": "1240b059dd5f794a235c3edb139f0000afead555",
   "base": "https://dpromstk2000-lab.github.io/dpro-reform-line-liff",
-  "startedAt": "2026-08-28T05:57:26.975Z",
-  "viewportRuns": [],
-  "selectorRuns": [],
+  "startedAt": "2026-08-28T05:59:27.080Z",
+  "viewportRuns": [
+    {
+      "viewport": "1440",
+      "route": "/demo-guide.html",
+      "status": 200,
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "documentElementScrollWidth": 1440,
+      "bodyScrollWidth": 1440,
+      "readyState": "complete",
+      "card": {
+        "x": 1040,
+        "y": 633.484375,
+        "width": 390,
+        "height": 356.515625
+      },
+      "cardInside": true,
+      "pass": true
+    },
+    {
+      "viewport": "1440",
+      "route": "/index.html?demo=1&v=reform-10",
+      "status": 200,
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "documentElementScrollWidth": 1440,
+      "bodyScrollWidth": 1440,
+      "readyState": "complete",
+      "card": {
+        "x": 1040,
+        "y": 633.484375,
+        "width": 390,
+        "height": 356.515625
+      },
+      "cardInside": true,
+      "pass": true
+    },
+    {
+      "viewport": "1440",
+      "route": "/member.html?demo=1&v=reform-10",
+      "status": 200,
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "documentElementScrollWidth": 1440,
+      "bodyScrollWidth": 1440,
+      "readyState": "complete",
+      "card": {
+        "x": 1040,
+        "y": 633.484375,
+        "width": 390,
+        "height": 356.515625
+      },
+      "cardInside": true,
+      "pass": true
+    },
+    {
+      "viewport": "1440",
+      "route": "/staff.html?demo=1&staff=tanaka&v=reform-10",
+      "status": 200,
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "documentElementScrollWidth": 1440,
+      "bodyScrollWidth": 1440,
+      "readyState": "complete",
+      "card": {
+        "x": 1040,
+        "y": 653.625,
+        "width": 390,
+        "height": 336.375
+      },
+      "cardInside": true,
+      "pass": true
+    },
+    {
+      "viewport": "1440",
+      "route": "/owner.html?demo=1&v=reform-10",
+      "status": 200,
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "documentElementScrollWidth": 1440,
+      "bodyScrollWidth": 1440,
+      "readyState": "complete",
+      "card": {
+        "x": 1040,
+        "y": 653.625,
+        "width": 390,
+        "height": 336.375
+      },
+      "cardInside": true,
+      "pass": true
+    },
+    {
+      "viewport": "1024",
+      "route": "/demo-guide.html",
+      "status": 200,
+      "innerWidth": 1024,
+      "innerHeight": 768,
+      "documentElementScrollWidth": 1024,
+      "bodyScrollWidth": 1024,
+      "readyState": "complete",
+      "card": {
+        "x": 624,
+        "y": 401.484375,
+        "width": 390,
+        "height": 356.515625
+      },
+      "cardInside": true,
+      "pass": true
+    },
+    {
+      "viewport": "1024",
+      "route": "/index.html?demo=1&v=reform-10",
+      "status": 200,
+      "innerWidth": 1024,
+      "innerHeight": 768,
+      "documentElementScrollWidth": 1024,
+      "bodyScrollWidth": 1024,
+      "readyState": "complete",
+      "card": {
+        "x": 624,
+        "y": 401.484375,
+        "width": 390,
+        "height": 356.515625
+      },
+      "cardInside": true,
+      "pass": true
+    },
+    {
+      "viewport": "1024",
+      "route": "/member.html?demo=1&v=reform-10",
+      "status": 200,
+      "innerWidth": 1024,
+      "innerHeight": 768,
+      "documentElementScrollWidth": 1024,
+      "bodyScrollWidth": 1024,
+      "readyState": "complete",
+      "card": {
+        "x": 10,
+        "y": 10,
+        "width": 390,
+        "height": 356.515625
+      },
+      "cardInside": true,
+      "pass": true
+    },
+    {
+      "viewport": "1024",
+      "route": "/staff.html?demo=1&staff=tanaka&v=reform-10",
+      "status": 200,
+      "innerWidth": 1024,
+      "innerHeight": 768,
+      "documentElementScrollWidth": 1024,
+      "bodyScrollWidth": 1024,
+      "readyState": "complete",
+      "card": {
+        "x": 624,
+        "y": 421.625,
+        "width": 390,
+        "height": 336.375
+      },
+      "cardInside": true,
+      "pass": true
+    },
+    {
+      "viewport": "1024",
+      "route": "/owner.html?demo=1&v=reform-10",
+      "status": 200,
+      "innerWidth": 1024,
+      "innerHeight": 768,
+      "documentElementScrollWidth": 1024,
+      "bodyScrollWidth": 1024,
+      "readyState": "complete",
+      "card": {
+        "x": 624,
+        "y": 421.625,
+        "width": 390,
+        "height": 336.375
+      },
+      "cardInside": true,
+      "pass": true
+    },
+    {
+      "viewport": "390",
+      "route": "/demo-guide.html",
+      "status": 200,
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "documentElementScrollWidth": 390,
+      "bodyScrollWidth": 390,
+      "readyState": "complete",
+      "card": {
+        "x": 10,
+        "y": 484.1875,
+        "width": 374,
+        "height": 349.8125
+      },
+      "cardInside": true,
+      "pass": true
+    },
+    {
+      "viewport": "390",
+      "route": "/index.html?demo=1&v=reform-10",
+      "status": 200,
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "documentElementScrollWidth": 390,
+      "bodyScrollWidth": 390,
+      "readyState": "complete",
+      "card": {
+        "x": 10,
+        "y": 484.1875,
+        "width": 374,
+        "height": 349.8125
+      },
+      "cardInside": true,
+      "pass": true
+    },
+    {
+      "viewport": "390",
+      "route": "/member.html?demo=1&v=reform-10",
+      "status": 200,
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "documentElementScrollWidth": 390,
+      "bodyScrollWidth": 390,
+      "readyState": "complete",
+      "card": {
+        "x": 10,
+        "y": 10,
+        "width": 374,
+        "height": 349.8125
+      },
+      "cardInside": true,
+      "pass": true
+    },
+    {
+      "viewport": "390",
+      "route": "/staff.html?demo=1&staff=tanaka&v=reform-10",
+      "status": 200,
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "documentElementScrollWidth": 390,
+      "bodyScrollWidth": 390,
+      "readyState": "complete",
+      "card": {
+        "x": 10,
+        "y": 504.328125,
+        "width": 374,
+        "height": 329.671875
+      },
+      "cardInside": true,
+      "pass": true
+    },
+    {
+      "viewport": "390",
+      "route": "/owner.html?demo=1&v=reform-10",
+      "status": 200,
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "documentElementScrollWidth": 390,
+      "bodyScrollWidth": 390,
+      "readyState": "complete",
+      "card": {
+        "x": 10,
+        "y": 504.328125,
+        "width": 374,
+        "height": 329.671875
+      },
+      "cardInside": true,
+      "pass": true
+    },
+    {
+      "viewport": "320",
+      "route": "/demo-guide.html",
+      "status": 200,
+      "innerWidth": 320,
+      "innerHeight": 720,
+      "documentElementScrollWidth": 320,
+      "bodyScrollWidth": 320,
+      "readyState": "complete",
+      "card": {
+        "x": 10,
+        "y": 360.1875,
+        "width": 304,
+        "height": 349.8125
+      },
+      "cardInside": true,
+      "pass": true
+    },
+    {
+      "viewport": "320",
+      "route": "/index.html?demo=1&v=reform-10",
+      "status": 200,
+      "innerWidth": 320,
+      "innerHeight": 720,
+      "documentElementScrollWidth": 320,
+      "bodyScrollWidth": 320,
+      "readyState": "complete",
+      "card": {
+        "x": 10,
+        "y": 10,
+        "width": 304,
+        "height": 349.8125
+      },
+      "cardInside": true,
+      "pass": true
+    },
+    {
+      "viewport": "320",
+      "route": "/member.html?demo=1&v=reform-10",
+      "status": 200,
+      "innerWidth": 320,
+      "innerHeight": 720,
+      "documentElementScrollWidth": 320,
+      "bodyScrollWidth": 320,
+      "readyState": "complete",
+      "card": {
+        "x": 10,
+        "y": 10,
+        "width": 304,
+        "height": 349.8125
+      },
+      "cardInside": true,
+      "pass": true
+    },
+    {
+      "viewport": "320",
+      "route": "/staff.html?demo=1&staff=tanaka&v=reform-10",
+      "status": 200,
+      "innerWidth": 320,
+      "innerHeight": 720,
+      "documentElementScrollWidth": 320,
+      "bodyScrollWidth": 320,
+      "readyState": "complete",
+      "card": {
+        "x": 10,
+        "y": 335.890625,
+        "width": 304,
+        "height": 374.109375
+      },
+      "cardInside": true,
+      "pass": true
+    },
+    {
+      "viewport": "320",
+      "route": "/owner.html?demo=1&v=reform-10",
+      "status": 200,
+      "innerWidth": 320,
+      "innerHeight": 720,
+      "documentElementScrollWidth": 320,
+      "bodyScrollWidth": 320,
+      "readyState": "complete",
+      "card": {
+        "x": 10,
+        "y": 360.1875,
+        "width": 304,
+        "height": 349.8125
+      },
+      "cardInside": true,
+      "pass": true
+    }
+  ],
+  "selectorRuns": [
+    {
+      "id": "F10-01",
+      "route": "/demo-guide.html",
+      "primary": true,
+      "fallback": true,
+      "pass": true
+    },
+    {
+      "id": "F10-02",
+      "route": "/demo-guide.html",
+      "primary": true,
+      "fallback": true,
+      "pass": true
+    },
+    {
+      "id": "F10-03",
+      "route": "/index.html?demo=1&v=reform-10",
+      "primary": true,
+      "fallback": true,
+      "pass": true
+    },
+    {
+      "id": "F10-04",
+      "route": "/index.html?demo=1&v=reform-10",
+      "primary": true,
+      "fallback": true,
+      "pass": true
+    },
+    {
+      "id": "F10-05",
+      "route": "/member.html?demo=1&v=reform-10",
+      "primary": false,
+      "fallback": true,
+      "pass": true
+    },
+    {
+      "id": "F10-06",
+      "route": "/member.html?demo=1&v=reform-10",
+      "primary": true,
+      "fallback": true,
+      "pass": true
+    },
+    {
+      "id": "F10-07",
+      "route": "/staff.html?demo=1&staff=tanaka&v=reform-10",
+      "primary": true,
+      "fallback": true,
+      "pass": true
+    },
+    {
+      "id": "F10-08",
+      "route": "/staff.html?demo=1&staff=tanaka&v=reform-10",
+      "primary": false,
+      "fallback": true,
+      "pass": true
+    },
+    {
+      "id": "F10-09",
+      "route": "/owner.html?demo=1&v=reform-10",
+      "primary": true,
+      "fallback": true,
+      "pass": true
+    },
+    {
+      "id": "F10-10",
+      "route": "/owner.html?demo=1&v=reform-10",
+      "primary": true,
+      "fallback": true,
+      "pass": true
+    }
+  ],
   "interactions": {},
   "errors": [
     {
-      "scope": "viewport-1440-/demo-guide.html",
-      "type": "console",
-      "message": "Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
       "scope": "qa",
       "type": "assertion",
-      "message": "page.waitForFunction: Timeout 30000ms exceeded.\n    at waitTutorial (/home/runner/work/dpro-reform-line-liff/dpro-reform-line-liff/reform-r3-qa.js:44:14)\n    at activateForRoute (/home/runner/work/dpro-reform-line-liff/dpro-reform-line-liff/reform-r3-qa.js:80:9)\n    at async /home/runner/work/dpro-reform-line-liff/dpro-reform-line-liff/reform-r3-qa.js:91:9"
+      "message": "Error: mouse drag did not move card\n    at assert (/home/runner/work/dpro-reform-line-liff/dpro-reform-line-liff/reform-r3-qa.js:36:45)\n    at /home/runner/work/dpro-reform-line-liff/dpro-reform-line-liff/reform-r3-qa.js:120:39"
     }
   ],
   "mutations": [],
   "ok": false,
-  "finishedAt": "2026-08-28T05:57:57.557Z"
+  "finishedAt": "2026-08-28T05:59:38.831Z"
 }
