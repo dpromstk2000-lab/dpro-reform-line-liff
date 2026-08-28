@@ -1,0 +1,24 @@
+{
+  "schema": "DPRO_TUTORIAL_REFORM_R3_LIVE_QA_V1_1",
+  "sourceSha": "d4147ea68463cf5e1e4912c89f25743ec3527cd5",
+  "base": "https://dpromstk2000-lab.github.io/dpro-reform-line-liff",
+  "startedAt": "2026-08-28T05:40:16.356Z",
+  "viewportRuns": [],
+  "selectorRuns": [],
+  "interactions": {},
+  "errors": [
+    {
+      "scope": "viewport-1440-/demo-guide.html",
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+      "scope": "qa",
+      "type": "assertion",
+      "message": "page.waitForFunction: Timeout 30000ms exceeded.\n    at waitTutorial (/home/runner/work/dpro-reform-line-liff/dpro-reform-line-liff/reform-r3-qa.js:44:14)\n    at activateForRoute (/home/runner/work/dpro-reform-line-liff/dpro-reform-line-liff/reform-r3-qa.js:80:9)\n    at async /home/runner/work/dpro-reform-line-liff/dpro-reform-line-liff/reform-r3-qa.js:91:9"
+    }
+  ],
+  "mutations": [],
+  "ok": false,
+  "finishedAt": "2026-08-28T05:40:47.972Z"
+}
