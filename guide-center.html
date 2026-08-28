@@ -1,0 +1,113 @@
+<!doctype html>
+<!-- DPRO TUTORIAL / REFORM / GUIDE CENTER / R4 V1.0 -->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>DPRO リフォーム・工務店 LINE｜Guide Center</title>
+<style>
+:root{--bg:#edf5f2;--card:#fff;--ink:#13211f;--muted:#62716e;--line:#d8e2df;--brand:#0b8375;--deep:#063f39;--brand2:#20b9a3;--soft:#f1faf8;--warn:#fff5e5;--shadow:0 16px 46px rgba(44,37,32,.10)}
+*{box-sizing:border-box}html{background:var(--bg)}body{margin:0;min-height:100vh;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Yu Gothic UI",Meiryo,sans-serif;line-height:1.65;background:linear-gradient(180deg,#fff 0%,var(--bg) 100%)}a{color:inherit}.page{width:min(1120px,calc(100% - 24px));margin:0 auto;padding:20px 0 48px}.hero{padding:30px;border-radius:26px;color:#fff;background:linear-gradient(135deg,var(--deep),var(--brand) 62%,var(--brand2));box-shadow:0 23px 58px rgba(35,30,27,.18)}.kicker{font-size:11px;font-weight:1000;letter-spacing:.14em;opacity:.9}.hero h1{margin:9px 0 0;font-size:clamp(27px,5vw,46px);line-height:1.22}.hero p{max-width:800px;margin:12px 0 0;font-size:13px;opacity:.94}.panel{margin-top:16px;padding:20px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.98);box-shadow:var(--shadow)}.status-grid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center}.status-label{color:var(--brand);font-size:10px;font-weight:1000;letter-spacing:.12em}.status-value{margin-top:4px;font-size:18px;font-weight:1000}.status-copy{margin:5px 0 0;color:var(--muted);font-size:12px}.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.btn{min-height:46px;border:1px solid var(--line);border-radius:12px;padding:9px 14px;background:#fff;color:var(--deep);font:900 12px/1.25 inherit;cursor:pointer}.btn.primary{border-color:var(--brand);background:var(--brand);color:#fff}.btn[disabled]{opacity:.42;cursor:not-allowed}.btn:focus-visible,a:focus-visible{outline:3px solid #f5b942;outline-offset:3px}.section-head{margin:30px 0 13px}.section-head small{color:var(--brand);font-size:10px;font-weight:1000;letter-spacing:.12em}.section-head h2{margin:4px 0 0;font-size:clamp(22px,4vw,32px)}.section-head p{max-width:850px;margin:6px 0 0;color:var(--muted);font-size:12px}.first10{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.first10-item{min-width:0;padding:17px;border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:var(--shadow)}.step-id{color:var(--brand);font-size:10px;font-weight:1000;letter-spacing:.08em}.first10-item h3{margin:5px 0 0;font-size:17px;line-height:1.35}.first10-item p{margin:7px 0 0;color:var(--muted);font-size:11px}.route{display:block;margin-top:9px;padding:7px 9px;border-radius:9px;background:var(--soft);color:var(--deep);font:800 10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}.extras{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.extra{display:block;min-width:0;padding:17px;border:1px solid var(--line);border-radius:16px;background:#fff;text-decoration:none;box-shadow:var(--shadow)}.extra b{display:block;color:var(--deep);font-size:14px}.extra span{display:block;margin-top:5px;color:var(--muted);font-size:11px}.note{margin-top:18px;padding:14px 16px;border:1px solid #e5cda3;border-radius:14px;background:var(--warn);color:#725013;font-size:11px;font-weight:760}.back{display:inline-flex;margin-top:20px;min-height:44px;align-items:center;padding:8px 13px;border:1px solid var(--line);border-radius:12px;background:#fff;text-decoration:none;font-size:11px;font-weight:950}.footer{margin-top:25px;color:#82736c;font-size:10px;text-align:center}.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:760px){.status-grid{grid-template-columns:1fr}.actions{justify-content:flex-start}.first10,.extras{grid-template-columns:1fr}.hero{padding:24px 19px}.page{width:min(100% - 16px,1120px)}}
+</style>
+</head>
+<body>
+<main class="page">
+  <section class="hero">
+    <div class="kicker">DPRO TUTORIAL / GUIDE CENTER / R4</div>
+    <h1>REFORM Guide Center</h1>
+    <p>First10の開始・再開・Replayと、全10ステップの内容を一か所で確認します。First10の順序・文言・対象画面はR3 Tutorial本体を唯一のソースとして読み込みます。</p>
+  </section>
+
+  <section class="panel" aria-labelledby="stateHeading">
+    <div class="status-grid">
+      <div>
+        <div class="status-label" id="stateHeading">TUTORIAL STATE</div>
+        <div class="status-value" id="gc-state" aria-live="polite">読み込み中</div>
+        <p class="status-copy" id="gc-progress">Tutorial状態を確認しています。</p>
+      </div>
+      <div class="actions" aria-label="First10操作">
+        <button class="btn primary" type="button" id="gc-start">Start</button>
+        <button class="btn" type="button" id="gc-resume" disabled>Resume</button>
+        <button class="btn" type="button" id="gc-replay" disabled>Replay</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-head"><small>CANONICAL FIRST10</small><h2>First10 全10ステップ</h2><p>この一覧はGuide Center側に別コピーを持たず、R3 Tutorialの <code>window.DPRO_REFORM_TUTORIAL.steps</code> をそのまま描画します。</p></div>
+  <section class="first10" id="gc-first10" aria-label="First10ステップ一覧"></section>
+
+  <div class="section-head"><small>REFERENCE GUIDES / OUTSIDE FIRST10</small><h2>補助ガイド</h2><p>以下はFirst10の10件には含めず、必要時に参照する補助導線です。</p></div>
+  <section class="extras" id="gc-extras">
+    <a class="extra" data-extra-route="demo-guide.html" href="demo-guide.html"><b>公開デモ画面一覧</b><span>4画面・5業務ステップの入口と推奨確認順を確認。</span></a>
+    <a class="extra" data-extra-route="owner-ipad.html?demo=1&v=reform-10" href="owner-ipad.html?demo=1&v=reform-10"><b>OWNER iPad</b><span>First10外のiPad表示を必要時に確認。</span></a>
+    <a class="extra" data-extra-route="system-check.html?demo=1&v=reform-10" href="system-check.html?demo=1&v=reform-10"><b>System Check</b><span>営業前の公開確認用チェック画面。First10外。</span></a>
+  </section>
+
+  <div class="note">First10は閲覧中心です。相談送信、写真アップロード、案件・見積・工事・タスク・状態変更などの業務mutationはGuide Center / First10から実行しません。</div>
+  <a class="back" href="demo-guide.html">← 公開デモ画面一覧へ戻る</a>
+  <div class="footer">DPRO リフォーム・工務店 LINE｜GUIDE CENTER R4 / business mutation 0</div>
+  <span class="sr" id="guideCenterReady" data-ready="0">loading</span>
+</main>
+<script>
+(() => {
+  'use strict';
+  const KEY='dpro_tutorial_reform_first10_v1';
+  const SCRIPT='./tutorial-first10.js?v=20260828-r4-guide1';
+  const ready=document.getElementById('guideCenterReady');
+  function readRaw(){return localStorage.getItem(KEY)}
+  function renderState(T){
+    const raw=readRaw(); let s=null;
+    try{s=raw?JSON.parse(raw):null}catch{}
+    const stateEl=document.getElementById('gc-state');
+    const progress=document.getElementById('gc-progress');
+    const resume=document.getElementById('gc-resume');
+    const replay=document.getElementById('gc-replay');
+    if(!raw || !s){stateEl.textContent='未開始';progress.textContent='StartでF10-01から開始します。';resume.disabled=true;replay.disabled=true;return;}
+    const idx=T.steps.findIndex(x=>x.id===s.currentStepId);
+    const label=(s.status||'paused').toUpperCase();
+    stateEl.textContent=`${label} / ${s.currentStepId||'F10-01'}`;
+    progress.textContent=idx>=0?`進捗 ${idx+1} / ${T.steps.length}　${T.steps[idx].title}`:'保存状態を確認してください。';
+    resume.disabled=s.status==='completed';
+    replay.disabled=false;
+  }
+  function renderSteps(T){
+    const host=document.getElementById('gc-first10');
+    host.innerHTML='';
+    T.steps.forEach((step,i)=>{
+      const article=document.createElement('article');
+      article.className='first10-item'; article.dataset.stepId=step.id; article.dataset.route=step.route; article.dataset.index=String(i);
+      const id=document.createElement('div');id.className='step-id';id.textContent=`${String(i+1).padStart(2,'0')} / ${step.id}`;
+      const h=document.createElement('h3');h.textContent=step.title;
+      const p=document.createElement('p');p.textContent=step.guidance;
+      const route=document.createElement('code');route.className='route';route.textContent=step.route;
+      article.append(id,h,p,route);host.appendChild(article);
+    });
+  }
+  function suppressTutorialUi(){
+    const root=document.getElementById('dpro-tutorial-first10'); if(root) root.hidden=true;
+    const launcher=document.getElementById('dpro-tutorial-launcher'); if(launcher) launcher.hidden=true;
+  }
+  function boot(){
+    const saved=readRaw();
+    if(saved){try{const s=JSON.parse(saved);if(s?.status==='active'){s.status='paused';localStorage.setItem(KEY,JSON.stringify(s));}}catch{}}
+    const script=document.createElement('script');script.src=SCRIPT;script.dataset.guideCenter='1';
+    script.onload=()=>{
+      if(saved===null)localStorage.removeItem(KEY);else localStorage.setItem(KEY,saved);
+      const T=window.DPRO_REFORM_TUTORIAL;
+      if(!T || T.version!=='R3-V1.1' || T.steps.length!==10){document.getElementById('gc-state').textContent='Tutorial読込エラー';return;}
+      suppressTutorialUi();renderSteps(T);renderState(T);
+      document.getElementById('gc-start').addEventListener('click',()=>T.start());
+      document.getElementById('gc-resume').addEventListener('click',()=>T.resume());
+      document.getElementById('gc-replay').addEventListener('click',()=>T.replay());
+      ready.dataset.ready='1';ready.textContent='ready';
+    };
+    script.onerror=()=>{if(saved===null)localStorage.removeItem(KEY);else localStorage.setItem(KEY,saved);document.getElementById('gc-state').textContent='Tutorial読込エラー';};
+    document.body.appendChild(script);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+})();
+</script>
+</body>
+</html>
