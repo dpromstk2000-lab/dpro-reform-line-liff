@@ -24,7 +24,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
+
+      - name: Resolve current main source
+        run: echo "SOURCE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - uses: actions/setup-node@v4
         with:
@@ -41,7 +45,7 @@ jobs:
           BASE: https://dpromstk2000-lab.github.io/dpro-reform-line-liff
         run: |
           for i in $(seq 1 36); do
-            if curl -fsSL "$BASE/tutorial-first10.js?qa=${GITHUB_SHA}" | grep -q "R3-V1.1"; then
+            if curl -fsSL "$BASE/tutorial-first10.js?qa=${SOURCE_SHA}" | grep -q "R3-V1.1"; then
               echo "R3 source visible on GitHub Pages"
               exit 0
             fi
@@ -53,6 +57,7 @@ jobs:
       - name: Run exact-width R3 LIVE QA
         env:
           BASE: https://dpromstk2000-lab.github.io/dpro-reform-line-liff
+          SOURCE_SHA: ${{ env.SOURCE_SHA }}
         run: |
           mkdir -p tutorial-evidence/reform-r3/screens
           trap 'rm -f reform-r3-qa.js' EXIT
@@ -60,7 +65,7 @@ jobs:
           const { chromium } = require('playwright');
           const fs = require('fs');
           const base = process.env.BASE;
-          const sourceSha = process.env.GITHUB_SHA || null;
+          const sourceSha = process.env.SOURCE_SHA || process.env.GITHUB_SHA || null;
           const mutationMethods = new Set(['POST','PUT','PATCH','DELETE']);
           const widths = [
             {key:'1440',w:1440,h:1000},
@@ -93,7 +98,7 @@ jobs:
             viewportRuns:[],selectorRuns:[],interactions:{},errors:[],mutations:[],ok:false
           };
           const assert = (cond,msg)=>{if(!cond) throw new Error(msg)};
-          const pathOf = route => new URL(route,base).pathname;
+          const pathOf = route => new URL(String(route||'').replace(/^\/+/,''),base+'/').pathname;
           function attach(page, scope){
             page.on('pageerror',e=>evidence.errors.push({scope,type:'pageerror',message:String(e)}));
             page.on('console',m=>{if(m.type()==='error') evidence.errors.push({scope,type:'console',message:m.text()});});
