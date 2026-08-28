@@ -76,8 +76,11 @@
   function loadPos(){try{const p=JSON.parse(localStorage.getItem(POS_KEY)||'null');return Number.isFinite(p?.x)&&Number.isFinite(p?.y)?p:null;}catch{return null;}}
   function savePos(x,y){localStorage.setItem(POS_KEY,JSON.stringify({x:Math.round(x),y:Math.round(y)}));}
   function currentIndex(){const s=loadState(); const i=STEPS.findIndex(x=>x.id===s.currentStepId); return i<0?0:i;}
-  function routePath(route){return new URL(route,location.origin).pathname;}
+  const ROUTE_BASE = new URL('./', document.currentScript?.src || location.href);
+  function routeUrl(route){return new URL(String(route||'').replace(/^\/+/,''),ROUTE_BASE);}
+  function routePath(route){return routeUrl(route).pathname;}
   function onExpectedRoute(step){return location.pathname===routePath(step.route);}
+  function navigateRoute(route){location.href=routeUrl(route).href;}
   function clearHighlight(){if(targetEl){targetEl.classList.remove(HIGHLIGHT_CLASS);targetEl.removeAttribute('data-dpro-tutorial-target');targetEl=null;}}
   function findTarget(step){
     let el=null;
@@ -179,7 +182,7 @@
     const state=loadState();
     if(state.status!=='active'){root.hidden=true;launcher.hidden=false;launcher.textContent=state.status==='completed'?'Replay First10':'Resume First10';clearHighlight();return;}
     const i=currentIndex(), step=STEPS[i];
-    if(!onExpectedRoute(step)){location.href=step.route;return;}
+    if(!onExpectedRoute(step)){navigateRoute(step.route);return;}
     root.hidden=false;launcher.hidden=true;
     root.querySelector('#dpro-tut-step').textContent=`${i+1} / ${STEPS.length}　${step.id}`;
     titleEl.textContent=step.title;
@@ -196,15 +199,15 @@
   function goToIndex(i){
     if(i<0||i>=STEPS.length)return;
     const step=STEPS[i]; saveState({currentStepId:step.id,expectedRoute:step.route,status:'active'});
-    if(!onExpectedRoute(step)){location.href=step.route;return;} render();
+    if(!onExpectedRoute(step)){navigateRoute(step.route);return;} render();
   }
-  function start(){localStorage.removeItem(POS_KEY);saveState({currentStepId:'F10-01',expectedRoute:STEPS[0].route,status:'active'}); if(location.pathname!==routePath(STEPS[0].route)){location.href=STEPS[0].route;return;} render();}
+  function start(){localStorage.removeItem(POS_KEY);saveState({currentStepId:'F10-01',expectedRoute:STEPS[0].route,status:'active'}); if(location.pathname!==routePath(STEPS[0].route)){navigateRoute(STEPS[0].route);return;} render();}
   function resume(){const s=loadState(); if(s.status==='completed')return replay(); if(!localStorage.getItem(STATE_KEY))return start(); saveState({status:'active'});render();}
   function pause(){saveState({status:'paused'});root.hidden=true;launcher.hidden=false;launcher.textContent='Resume First10';clearHighlight();launcher.focus();}
   function skip(){saveState({status:'skipped'});root.hidden=true;launcher.hidden=false;launcher.textContent='Resume First10';clearHighlight();launcher.focus();}
   function back(){goToIndex(currentIndex()-1);}
   function next(){const i=currentIndex(); if(i===STEPS.length-1){saveState({status:'completed'});clearHighlight();root.querySelector('#dpro-tut-step').textContent='10 / 10　COMPLETE';titleEl.textContent='First10 完了';root.querySelector('#dpro-tut-copy').textContent='相談からアフターフォローまでの基本導線を確認しました。ReplayはTutorial状態だけを初期化します。';root.querySelector('#dpro-tut-next').hidden=true;root.querySelector('#dpro-tut-back').hidden=true;root.querySelector('#dpro-tut-skip').hidden=true;root.querySelector('#dpro-tut-replay').hidden=false;root.querySelector('#dpro-tut-status').textContent='COMPLETE / business mutation 0';titleEl.focus({preventScroll:true});return;} goToIndex(i+1);}
-  function replay(){localStorage.removeItem(STATE_KEY);localStorage.removeItem(POS_KEY);saveState({currentStepId:'F10-01',expectedRoute:STEPS[0].route,status:'active'});if(location.pathname!==routePath(STEPS[0].route)){location.href=STEPS[0].route;return;}render();}
+  function replay(){localStorage.removeItem(STATE_KEY);localStorage.removeItem(POS_KEY);saveState({currentStepId:'F10-01',expectedRoute:STEPS[0].route,status:'active'});if(location.pathname!==routePath(STEPS[0].route)){navigateRoute(STEPS[0].route);return;}render();}
   function snapshot(){const s=loadState();const i=STEPS.findIndex(x=>x.id===s.currentStepId);const step=STEPS[i<0?0:i];const t=findTarget(step);const rr=root?.getBoundingClientRect();return {version:VERSION,state:s,stepCount:STEPS.length,index:i,targetFound:!!t,targetSelector:t?(t.matches(step.primary)?step.primary:step.fallback):null,card:rr?{left:rr.left,top:rr.top,right:rr.right,bottom:rr.bottom,width:rr.width,height:rr.height}:null,viewport:{innerWidth,innerHeight,documentElementScrollWidth:document.documentElement.scrollWidth,bodyScrollWidth:document.body?.scrollWidth||0}};}
 
   window.DPRO_REFORM_TUTORIAL={version:VERSION,steps:STEPS,stateKey:STATE_KEY,posKey:POS_KEY,start,resume,pause,skip,next,back,replay,snapshot};

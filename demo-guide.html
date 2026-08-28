@@ -47,6 +47,6 @@ document.getElementById("quickInfo").innerHTML=CONFIG.quickInfo.map(x=>`<div><sm
 document.getElementById("screenGrid").innerHTML=CONFIG.screens.map(x=>`<article class="card"><div class="card-number">${x.step}</div><h3>${x.title}</h3><p>${x.description}</p><div class="pills">${x.tags.map(t=>`<span>${t}</span>`).join("")}</div><div class="card-note">${x.note}</div><div class="card-actions"><a class="open" href="${x.url}">${x.cta}</a><a class="official" href="${x.officialUrl}">説明</a></div></article>`).join("");
 document.getElementById("flowGrid").innerHTML=CONFIG.journey.map(x=>`<div class="flow-step${x.sameScreen?" same":""}"><b>${x.step}${x.sameScreen?" / SAME SCREEN":""}</b><strong>${x.text}</strong></div>`).join("");
 </script>
-<script src="./tutorial-first10.js?v=20260828-r3-v11" data-dpro-reform-tutorial="1"></script>
+<script src="./tutorial-first10.js?v=20260828-r3-v11-routefix1" data-dpro-reform-tutorial="1"></script>
 </body>
 </html>

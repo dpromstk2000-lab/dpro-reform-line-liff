@@ -38,7 +38,7 @@ window.DPRO_REFORM_CONFIG = Object.freeze({
     if (q.get('demo') !== '1' && q.get('tutorial') !== '1') return;
     if (document.querySelector('script[data-dpro-reform-tutorial]')) return;
     const s = document.createElement('script');
-    s.src = './tutorial-first10.js?v=20260828-r3-v11';
+    s.src = './tutorial-first10.js?v=20260828-r3-v11-routefix1';
     s.defer = true;
     s.dataset.dproReformTutorial = '1';
     (document.head || document.documentElement).appendChild(s);
