@@ -1,8 +1,8 @@
 {
   "schema": "DPRO_TUTORIAL_REFORM_R4_GUIDE_CENTER_QA_V1_0",
-  "sourceSha": "a0177477b2d4a0d6bc7515c8b4bbad226898a901",
+  "sourceSha": "438f935f17746ea42cc776dca954103251ee4f0e",
   "base": "https://dpromstk2000-lab.github.io/dpro-reform-line-liff",
-  "startedAt": "2026-08-28T06:24:14.327Z",
+  "startedAt": "2026-08-28T07:18:41.683Z",
   "viewportRuns": [
     {
       "viewport": "1440",
@@ -190,5 +190,5 @@
   "errors": [],
   "mutations": [],
   "ok": true,
-  "finishedAt": "2026-08-28T06:24:17.909Z"
+  "finishedAt": "2026-08-28T07:18:44.936Z"
 }
