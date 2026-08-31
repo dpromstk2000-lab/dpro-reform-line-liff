@@ -1,0 +1,107 @@
+name: "DPRO SHOP Fix 07 REFORM"
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/dpro-shop-fix-07-reform.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: "dpro-shop-fix-07-reform"
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify audited source SHA
+        shell: bash
+        run: |
+          set -euo pipefail
+          check() {
+            path="$1"; expected="$2"
+            test -f "$path" || { echo "Missing target: $path"; exit 31; }
+            got="$(git hash-object "$path")"
+            echo "$path  $got"
+            test "$got" = "$expected" || { echo "SOURCE SHA MISMATCH: $path expected=$expected got=$got"; exit 32; }
+          }
+          check 'owner.html' 'b0f4eb0ac8df95bc8bf516da9cf0a730a6f1a08e'
+          check 'staff.html' '5fd5051cdf0872db64dc58518d12a8ab9b8ec428'
+
+      - name: Apply narrow confirmed fix
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, sys
+          
+          def read(path):
+              return Path(path).read_text(encoding="utf-8")
+          
+          def write(path, text):
+              Path(path).write_text(text, encoding="utf-8")
+          
+          def replace_once(text, old, new, label):
+              n=text.count(old)
+              if n != 1:
+                  raise SystemExit(f"{label}: expected 1 exact match, found {n}")
+              return text.replace(old,new,1)
+          
+          def sub_once(text, pattern, repl, label, flags=0):
+              new,n=re.subn(pattern,repl,text,count=1,flags=flags)
+              if n != 1:
+                  raise SystemExit(f"{label}: expected 1 regex match, found {n}")
+              return new
+          
+          p='owner.html'; t=read(p)
+          # Project summary form: preflight before first request.
+          t=replace_once(t,
+          '''$('projectStatusForm')?.addEventListener('submit',async e=>{e.preventDefault();await api('/api/admin/projects/status',''',
+          '''$('projectStatusForm')?.addEventListener('submit',async e=>{e.preventDefault();const nextPhase=$('editPhase').value,nextSurvey=$('editSurveyStatus').value,nextWork=$('editWorkStatus').value;const terminal=(nextPhase!==p.phase&&['completed','closed','cancelled'].includes(nextPhase))||(nextSurvey!==p.survey_status&&['cancelled'].includes(nextSurvey))||(nextWork!==p.work_status&&['completed','cancelled'].includes(nextWork));if(terminal&&!confirm('案件を完了・終了・取消などの重要状態へ変更しますか？'))return;await api('/api/admin/projects/status',''', 'REFORM project form guard')
+          t=replace_once(t,
+          '''$('surveyForm')?.addEventListener('submit',async e=>{e.preventDefault();await api('/api/admin/site-surveys/save',''',
+          '''$('surveyForm')?.addEventListener('submit',async e=>{e.preventDefault();if($('surveyStatus').value==='cancelled'&&!confirm('現地調査をキャンセル状態へ変更しますか？'))return;await api('/api/admin/site-surveys/save',''', 'REFORM survey form guard')
+          t=replace_once(t,
+          '''$('workForm')?.addEventListener('submit',async e=>{e.preventDefault();await api('/api/admin/work-schedules/save',''',
+          '''$('workForm')?.addEventListener('submit',async e=>{e.preventDefault();if(['completed','cancelled'].includes($('workStatus').value)&&!confirm('工事予定を完了・取消状態へ変更しますか？'))return;await api('/api/admin/work-schedules/save',''', 'REFORM work form guard')
+          t=replace_once(t,
+          '''$('progressForm')?.addEventListener('submit',async e=>{e.preventDefault();await api('/api/admin/progress-reports/save',''',
+          '''$('progressForm')?.addEventListener('submit',async e=>{e.preventDefault();if(['completed','cancelled'].includes($('progressStatus').value)&&!confirm('工事進捗を完了・取消状態として登録しますか？'))return;await api('/api/admin/progress-reports/save',''', 'REFORM progress form guard')
+          write(p,t)
+          p='staff.html'; t=read(p)
+          t=sub_once(t,r'async function quickSurvey\(status\)\{', 'async function quickSurvey(status){if(status===\'done\'&&!confirm(\'現地調査を完了しますか？\'))return;', 'REFORM staff survey guard')
+          t=sub_once(t,r'async function quickWork\(status\)\{', 'async function quickWork(status){if(status===\'completed\'&&!confirm(\'工事を完了状態へ変更しますか？\'))return;', 'REFORM staff work guard')
+          write(p,t)
+          PY
+
+      - name: Validate source diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          git diff --stat
+          git diff -- "owner.html" "staff.html"
+          if git diff --quiet -- "owner.html" "staff.html"; then
+            echo "No source change was produced."
+            exit 41
+          fi
+
+      - name: Commit fix to main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "owner.html" "staff.html"
+          git diff --cached --check
+          git commit -m "Fix reform terminal-state guards"
+          git push origin HEAD:main
